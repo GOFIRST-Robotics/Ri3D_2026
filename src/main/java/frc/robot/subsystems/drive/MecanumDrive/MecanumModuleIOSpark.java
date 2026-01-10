@@ -18,7 +18,6 @@ import com.revrobotics.spark.config.SparkMaxConfig;
 import edu.wpi.first.math.filter.Debouncer;
 import frc.robot.Constants.MecanumConstants;
 
-import java.util.Queue;
 import java.util.function.DoubleSupplier;
 
 public class MecanumModuleIOSpark implements MecanumModuleIO {
