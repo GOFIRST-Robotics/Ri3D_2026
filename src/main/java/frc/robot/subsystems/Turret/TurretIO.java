@@ -1,6 +1,10 @@
 package frc.robot.subsystems.Turret;
 
+import org.littletonrobotics.junction.AutoLog;
+
 public interface TurretIO {
+
+    @AutoLog
     class TurretIOInputs {
         public double turretRadians;
         public double hoodRadians;
