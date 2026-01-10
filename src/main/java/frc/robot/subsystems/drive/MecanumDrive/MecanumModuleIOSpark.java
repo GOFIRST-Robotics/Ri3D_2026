@@ -16,8 +16,8 @@ import com.revrobotics.spark.config.ClosedLoopConfig.FeedbackSensor;
 import com.revrobotics.spark.config.SparkBaseConfig.IdleMode;
 import com.revrobotics.spark.config.SparkMaxConfig;
 import edu.wpi.first.math.filter.Debouncer;
-import frc.robot.subsystems.drive.DriveConstants;
-import frc.robot.subsystems.drive.SparkOdometryThread;
+import frc.robot.Constants.MecanumConstants;
+
 import java.util.Queue;
 import java.util.function.DoubleSupplier;
 
@@ -25,9 +25,6 @@ public class MecanumModuleIOSpark implements MecanumModuleIO {
   private final SparkBase spark;
   private final RelativeEncoder encoder;
   private final SparkClosedLoopController controller;
-
-  private final Queue<Double> timestampQueue;
-  private final Queue<Double> positionQueue;
 
   private final Debouncer connectedDebounce = new Debouncer(0.5);
 
@@ -78,7 +75,7 @@ public class MecanumModuleIOSpark implements MecanumModuleIO {
     config
         .signals
         .primaryEncoderPositionAlwaysOn(true)
-        .primaryEncoderPositionPeriodMs((int) (1000.0 / DriveConstants.odometryFrequency))
+        .primaryEncoderPositionPeriodMs((20))
         .primaryEncoderVelocityAlwaysOn(true)
         .primaryEncoderVelocityPeriodMs(20)
         .appliedOutputPeriodMs(20)
@@ -93,9 +90,6 @@ public class MecanumModuleIOSpark implements MecanumModuleIO {
     // Optional: zero encoder at boot (or handle zeroing elsewhere)
     tryUntilOk(spark, 5, () -> encoder.setPosition(0.0));
 
-    // Odometry queues
-    timestampQueue = SparkOdometryThread.getInstance().makeTimestampQueue();
-    positionQueue = SparkOdometryThread.getInstance().registerSignal(spark, encoder::getPosition);
   }
 
   @Override
@@ -111,14 +105,6 @@ public class MecanumModuleIOSpark implements MecanumModuleIO {
     ifOk(spark, spark::getOutputCurrent, (value) -> inputs.currentAmps = value);
 
     inputs.connected = connectedDebounce.calculate(!sparkStickyFault);
-
-    // Odometry
-    inputs.odometryTimestamps =
-        timestampQueue.stream().mapToDouble((Double v) -> v).toArray();
-    inputs.odometryWheelPositionsRad =
-        positionQueue.stream().mapToDouble((Double v) -> v).toArray();
-    timestampQueue.clear();
-    positionQueue.clear();
   }
 
   @Override

@@ -19,9 +19,6 @@ public class MecanumModule {
 
   private final Alert disconnectedAlert;
 
-  // Odometry samples for this wheel (meters) for each timestamp sample
-  private double[] odometryWheelPositionsMeters = new double[] {};
-
   public MecanumModule(MecanumModuleIO io, int index) {
     this.io = io;
     this.index = index;
@@ -34,14 +31,6 @@ public class MecanumModule {
   public void periodic() {
     io.updateInputs(inputs);
     Logger.processInputs("Drive/MecanumModule" + Integer.toString(index), inputs);
-
-    // Convert odometry samples from wheel radians -> meters traveled
-    int sampleCount = inputs.odometryTimestamps.length; // all sampled together
-    odometryWheelPositionsMeters = new double[sampleCount];
-    double wheelRadiusMeters = Constants.WHEEL_DIAMETER / 2.0;
-    for (int i = 0; i < sampleCount; i++) {
-      odometryWheelPositionsMeters[i] = inputs.odometryWheelPositionsRad[i] * wheelRadiusMeters;
-    }
 
     // Alerts
     disconnectedAlert.set(!inputs.connected);
@@ -85,13 +74,4 @@ public class MecanumModule {
     return inputs.wheelVelocityRadPerSec;
   }
 
-  /** Returns wheel positions (meters) for each odometry sample received this cycle. */
-  public double[] getOdometryWheelPositionsMeters() {
-    return odometryWheelPositionsMeters;
-  }
-
-  /** Returns the timestamps of the odometry samples received this cycle. */
-  public double[] getOdometryTimestamps() {
-    return inputs.odometryTimestamps;
-  }
 }

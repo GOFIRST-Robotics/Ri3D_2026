@@ -13,17 +13,13 @@ import edu.wpi.first.wpilibj.Alert.AlertType;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.Constants;
 import frc.robot.Constants.Mode;
-import frc.robot.subsystems.drive.SparkOdometryThread;
+import frc.robot.subsystems.Gyro.GyroIO;
+import frc.robot.subsystems.Gyro.GyroIOInputsAutoLogged;
+
 import org.littletonrobotics.junction.Logger;
 
 /**
  * Mecanum drive subsystem built from four {@link MecanumModule}s.
- *
- * <p>Matches the swerve Drive style:
- * - owns modules
- * - runs module periodic + logs
- * - exposes chassis control (robot-relative and field-relative)
- * - maintains WPILib mecanum odometry using module distances
  */
 public class MecanumDrive extends SubsystemBase {
   // Module order: 0=FL, 1=FR, 2=BL, 3=BR
@@ -32,18 +28,24 @@ public class MecanumDrive extends SubsystemBase {
   private final MecanumDriveKinematics kinematics;
   private final MecanumDriveOdometry odometry;
 
-  private final Alert odometryThreadNotStartedAlert =
-      new Alert("SparkOdometryThread is not started (odometry sampling disabled).", AlertType.kWarning);
+  // Gyro IO
+  private final GyroIO gyroIO;
+  private final GyroIOInputsAutoLogged gyroInputs = new GyroIOInputsAutoLogged();
+
+  // Alert for disconnected gyro
+  private final Alert gyroDisconnectedAlert =
+      new Alert("Disconnected gyro, odometry may be inaccurate.", AlertType.kWarning);
 
   /**
    * @param moduleIOs Array of 4 IO implementations in module order: FL, FR, BL, BR.
-   *     (This mirrors the swerve Drive constructor style of passing IO by module.)
-   * @param gyroSupplier Supplies current robot heading (CCW+), used for field-relative control and odometry.
+   * @param gyroIO Gyro IO implementation for heading.
    */
-  public MecanumDrive(MecanumModuleIO[] moduleIOs, java.util.function.Supplier<Rotation2d> gyroSupplier) {
+  public MecanumDrive(MecanumModuleIO[] moduleIOs, GyroIO gyroIO) {
     if (moduleIOs.length != 4) {
       throw new IllegalArgumentException("Expected 4 mecanum modules (FL, FR, BL, BR).");
     }
+
+    this.gyroIO = gyroIO;
 
     for (int i = 0; i < 4; i++) {
       modules[i] = new MecanumModule(moduleIOs[i], i);
@@ -57,41 +59,42 @@ public class MecanumDrive extends SubsystemBase {
 
     kinematics = new MecanumDriveKinematics(fl, fr, bl, br);
 
+    // Initialize gyro inputs before creating odometry
+    gyroIO.updateInputs(gyroInputs);
+
     odometry =
         new MecanumDriveOdometry(
             kinematics,
-            gyroSupplier.get(),
+            gyroInputs.yawPosition,
             getWheelPositions(),
             new Pose2d());
-
-    // Start odometry sampling thread for Sparks (real+sim; safe on replay too, but typically unnecessary)
-    if (Constants.currentMode != Mode.REPLAY) {
-      SparkOdometryThread.getInstance().start();
-      odometryThreadNotStartedAlert.set(false);
-    } else {
-      odometryThreadNotStartedAlert.set(true);
-    }
-
-    // Store gyro supplier
-    this.gyroSupplier = gyroSupplier;
   }
-
-  private final java.util.function.Supplier<Rotation2d> gyroSupplier;
 
   @Override
   public void periodic() {
+    // Update gyro inputs
+    gyroIO.updateInputs(gyroInputs);
+    Logger.processInputs("Drive/Gyro", gyroInputs);
+
     // Update modules + log per-module inputs
     for (var module : modules) {
       module.periodic();
     }
 
-    // Use the most recent sample set for odometry:
-    // We use per-cycle wheel positions (meters). SparkOdometryThread gives timestamps too,
-    // but WPILib's MecanumDriveOdometry doesn't support multi-sample time sync like swerve in this template.
-    odometry.update(gyroSupplier.get(), getWheelPositions());
+    // Update odometry
+    odometry.update(gyroInputs.yawPosition, getWheelPositions());
 
+    // Update gyro disconnected alert
+    gyroDisconnectedAlert.set(!gyroInputs.connected && Constants.currentMode != Mode.SIM);
+
+    // Log outputs
     Logger.recordOutput("Drive/Mecanum/Pose", odometry.getPoseMeters());
-    Logger.recordOutput("Drive/Mecanum/Heading", gyroSupplier.get().getRadians());
+    Logger.recordOutput("Drive/Mecanum/Heading", gyroInputs.yawPosition.getRadians());
+  }
+
+  /** Returns the current gyro heading. */
+  public Rotation2d getGyroYaw() {
+    return gyroInputs.yawPosition;
   }
 
   /** Robot pose from odometry. */
@@ -100,7 +103,7 @@ public class MecanumDrive extends SubsystemBase {
   }
 
   public void resetPose(Pose2d pose) {
-    odometry.resetPosition(gyroSupplier.get(), getWheelPositions(), pose);
+    odometry.resetPosition(gyroInputs.yawPosition, getWheelPositions(), pose);
   }
 
   /** Wheel distances (meters) used by WPILib odometry. */
@@ -135,14 +138,13 @@ public class MecanumDrive extends SubsystemBase {
   /** Drives field-relative (uses gyro). */
   public void runFieldRelative(double vxMetersPerSec, double vyMetersPerSec, double omegaRadPerSec) {
     ChassisSpeeds speeds =
-        ChassisSpeeds.fromFieldRelativeSpeeds(vxMetersPerSec, vyMetersPerSec, omegaRadPerSec, gyroSupplier.get());
+        ChassisSpeeds.fromFieldRelativeSpeeds(
+            vxMetersPerSec, vyMetersPerSec, omegaRadPerSec, gyroInputs.yawPosition);
     runRobotRelative(speeds);
   }
 
   /** Sets wheel speeds using each module's closed-loop velocity (m/s). */
   public void setWheelSpeeds(MecanumDriveWheelSpeeds speeds) {
-    // NOTE: If your right side or diagonals are inverted (like in your old code),
-    // fix it in motor inversion OR here. Prefer motor inversion in IO.
     modules[0].runVelocityMetersPerSec(speeds.frontLeftMetersPerSecond);
     modules[1].runVelocityMetersPerSec(speeds.frontRightMetersPerSecond);
     modules[2].runVelocityMetersPerSec(speeds.rearLeftMetersPerSecond);

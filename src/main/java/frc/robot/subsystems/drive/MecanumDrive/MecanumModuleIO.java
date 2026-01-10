@@ -15,10 +15,6 @@ public interface MecanumModuleIO {
 
     public double appliedVolts = 0.0;
     public double currentAmps = 0.0;
-
-    /** High-rate samples for odometry. */
-    public double[] odometryTimestamps = new double[] {};
-    public double[] odometryWheelPositionsRad = new double[] {};
   }
 
   /** Updates the set of loggable inputs. */
