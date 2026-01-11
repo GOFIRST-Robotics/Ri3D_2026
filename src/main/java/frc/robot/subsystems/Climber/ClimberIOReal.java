@@ -1,6 +1,8 @@
 package frc.robot.subsystems.Climber;
 import org.littletonrobotics.junction.networktables.LoggedNetworkNumber;
 
+import com.revrobotics.PersistMode;
+import com.revrobotics.ResetMode;
 import com.revrobotics.spark.SparkClosedLoopController;
 import com.revrobotics.spark.SparkMax;
 import com.revrobotics.spark.SparkBase.ControlType;
@@ -13,13 +15,21 @@ public class ClimberIOReal implements ClimberIO {
     private SparkMax climbMotor;
     private SparkClosedLoopController climbPID;
 
-    private LoggedNetworkNumber changablekP = new LoggedNetworkNumber("Tuning/Climber/kP", 0.0);
-    private LoggedNetworkNumber changablekI = new LoggedNetworkNumber("Tuning/Climber/kI", 0.0);
-    private LoggedNetworkNumber changablekD = new LoggedNetworkNumber("Tuning/Climber/kD", 0.0);
+    private LoggedNetworkNumber changablekP;
+    private LoggedNetworkNumber changablekI;
+    private LoggedNetworkNumber changablekD;
+    private LoggedNetworkNumber changablekV;
+    private LoggedNetworkNumber changablekG = new LoggedNetworkNumber("Tuning/Climber/kD", 0.0);
+    private LoggedNetworkNumber changableCruiseVel = new LoggedNetworkNumber("Tuning/Climber/kD", 0.0);
+    private LoggedNetworkNumber changableMaxAccel = new LoggedNetworkNumber("Tuning/Climber/kD", 0.0);
 
     private double climbMotorkP;
     private double climbMotorkI;
     private double climbMotorkD;
+    private double climbMotorkV;
+    private double climbMotorkG;
+    private double climbMotorCruiseVel;
+    private double climbMotorMaxAccel;
 
     public ClimberIOReal() {
         climbMotor = new SparkMax(ClimberConstants.CLIMBER_MOTOR_CAN_ID, MotorType.kBrushless);
@@ -28,21 +38,34 @@ public class ClimberIOReal implements ClimberIO {
     }
 
     private void setInitialMotorSettings() {
-        climbMotorkP = 0.1;
-        climbMotorkI = 0.0;
-        climbMotorkD = 0.0;
+        climbMotorkP = ClimberConstants.CLIMB_MOTOR_KP;
+        climbMotorkI = ClimberConstants.CLIMB_MOTOR_KI;
+        climbMotorkD = ClimberConstants.CLIMB_MOTOR_KD;
+        climbMotorkV = ClimberConstants.CLIMB_MOTOR_KV;
+        climbMotorkG = ClimberConstants.CLIMB_MOTOR_KG;
+        climbMotorCruiseVel = ClimberConstants.CLIMB_MOTOR_CRUISE_VEL;
+        climbMotorMaxAccel = ClimberConstants.CLIMB_MOTOR_MAX_ACCEL;
+
+        changablekP = new LoggedNetworkNumber("Tuning/Climber/kP", climbMotorkP);
+        changablekI = new LoggedNetworkNumber("Tuning/Climber/kI", climbMotorkI);
+        changablekD = new LoggedNetworkNumber("Tuning/Climber/kD", climbMotorkD);
+        changablekV = new LoggedNetworkNumber("Tuning/Climber/kV", climbMotorkV);
+        changablekG = new LoggedNetworkNumber("Tuning/Climber/kG", climbMotorkG);
+        changableCruiseVel = new LoggedNetworkNumber("Tuning/Climber/CruiseVel", climbMotorCruiseVel);
+        changableMaxAccel = new LoggedNetworkNumber("Tuning/Climber/MaxAccel", climbMotorMaxAccel);
+
         SparkMaxConfig config = new SparkMaxConfig();
         config.closedLoop
             .pid(climbMotorkP, climbMotorkI, climbMotorkD);
         config.closedLoop.feedForward
                 .kS(0.0)
-                .kV(0.0)
+                .kV(climbMotorkV)
                 .kA(0.0)
-                .kG(0.0);
+                .kG(climbMotorkG);
         config.closedLoop.maxMotion
-            .cruiseVelocity(2000)
-            .maxAcceleration(4000)
-            .allowedProfileError(0.5);
+            .cruiseVelocity(climbMotorCruiseVel)
+            .maxAcceleration(climbMotorMaxAccel)
+            .allowedProfileError(ClimberConstants.CLIMB_ALLOWED_ERROR);
         config.softLimit
             .forwardSoftLimit(50)
             .forwardSoftLimitEnabled(true)
@@ -79,23 +102,36 @@ public class ClimberIOReal implements ClimberIO {
     }
 
     @Override
-    public void tunePID() {
+    public void tuneConfig() {
+        boolean newConfig = false;
+        SparkMaxConfig config = new SparkMaxConfig();
         if (changablekP.getAsDouble() != climbMotorkP || changablekI.getAsDouble() != climbMotorkI || changablekD.getAsDouble() != climbMotorkD) {
-            SparkMaxConfig config = new SparkMaxConfig();
-        config.closedLoop
-            .pid(changablekP.getAsDouble(), changablekI.getAsDouble(), changablekD.getAsDouble());
-        config.closedLoop.feedForward
-                .kS(0.0)
-                .kV(0.0)
-                .kA(0.0)
-                .kG(0.0);
-        config.closedLoop.maxMotion
-            .cruiseVelocity(2000)
-            .maxAcceleration(10000)
-            .allowedProfileError(0.1);
-        climbMotor.configure(config, SparkMax.ResetMode.kResetSafeParameters, SparkMax.PersistMode.kPersistParameters);
+            climbMotorkP = changablekP.getAsDouble();
+            climbMotorkI = changablekI.getAsDouble();
+            climbMotorkD = changablekD.getAsDouble();
+            config.closedLoop
+                .pid(climbMotorkP, climbMotorkI, climbMotorkD);
+            newConfig = true;
         }
-    }
-
+        if (changablekV.getAsDouble() != climbMotorkV || changablekG.getAsDouble() != climbMotorkG) {
+            climbMotorkV = changablekV.getAsDouble();
+            climbMotorkG = changablekG.getAsDouble();
+            config.closedLoop.feedForward
+                    .kS(0.0)
+                    .kV(climbMotorkV)
+                    .kA(0.0)
+                    .kG(climbMotorkG);
+            newConfig = true;
+        }
+        if (changableCruiseVel.getAsDouble() != climbMotorCruiseVel || changableMaxAccel.getAsDouble() != climbMotorMaxAccel) {
+            climbMotorCruiseVel = changableCruiseVel.getAsDouble();
+            climbMotorMaxAccel = changableMaxAccel.getAsDouble();
+            config.closedLoop.maxMotion
+                .cruiseVelocity(climbMotorCruiseVel)
+                .maxAcceleration(climbMotorMaxAccel)
+                .allowedProfileError(ClimberConstants.CLIMB_ALLOWED_ERROR);
+        }
+        climbMotor.configure(config, ResetMode.kResetSafeParameters, PersistMode.kPersistParameters);
+        }
 
 }

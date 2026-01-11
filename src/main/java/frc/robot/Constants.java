@@ -153,5 +153,14 @@ public final class Constants {
     public static final double RUNG_ONE_CLIMBER_POS = 2.0;
     public static final double RUNG_TWO_CLIMBER_POS = 3.0;
     public static final double RUNG_THREE_CLIMBER_POS = 4.0;
+
+    public static final double CLIMB_MOTOR_KP = 0.01;
+    public static final double CLIMB_MOTOR_KI = 0.0;
+    public static final double CLIMB_MOTOR_KD = 0.0;
+    public static final double CLIMB_MOTOR_KV = 0.0;
+    public static final double CLIMB_MOTOR_KG = 0.0;
+    public static final double CLIMB_MOTOR_CRUISE_VEL = 2000;
+    public static final double CLIMB_MOTOR_MAX_ACCEL = 4000;
+    public static final double CLIMB_ALLOWED_ERROR = 0.5;
   }
 }
