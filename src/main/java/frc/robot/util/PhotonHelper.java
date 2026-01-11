@@ -20,12 +20,11 @@ import frc.robot.Constants;
 public class PhotonHelper {
     static PhotonCamera camera = new PhotonCamera("Arducam_OV9782_USB_Camera");
 
-    static final AprilTagFieldLayout aprilTagFieldLayout = new AprilTagFieldLayout(Constants.AprilTagFieldConstants.TAGS, 6.5012, 3.1664);
+    static final AprilTagFieldLayout aprilTagFieldLayout = new AprilTagFieldLayout(Constants.AprilTagFieldConstants.TAGS, Constants.AprilTagFieldConstants.FIELD_LENGTH, Constants.AprilTagFieldConstants.FIELD_WIDTH);
     static final Transform3d zeroOffset = new Transform3d(new Translation3d(0.0, 0.0, 0.0), new Rotation3d(0, 0, 0));
     static final PhotonPoseEstimator poseEstimator = new PhotonPoseEstimator(aprilTagFieldLayout, PoseStrategy.LOWEST_AMBIGUITY, zeroOffset);
 
     public static Optional<EstimatedRobotPose> getCameraFieldPos() {  return poseEstimator.update(camera.getLatestResult()); }
-    
-
+        
     public static boolean cameraConnected() { return camera.isConnected(); }
 }
