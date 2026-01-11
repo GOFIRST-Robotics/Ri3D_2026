@@ -6,11 +6,11 @@ public interface FlywheelIO {
 
     @AutoLog
     class FlywheelIOInputs {
-        public double leftFlywheelRPM;
-        public double rightFlywheelRPM;
+        public double topFlywheelRPM;
+        public double bottomFlywheelRPM;
     }
 
     default void updateInputs(FlywheelIOInputs inputs) {}
-    default void setLeftFlywheelRPM(double rpm) {}
-    default void setRightFlywheelRPM(double rpm) {}
+    default void setTopFlywheelRPM(double rpm) {}
+    default void setBottomFlywheelRPM(double rpm) {}
 }

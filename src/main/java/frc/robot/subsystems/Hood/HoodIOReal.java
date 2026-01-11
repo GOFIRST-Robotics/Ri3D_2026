@@ -57,7 +57,7 @@ public class HoodIOReal implements HoodIO {
     }
 
     @Override
-    public void setHoodRadians(double radians) { hoodClosedLoop.setReference(radians * Constants.HOOD_GEAR_RATIO, ControlType.kPosition); }
+    public void setHoodRadians(double radians) { hoodClosedLoop.setSetpoint(radians * Constants.HOOD_GEAR_RATIO, ControlType.kPosition); }
 
     public void tunePID() {
         if (kP.getAsDouble() != lastkP || kI.getAsDouble() != lastkI || kD.getAsDouble() != lastkD) {

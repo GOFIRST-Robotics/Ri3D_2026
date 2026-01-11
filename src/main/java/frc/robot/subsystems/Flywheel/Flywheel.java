@@ -24,8 +24,8 @@ public class Flywheel extends SubsystemBase {
 
     public void runFlywheels(double leftRPM, double rightRPM)
     {
-        io.setLeftFlywheelRPM(leftRPM);
-        io.setRightFlywheelRPM(rightRPM);
+        io.setTopFlywheelRPM(leftRPM);
+        io.setBottomFlywheelRPM(rightRPM);
     }
 
     public void setLaunchSpeed(double launchSpeed)
