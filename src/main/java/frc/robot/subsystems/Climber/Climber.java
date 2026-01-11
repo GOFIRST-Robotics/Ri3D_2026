@@ -4,6 +4,8 @@
 
 package frc.robot.subsystems.Climber;
 
+import java.util.function.BooleanSupplier;
+
 import org.littletonrobotics.junction.Logger;
 
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
@@ -22,6 +24,8 @@ public class Climber extends SubsystemBase {
   public void setClimberPos(ClimbPosition position) {
     io.setClimbPosition(position);
   }
+
+  BooleanSupplier movementFinished = io::isMovementFinished;
 
   @Override
   public void periodic() {
