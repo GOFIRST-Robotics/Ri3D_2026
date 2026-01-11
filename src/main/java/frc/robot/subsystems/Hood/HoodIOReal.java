@@ -49,10 +49,14 @@ public class HoodIOReal implements HoodIO {
         hoodMotorController = new SparkMax(Constants.TURRET_HOOD_MOTOR_ID, MotorType.kBrushless);
         hoodEncoder = hoodMotorController.getAbsoluteEncoder();
         hoodClosedLoop = hoodMotorController.getClosedLoopController();
+
+        setInitialMotorPIDs();
     }
 
     @Override
     public void updateInputs(HoodIOInputs inputs) {
+        tunePID();
+
         ifOk(hoodMotorController, hoodEncoder::getPosition, (value) -> inputs.hoodRadians = value);
     }
 

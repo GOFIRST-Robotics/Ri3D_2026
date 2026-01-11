@@ -75,10 +75,14 @@ public class FlywheelIOReal implements FlywheelIO {
 
         topFlywheelClosedLoop = topFlywheelMotorController.getClosedLoopController();
         bottomFlywheelClosedLoop = bottomFlywheelMotorController.getClosedLoopController();
+
+        setInitialMotorPIDs();
     }
 
     @Override
     public void updateInputs(FlywheelIOInputs inputs) {
+        tunePID();
+
         ifOk(topFlywheelMotorController, topFlyWheelEncoder::getVelocity, (value) -> inputs.topFlywheelRPM = value);
         ifOk(bottomFlywheelMotorController, bottomFlyWheelEncoder::getVelocity, (value) -> inputs.bottomFlywheelRPM = value);
     }
