@@ -5,6 +5,7 @@ import com.revrobotics.PersistMode;
 import com.revrobotics.ResetMode;
 import com.revrobotics.spark.SparkClosedLoopController;
 import com.revrobotics.spark.SparkMax;
+import com.revrobotics.spark.FeedbackSensor;
 import com.revrobotics.spark.SparkBase.ControlType;
 import com.revrobotics.spark.SparkLowLevel.MotorType;
 import com.revrobotics.spark.config.SparkMaxConfig;
@@ -54,7 +55,11 @@ public class ClimberIOReal implements ClimberIO {
         changableCruiseVel = new LoggedNetworkNumber("Tuning/Climber/CruiseVel", climbMotorCruiseVel);
         changableMaxAccel = new LoggedNetworkNumber("Tuning/Climber/MaxAccel", climbMotorMaxAccel);
 
+        climbMotor.getEncoder().setPosition(0);
+
         SparkMaxConfig config = new SparkMaxConfig();
+        config.closedLoop
+            .feedbackSensor(FeedbackSensor.kPrimaryEncoder);
         config.closedLoop
             .pid(climbMotorkP, climbMotorkI, climbMotorkD);
         config.closedLoop.feedForward
@@ -77,7 +82,7 @@ public class ClimberIOReal implements ClimberIO {
 
     @Override
     public void updateInputs(ClimberIOInputsAutoLogged inputs) {
-        inputs.climberPosInRotations = climbMotor.getAbsoluteEncoder().getPosition();
+        inputs.climberPosInRotations = climbMotor.getEncoder().getPosition();
     }
 
     @Override
