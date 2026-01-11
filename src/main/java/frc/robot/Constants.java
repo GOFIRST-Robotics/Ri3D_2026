@@ -90,12 +90,14 @@ public final class Constants {
 
   // ==================== OTHER MOTOR CAN IDs ====================
   
-  public static final int INTAKE_BAR_MOTOR_ID = 11;
-  public static final int INTAKE_ARM_MOTOR_ID = 6;
-  public static final int ELEVATOR_STAGE_1_MOTOR_ID = 12;
-  public static final int ELEVATOR_STAGE_2_MOTOR_ID = 10;
-  public static final int END_EFFECTOR_WHEEL_MOTOR_ID = 7;
-  public static final int END_EFFECTOR_ARM_MOTOR_ID = 8;
+  // public static final int INTAKE_BAR_MOTOR_ID = 11;
+  // public static final int INTAKE_ARM_MOTOR_ID = 6;
+  // public static final int ELEVATOR_STAGE_1_MOTOR_ID = 12;
+  // public static final int ELEVATOR_STAGE_2_MOTOR_ID = 10;
+  // public static final int END_EFFECTOR_WHEEL_MOTOR_ID = 7;
+  // public static final int END_EFFECTOR_ARM_MOTOR_ID = 8;
+  public static final int TURRET_LEFT_FLYWHEEL_MOTOR_ID = 8;
+  public static final int TURRET_RIGHT_FLYWHEEL_MOTOR_ID = 8;
 
   // ==================== SERVO / PWM ====================
   
