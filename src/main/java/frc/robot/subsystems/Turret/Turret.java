@@ -46,7 +46,7 @@ public class Turret extends SubsystemBase {
         double time_at_apex = -velocity_initial_y / TurretConstants.GRAVITY_CONSTANT;
         double delta_x = Math.sqrt(dx * dx + dy * dy);
         
-        delta_x -= (TurretConstants.TURRET_TIME_INTO_GOAL_AFTER_APEX / time_at_apex) * delta_x;
+        delta_x -= (TurretConstants.TURRET_TIME_INTO_GOAL_AFTER_APEX / (time_at_apex + TurretConstants.TURRET_TIME_INTO_GOAL_AFTER_APEX)) * delta_x;
 
         double velocity_inital_x = delta_x / time_at_apex;
 
