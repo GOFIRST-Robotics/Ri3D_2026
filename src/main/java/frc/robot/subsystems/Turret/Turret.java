@@ -42,9 +42,12 @@ public class Turret extends SubsystemBase {
 
         turntable.setTargetRadians(angleToFaceGoalLocal);
 
-        double velocity_initial_y = Math.sqrt(-2 * TurretConstants.GRAVITY_CONSTANT * TurretConstants.TURRET_VERTICAL_DISTANCE_TO_GOAL);
+        double velocity_initial_y = Math.sqrt(-2 * TurretConstants.GRAVITY_CONSTANT * (TurretConstants.TURRET_VERTICAL_DISTANCE_TO_GOAL + TurretConstants.TURRET_VERTICAL_DISTANCE_APEX_OFFSET));
         double time_at_apex = -velocity_initial_y / TurretConstants.GRAVITY_CONSTANT;
         double delta_x = Math.sqrt(dx * dx + dy * dy);
+        
+        delta_x -= (TurretConstants.TURRET_TIME_INTO_GOAL_AFTER_APEX / time_at_apex) * delta_x;
+
         double velocity_inital_x = delta_x / time_at_apex;
 
         double launch_angle = Math.atan2(velocity_initial_y, velocity_inital_x);

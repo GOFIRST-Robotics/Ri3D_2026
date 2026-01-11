@@ -109,7 +109,7 @@ public final class Constants {
   // ==================== TURRET CONSTANTS ====================
 
   public static final class TurretConstants {
-    public static final double TURRET_HOOD_GEAR_RATIO = 1;
+    public static final double TURRET_HOOD_GEAR_RATIO = 475.0/85.0;
     public static final double TURRET_TURNTABLE_GEAR_RATIO = 1;
 
     public static final double FLYWHEEL_DIAMETER = 1;
@@ -129,11 +129,13 @@ public final class Constants {
 
     public static final double TURRET_TURNTABLE_MAX_RADIANS = Units.degreesToRadians(175);
 
+    public static final double GRAVITY_CONSTANT = -9.81;
+
     public static final double TURRET_VERTICAL_DISTANCE_TO_GOAL = 1.8288;
+    public static final double TURRET_VERTICAL_DISTANCE_APEX_OFFSET = 0.254;
+    public static final double TURRET_TIME_INTO_GOAL_AFTER_APEX = Math.sqrt(-TURRET_VERTICAL_DISTANCE_APEX_OFFSET / GRAVITY_CONSTANT);
     public static final double GOAL_FIELD_SPACE_X_POSITION = 10;
     public static final double GOAL_FIELD_SPACE_Y_POSITION = -10;
-
-    public static final double GRAVITY_CONSTANT = -9.81;
 
     // Turntable PIDs
     public static final double TURNTABLE_kP = 0.0;
