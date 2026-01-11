@@ -13,28 +13,27 @@ public class ClimberIOReal implements ClimberIO {
     private SparkMax climbMotor;
     private SparkClosedLoopController climbPID;
 
-    private LoggedNetworkNumber kP = new LoggedNetworkNumber("Tuning/Shooter/kP", 0.0);
-    private LoggedNetworkNumber kI = new LoggedNetworkNumber("Tuning/Shooter/kI", 0.0);
-    private LoggedNetworkNumber kD = new LoggedNetworkNumber("Tuning/Shooter/kD", 0.0);
+    private LoggedNetworkNumber changablekP = new LoggedNetworkNumber("Tuning/Climber/kP", 0.0);
+    private LoggedNetworkNumber changablekI = new LoggedNetworkNumber("Tuning/Climber/kI", 0.0);
+    private LoggedNetworkNumber changablekD = new LoggedNetworkNumber("Tuning/Climber/kD", 0.0);
 
-    private double lastkP;
-    private double lastkI;
-    private double lastkD;
-
-    private boolean debugMode;
-
+    private double climbMotorkP;
+    private double climbMotorkI;
+    private double climbMotorkD;
 
     public ClimberIOReal() {
         climbMotor = new SparkMax(ClimberConstants.CLIMBER_MOTOR_CAN_ID, MotorType.kBrushless);
         climbPID = climbMotor.getClosedLoopController();
-        setInitialMotorPIDs();
-        debugMode = true;
+        setInitialMotorSettings();
     }
 
-    private void setInitialMotorPIDs() {
+    private void setInitialMotorSettings() {
+        climbMotorkP = 0.1;
+        climbMotorkI = 0.0;
+        climbMotorkD = 0.0;
         SparkMaxConfig config = new SparkMaxConfig();
         config.closedLoop
-            .pid(0.0, 0.0, 0.0);
+            .pid(climbMotorkP, climbMotorkI, climbMotorkD);
         config.closedLoop.feedForward
                 .kS(0.0)
                 .kV(0.0)
@@ -42,8 +41,14 @@ public class ClimberIOReal implements ClimberIO {
                 .kG(0.0);
         config.closedLoop.maxMotion
             .cruiseVelocity(2000)
-            .maxAcceleration(10000)
-            .allowedProfileError(0.1);
+            .maxAcceleration(4000)
+            .allowedProfileError(0.5);
+        config.softLimit
+            .forwardSoftLimit(50)
+            .forwardSoftLimitEnabled(true)
+            .reverseSoftLimit(0.5)
+            .reverseSoftLimitEnabled(true);
+        config.inverted(false);
         climbMotor.configure(config, SparkMax.ResetMode.kResetSafeParameters, SparkMax.PersistMode.kPersistParameters);
     }
 
@@ -73,23 +78,22 @@ public class ClimberIOReal implements ClimberIO {
         }
     }
 
+    @Override
     public void tunePID() {
-        if (debugMode) {
-            if (kP.getAsDouble() != lastkP || kI.getAsDouble() != lastkI || kD.getAsDouble() != lastkD) {
-                SparkMaxConfig config = new SparkMaxConfig();
-            config.closedLoop
-                .pid(kP.getAsDouble(), kI.getAsDouble(), kD.getAsDouble());
-            config.closedLoop.feedForward
-                    .kS(0.0)
-                    .kV(0.0)
-                    .kA(0.0)
-                    .kG(0.0);
-            config.closedLoop.maxMotion
-                .cruiseVelocity(2000)
-                .maxAcceleration(10000)
-                .allowedProfileError(0.1);
-            climbMotor.configure(config, SparkMax.ResetMode.kResetSafeParameters, SparkMax.PersistMode.kPersistParameters);
-            }
+        if (changablekP.getAsDouble() != climbMotorkP || changablekI.getAsDouble() != climbMotorkI || changablekD.getAsDouble() != climbMotorkD) {
+            SparkMaxConfig config = new SparkMaxConfig();
+        config.closedLoop
+            .pid(changablekP.getAsDouble(), changablekI.getAsDouble(), changablekD.getAsDouble());
+        config.closedLoop.feedForward
+                .kS(0.0)
+                .kV(0.0)
+                .kA(0.0)
+                .kG(0.0);
+        config.closedLoop.maxMotion
+            .cruiseVelocity(2000)
+            .maxAcceleration(10000)
+            .allowedProfileError(0.1);
+        climbMotor.configure(config, SparkMax.ResetMode.kResetSafeParameters, SparkMax.PersistMode.kPersistParameters);
         }
     }
 
