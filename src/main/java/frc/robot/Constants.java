@@ -149,7 +149,5 @@ public final class Constants {
 
     public static final double INDEXER_MOTOR_kP = 0.0001;
     public static final double INDEXER_MOTOR_kFF = 0.000175;
-    public static final double ELEVATOR_MOTOR_kP = 0.0001;
-    public static final double ELEVATOR_MOTOR_kFF = 0.000175;
   }
 }
