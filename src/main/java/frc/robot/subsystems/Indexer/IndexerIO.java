@@ -14,5 +14,5 @@ public interface IndexerIO {
     default void updateInputs(IndexerIOInputsAutoLogged inputs) {}
     default void setIndexerRPM(double RPM) {}
     default void setElevatorRPM(double RPM) {}
-    default void tunePID() {}
+    default void periodic() {}
 }
