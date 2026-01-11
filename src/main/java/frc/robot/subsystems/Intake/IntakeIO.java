@@ -5,31 +5,25 @@ import org.littletonrobotics.junction.AutoLog;
 public interface IntakeIO {
 
     @AutoLog
-    public static class IntakeIOInputs { 
-        public boolean motorConnected = false; 
+    public static class IntakeIOInputs {  
 
         /** Wheel speed in RPM */
-        public double intakeWheelSpeedRPM = 0.0;
-        public double intakeDoorPositionDegrees = 0.0;
+        public double rightIntakeWheelSpeedRPM = 0.0;
+        public double leftIntakeWheelSpeedRPM = 0.0;
 
-        /** Belt speed in RPM */
-        // public double intakeBeltSpeedRPM = 0.0;
-
-        public double motorAppliedVolts = 0.0;
-        public double motorCurrentAmps = 0.0; 
+        public double currentDoorPosition = 0.0;
+        public double desiredDoorPosition = 0.0;
 
     }
-
-    /** Updates the set of loggable inputs for Intake. */
-    public default void updateDoorInputs(IntakeIOInputs inputs) {}
-
-    public default void updateWheelInputs(IntakeIOInputs inputs) {}
 
     /** Run the Intake Belt/Wheels at a specified RPM (closed-loop). */
     public default void setIntakeWheelSpeedRPM(double RPM) {}
 
     /** Set the motor voltage directly (open-loop) */
-    public default void setOpenLoopVolts(double volts) {}
+    public default void updateInputs(IntakeIOInputs inputs) {}
+
+    public default void setIntakeDoorPosition(double position, IntakeIOInputs inputs) {}
+
 
     /** Stop all outputs. */
     public default void stop() { 

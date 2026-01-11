@@ -27,8 +27,8 @@ import frc.robot.Constants.IntakeConstants;
 
 
 public class IntakeIOSpark implements IntakeIO {
-    private final SparkBase rightDoorMotor;
-    private final SparkBase leftDoorMotor;
+    private final SparkMax rightDoorMotor;
+    private final SparkMax leftDoorMotor;
     private final VictorSP intakeWheel;
     
     private double intakeDoorKp;
@@ -72,6 +72,21 @@ public class IntakeIOSpark implements IntakeIO {
     public void setIntakeWheelSpeedRPM(double RPM) {
         intakeWheel.set(RPM);
     }
+
+    public void setIntakeDoorPosition(double position, IntakeIOInputs inputs) {
+        inputs.desiredDoorPosition = position;
+        rightDoorMotor.getClosedLoopController().setReference(position, ControlType.kPosition);
+    }
+
+    @Override
+    public void updateInputs(IntakeIOInputs inputs) { 
+        inputs.rightIntakeWheelSpeedRPM = rightDoorMotor.getEncoder().getVelocity();
+        inputs.leftIntakeWheelSpeedRPM = leftDoorMotor.getEncoder().getVelocity();
+        inputs.currentDoorPosition = rightDoorMotor.getEncoder().getPosition();
+    }
+        
+
+
     
 
 
