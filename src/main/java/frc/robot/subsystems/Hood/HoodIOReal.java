@@ -44,7 +44,6 @@ public class HoodIOReal implements HoodIO {
         hoodMotorController.configure(config, SparkMax.ResetMode.kResetSafeParameters, SparkMax.PersistMode.kPersistParameters);
     }
 
-
     public HoodIOReal()
     {
         hoodMotorController = new SparkMax(Constants.TURRET_HOOD_MOTOR_ID, MotorType.kBrushless);
@@ -59,4 +58,22 @@ public class HoodIOReal implements HoodIO {
 
     @Override
     public void setHoodRadians(double radians) { hoodClosedLoop.setReference(radians * Constants.HOOD_GEAR_RATIO, ControlType.kPosition); }
+
+    public void tunePID() {
+        if (kP.getAsDouble() != lastkP || kI.getAsDouble() != lastkI || kD.getAsDouble() != lastkD) {
+                SparkMaxConfig config = new SparkMaxConfig();
+            config.closedLoop
+                .pid(kP.getAsDouble(), kI.getAsDouble(), kD.getAsDouble());
+            config.closedLoop.feedForward
+                    .kS(0.0)
+                    .kV(0.0)
+                    .kA(0.0)
+                    .kG(0.0);
+            config.closedLoop.maxMotion
+                .cruiseVelocity(2000)
+                .maxAcceleration(10000)
+                .allowedProfileError(0.1);
+            hoodMotorController.configure(config, SparkMax.ResetMode.kResetSafeParameters, SparkMax.PersistMode.kPersistParameters);
+        }
+    }
 }
