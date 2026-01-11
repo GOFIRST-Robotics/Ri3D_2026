@@ -1,6 +1,7 @@
 package frc.robot.subsystems.Flywheel;
 
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
+import frc.robot.Constants;
 
 import org.littletonrobotics.junction.Logger;
 
@@ -25,5 +26,12 @@ public class Flywheel extends SubsystemBase {
     {
         io.setLeftFlywheelRPM(leftRPM);
         io.setRightFlywheelRPM(rightRPM);
+    }
+
+    public void setLaunchSpeed(double launchSpeed)
+    {
+        double rpm = (60 / Math.PI) * (launchSpeed / Constants.WHEEL_DIAMETER);
+
+        runFlywheels(rpm, -rpm);
     }
 }

@@ -14,6 +14,7 @@
 package frc.robot;
 
 import edu.wpi.first.math.util.Units;
+import edu.wpi.first.units.Unit;
 import edu.wpi.first.wpilibj.RobotBase;
 
 /**
@@ -109,6 +110,21 @@ public final class Constants {
 
   public static final double HOOD_GEAR_RATIO = 1;
   public static final double TURNTABLE_GEAR_RATIO = 1;
+
+  public static final double FLYWHEEL_DIAMETER = 1;
+  public static final double FLYWHEEL_BALL_COMPRESSION = 0.25;
+  
+  public static final double TURRET_LOCAL_POS_X = 0; // meters, right hand hand rule!!
+  public static final double TURRET_LOCAL_POS_Y = 0; // meters, right hand hand rule!!
+
+  public static final double TURRET_HOOD_MIN_ANGLE_RADIANS = Units.degreesToRadians(30);
+  public static final double TURRET_HOOD_MAX_ANGLE_RADIANS = Units.degreesToRadians(80);
+
+  public static final double TURRET_VERTICAL_DISTANCE_TO_GOAL = 1.8288;
+  public static final double GOAL_FIELD_SPACE_X_POSITION = 10;
+  public static final double GOAL_FIELD_SPACE_Y_POSITION = -10;
+
+  public static final double GRAVITY_CONSTANT = -9.81;
 
   // ==================== ELEVATOR CONSTANTS ====================
   
