@@ -140,4 +140,16 @@ public final class Constants {
   public static final double TARGET_HEIGHT_METERS = Units.inchesToMeters(18.5);
   public static final double CAMERA_PITCH_RADIANS = Units.degreesToRadians(18);
   public static final String USB_CAMERA_NAME = "Arducam_OV9782_USB_Camera";
+
+  public static final class IndexerConstants{
+    public static final int INDEXER_MOTOR_CAN_ID = 50;
+    public static final int ELEVATOR_MOTOR_CAN_ID = 51;
+    public static final double INDEXER_MOTOR_RPM = 5;
+    public static final double ELEVATOR_MOTOR_RPM = 5;
+
+    public static final double INDEXER_MOTOR_kP = 0.0001;
+    public static final double INDEXER_MOTOR_kFF = 0.000175;
+    public static final double ELEVATOR_MOTOR_kP = 0.0001;
+    public static final double ELEVATOR_MOTOR_kFF = 0.000175;
+  }
 }
