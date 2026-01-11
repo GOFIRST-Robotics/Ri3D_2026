@@ -44,8 +44,8 @@ public class IndexerIOReal implements IndexerIO {
 
     @Override
     public void updateInputs(IndexerIOInputsAutoLogged inputs) {
-        inputs.indexerMotorRotationalPos = indexerMotor.getAbsoluteEncoder().getPosition();
-        inputs.indexerMotorVelRPM = indexerMotor.getAbsoluteEncoder().getVelocity();
+        inputs.indexerMotorRotationalPos = indexerMotor.getEncoder().getPosition();
+        inputs.indexerMotorVelRPM = indexerMotor.getEncoder().getVelocity();
     }
 
     @Override
