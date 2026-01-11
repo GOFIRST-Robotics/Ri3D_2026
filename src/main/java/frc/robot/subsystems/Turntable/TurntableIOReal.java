@@ -61,7 +61,14 @@ public class TurntableIOReal implements TurntableIO {
     }
 
     @Override
-    public void setTurntableRadians(double radians) { turntableClosedLoop.setSetpoint(radians * Constants.TURNTABLE_GEAR_RATIO, ControlType.kPosition); }
+    public void setTurntableRadians(double radians)
+    { 
+        double clampedRadians = radians;
+        if (clampedRadians < -Constants.TURRET_TURNTABLE_MAX_RADIANS) { clampedRadians = -Constants.TURRET_TURNTABLE_MAX_RADIANS; }
+        else if (clampedRadians > Constants.TURRET_TURNTABLE_MAX_RADIANS) {clampedRadians = Constants.TURRET_TURNTABLE_MAX_RADIANS; }
+
+        turntableClosedLoop.setSetpoint(radians * Constants.TURRET_TURNTABLE_GEAR_RATIO, ControlType.kPosition); 
+    }
 
         public void tunePID() {
         if (kP.getAsDouble() != lastkP || kI.getAsDouble() != lastkI || kD.getAsDouble() != lastkD) {

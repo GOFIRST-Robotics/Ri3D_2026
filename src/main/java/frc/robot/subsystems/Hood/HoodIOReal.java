@@ -41,6 +41,11 @@ public class HoodIOReal implements HoodIO {
             .cruiseVelocity(2000)
             .maxAcceleration(10000)
             .allowedProfileError(0.1);
+        config.softLimit
+            .forwardSoftLimit(Constants.TURRET_HOOD_MOTOR_MAX_ROTATIONS)
+            .forwardSoftLimitEnabled(true)
+            .reverseSoftLimit(Constants.TURRET_HOOD_MOTOR_MIN_ROTATIONS)
+            .reverseSoftLimitEnabled(true);
         hoodMotorController.configure(config, SparkMax.ResetMode.kResetSafeParameters, SparkMax.PersistMode.kPersistParameters);
     }
 
@@ -61,7 +66,14 @@ public class HoodIOReal implements HoodIO {
     }
 
     @Override
-    public void setHoodRadians(double radians) { hoodClosedLoop.setSetpoint(radians * Constants.HOOD_GEAR_RATIO, ControlType.kPosition); }
+    public void setHoodRadians(double radians)
+    { 
+        double clampedRadians = radians;
+        if (clampedRadians < Constants.TURRET_HOOD_MIN_RADIANS) { clampedRadians = Constants.TURRET_HOOD_MIN_RADIANS; }
+        else if (clampedRadians > Constants.TURRET_HOOD_MAX_RADIANS) {clampedRadians = Constants.TURRET_HOOD_MAX_RADIANS; }
+
+        hoodClosedLoop.setSetpoint(radians * Constants.TURRET_HOOD_GEAR_RATIO, ControlType.kPosition);
+    }
 
     public void tunePID() {
         if (kP.getAsDouble() != lastkP || kI.getAsDouble() != lastkI || kD.getAsDouble() != lastkD) {

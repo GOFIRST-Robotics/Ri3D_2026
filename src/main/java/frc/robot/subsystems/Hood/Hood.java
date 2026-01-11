@@ -4,6 +4,8 @@ import edu.wpi.first.wpilibj2.command.SubsystemBase;
 
 import org.littletonrobotics.junction.Logger;
 
+import frc.robot.Constants;
+
 public class Hood extends SubsystemBase {
     private final HoodIO io;
     private final HoodIOInputsAutoLogged inputs = new HoodIOInputsAutoLogged();
@@ -21,8 +23,5 @@ public class Hood extends SubsystemBase {
         Logger.processInputs("Hood", inputs);
     }
 
-    public void setTargetRadians(double radians)
-    {
-        io.setHoodRadians(radians);
-    }
+    public void setTargetRadians(double radians) { io.setHoodRadians(radians); }
 }
