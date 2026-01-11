@@ -8,7 +8,6 @@ public interface IndexerIO {
     class IndexerIOInputs {
         public double indexerMotorRotationalPos;
         public double indexerMotorVelRPM;
-        public double elevatorMotorVelRPM;
     }
 
     default void updateInputs(IndexerIOInputsAutoLogged inputs) {}
