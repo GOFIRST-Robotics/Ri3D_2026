@@ -97,12 +97,17 @@ public final class Constants {
   // public static final int END_EFFECTOR_WHEEL_MOTOR_ID = 7;
   // public static final int END_EFFECTOR_ARM_MOTOR_ID = 8;
   public static final int TURRET_LEFT_FLYWHEEL_MOTOR_ID = 8;
-  public static final int TURRET_RIGHT_FLYWHEEL_MOTOR_ID = 8;
+  public static final int TURRET_RIGHT_FLYWHEEL_MOTOR_ID = 7;
+  public static final int TURRET_HOOD_MOTOR_ID = 6;
 
   // ==================== SERVO / PWM ====================
   
   public static final int ELEVATOR_DROP_SERVO_ID = 0;
   public static final int LED_PWM_ID = 4;
+
+  // ==================== TURRET CONSTANTS ====================
+
+  public static final double HOOD_GEAR_RATIO = 1;
 
   // ==================== ELEVATOR CONSTANTS ====================
   
