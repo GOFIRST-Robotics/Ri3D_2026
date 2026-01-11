@@ -107,6 +107,11 @@ public class ClimberIOReal implements ClimberIO {
     }
 
     @Override
+    public boolean isMovementFinished() {
+        return Math.abs(climbPID.getSetpoint() - climbMotor.getEncoder().getPosition()) < ClimberConstants.CLIMB_ALLOWED_ERROR;
+    }
+
+    @Override
     public void periodic() {
         boolean newConfig = false;
         SparkMaxConfig config = new SparkMaxConfig();

@@ -1,5 +1,7 @@
 package frc.robot.subsystems.Climber;
 
+import java.util.function.BooleanSupplier;
+
 import org.littletonrobotics.junction.AutoLog;
 
 public interface ClimberIO {
@@ -20,6 +22,8 @@ public interface ClimberIO {
     default void updateInputs(ClimberIOInputsAutoLogged inputs) {}
 
     default void setClimbPosition(ClimbPosition position) {}
+
+    default boolean isMovementFinished() {return false;}
 
     default void periodic() {}
 }
