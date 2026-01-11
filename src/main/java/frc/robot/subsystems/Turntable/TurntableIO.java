@@ -1,0 +1,14 @@
+package frc.robot.subsystems.Turntable;
+
+import org.littletonrobotics.junction.AutoLog;
+
+public interface TurntableIO {
+
+    @AutoLog
+    class TurntableIOInputs {
+        public double turntableRadians;
+    }
+
+    default void updateInputs(TurntableIOInputs inputs) {}
+    default void setTurntableRadians(double radians) {}
+}

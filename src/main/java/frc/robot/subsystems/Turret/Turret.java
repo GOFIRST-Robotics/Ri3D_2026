@@ -1,23 +1,22 @@
 package frc.robot.subsystems.Turret;
 
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
-
-import org.littletonrobotics.junction.Logger;
+import frc.robot.subsystems.Flywheel.Flywheel;
+import frc.robot.subsystems.Hood.Hood;
 
 public class Turret extends SubsystemBase {
-    private final TurretIO io;
-    private final TurretIOInputsAutoLogged inputs = new TurretIOInputsAutoLogged();
+
+    private final Flywheel flywheel;
+    private final Hood hood;
 
     // Dependency Injection: We pass the IO in, we don't create it here.
-    public Turret(TurretIO io) {
-        this.io = io;
+    public Turret(Flywheel flywheel, Hood hood) {
+        this.flywheel = flywheel;
+        this.hood = hood;
     }
 
     @Override
     public void periodic() {
-        // Update the inputs from Real Hardware or Sim
-        io.updateInputs(inputs);
-        // Log the data (AdvantageKit style)
-        Logger.processInputs("Turret", inputs);
+
     }
 }
