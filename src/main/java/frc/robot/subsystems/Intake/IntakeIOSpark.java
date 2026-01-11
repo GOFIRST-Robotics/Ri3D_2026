@@ -2,6 +2,8 @@ package frc.robot.subsystems.Intake;
 
 import static frc.robot.util.SparkUtil.*;
 
+import java.util.function.DoubleSupplier;
+
 import com.revrobotics.spark.SparkLowLevel.MotorType;
 import com.revrobotics.RelativeEncoder;
 import com.revrobotics.spark.SparkBase;
@@ -42,12 +44,23 @@ public class IntakeIOSpark implements IntakeIO {
     }   
 
     @Override
-    public void updateInputs(IntakeIOInputs inputs) {
+    public void updateDoorInputs(IntakeIOInputs inputs) {
 
-        
+
+        //open/close door
+        ifOk(
+            spark,
+            new DoubleSupplier[] {spark::getAppliedOutput, spark::getBusVoltage},
+            (values) -> inputs.motorAppliedVolts = values[0] * values[1]);
 
         ifOk(spark, encoder::getVelocity, (value) -> inputs.intakeWheelSpeedRPM = value);
         ifOk(spark, spark::getOutputCurrent, (value) -> inputs.motorCurrentAmps = value);
+
+    }
+
+    @Override
+    public void updateWheelInputs(IntakeIOInputs inputs) {
+        
 
     }
 

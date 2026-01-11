@@ -21,7 +21,9 @@ public interface IntakeIO {
     }
 
     /** Updates the set of loggable inputs for Intake. */
-    public default void updateInputs(IntakeIOInputs inputs) {}
+    public default void updateDoorInputs(IntakeIOInputs inputs) {}
+
+    public default void updateWheelInputs(IntakeIOInputs inputs) {}
 
     /** Run the Intake Belt/Wheels at a specified RPM (closed-loop). */
     public default void setIntakeWheelSpeedRPM(double speedRPM) {}
