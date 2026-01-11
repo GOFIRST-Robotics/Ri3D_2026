@@ -26,7 +26,7 @@ public class Climber extends SubsystemBase {
   @Override
   public void periodic() {
     io.updateInputs(inputs);
-    io.tuneConfig();
+    io.periodic();
     Logger.processInputs("Climber", inputs);
   }
 }

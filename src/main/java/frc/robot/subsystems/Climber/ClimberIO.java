@@ -21,5 +21,5 @@ public interface ClimberIO {
 
     default void setClimbPosition(ClimbPosition position) {}
 
-    default void tuneConfig() {}
+    default void periodic() {}
 }

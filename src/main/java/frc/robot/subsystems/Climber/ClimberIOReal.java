@@ -102,7 +102,7 @@ public class ClimberIOReal implements ClimberIO {
     }
 
     @Override
-    public void tuneConfig() {
+    public void periodic() {
         boolean newConfig = false;
         SparkMaxConfig config = new SparkMaxConfig();
         if (changablekP.getAsDouble() != climbMotorkP || changablekI.getAsDouble() != climbMotorkI || changablekD.getAsDouble() != climbMotorkD) {
@@ -130,8 +130,11 @@ public class ClimberIOReal implements ClimberIO {
                 .cruiseVelocity(climbMotorCruiseVel)
                 .maxAcceleration(climbMotorMaxAccel)
                 .allowedProfileError(ClimberConstants.CLIMB_ALLOWED_ERROR);
+            newConfig = true;
         }
-        climbMotor.configure(config, ResetMode.kResetSafeParameters, PersistMode.kPersistParameters);
+        if (newConfig) {
+            climbMotor.configure(config, ResetMode.kResetSafeParameters, PersistMode.kPersistParameters);
         }
+    }
 
 }
