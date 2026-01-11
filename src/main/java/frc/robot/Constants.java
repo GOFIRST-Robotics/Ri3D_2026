@@ -13,6 +13,9 @@
 
 package frc.robot;
 
+import com.revrobotics.spark.config.ClosedLoopConfig;
+import com.revrobotics.spark.config.SparkMaxConfig;
+
 import edu.wpi.first.math.util.Units;
 import edu.wpi.first.wpilibj.RobotBase;
 
@@ -140,4 +143,15 @@ public final class Constants {
   public static final double TARGET_HEIGHT_METERS = Units.inchesToMeters(18.5);
   public static final double CAMERA_PITCH_RADIANS = Units.degreesToRadians(18);
   public static final String USB_CAMERA_NAME = "Arducam_OV9782_USB_Camera";
+
+
+  public static final class ClimberConstants{
+    public static final int CLIMBER_MOTOR_CAN_ID = 40;
+
+    public static final double CLIMBER_ZERO_POS = 0.0;
+    public static final double AUTO_CLIMB_POS = 1.0;
+    public static final double RUNG_ONE_CLIMBER_POS = 2.0;
+    public static final double RUNG_TWO_CLIMBER_POS = 3.0;
+    public static final double RUNG_THREE_CLIMBER_POS = 4.0;
+  }
 }
