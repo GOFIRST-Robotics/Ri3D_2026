@@ -108,6 +108,7 @@ public final class Constants {
   // ==================== TURRET CONSTANTS ====================
 
   public static final double HOOD_GEAR_RATIO = 1;
+  public static final double TURNTABLE_GEAR_RATIO = 1;
 
   // ==================== ELEVATOR CONSTANTS ====================
   

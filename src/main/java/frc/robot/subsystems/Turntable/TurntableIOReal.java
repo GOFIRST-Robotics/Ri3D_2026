@@ -30,5 +30,5 @@ public class TurntableIOReal implements TurntableIO {
     }
 
     @Override
-    public void setTurntableRadians(double radians) { turntableClosedLoop.setReference(radians * Constants.HOOD_GEAR_RATIO, ControlType.kPosition); }
+    public void setTurntableRadians(double radians) { turntableClosedLoop.setReference(radians * Constants.TURNTABLE_GEAR_RATIO, ControlType.kPosition); }
 }
