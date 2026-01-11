@@ -19,9 +19,9 @@ public class ClimberIOReal implements ClimberIO {
     private LoggedNetworkNumber changablekI;
     private LoggedNetworkNumber changablekD;
     private LoggedNetworkNumber changablekV;
-    private LoggedNetworkNumber changablekG = new LoggedNetworkNumber("Tuning/Climber/kD", 0.0);
-    private LoggedNetworkNumber changableCruiseVel = new LoggedNetworkNumber("Tuning/Climber/kD", 0.0);
-    private LoggedNetworkNumber changableMaxAccel = new LoggedNetworkNumber("Tuning/Climber/kD", 0.0);
+    private LoggedNetworkNumber changablekG;
+    private LoggedNetworkNumber changableCruiseVel;
+    private LoggedNetworkNumber changableMaxAccel;
 
     private double climbMotorkP;
     private double climbMotorkI;
