@@ -1,6 +1,8 @@
 package frc.robot.subsystems.Indexer;
 import org.littletonrobotics.junction.networktables.LoggedNetworkNumber;
 
+import com.revrobotics.PersistMode;
+import com.revrobotics.ResetMode;
 import com.revrobotics.spark.SparkClosedLoopController;
 import com.revrobotics.spark.SparkMax;
 import com.revrobotics.spark.SparkBase.ControlType;
@@ -44,10 +46,14 @@ public class IndexerIOReal implements IndexerIO {
         changableElevatorkFF = new LoggedNetworkNumber("Tuning/Elevator/kFF", elevatorkFF);
         SparkMaxConfig indexerConfig = new SparkMaxConfig();
         SparkMaxConfig elevatorConfig = new SparkMaxConfig();
-        indexerConfig.closedLoop.pidf(indexerkP, 0.0, 0.0, indexerkFF);
-        elevatorConfig.closedLoop.pidf(elevatorkP, 0.0, 0.0, elevatorkFF);
-        indexerMotor.configure(indexerConfig, SparkMax.ResetMode.kResetSafeParameters, SparkMax.PersistMode.kPersistParameters);
-        elevatorMotor.configure(elevatorConfig, SparkMax.ResetMode.kResetSafeParameters, SparkMax.PersistMode.kPersistParameters);
+        indexerConfig.closedLoop.pid(indexerkP, 0.0, 0.0);
+        indexerConfig.closedLoop.feedForward
+        .kV(indexerkFF);
+        elevatorConfig.closedLoop.pid(elevatorkP, 0.0, 0.0);
+        elevatorConfig.closedLoop.feedForward
+        .kV(elevatorkFF);
+        indexerMotor.configure(indexerConfig, ResetMode.kResetSafeParameters, PersistMode.kPersistParameters);
+        elevatorMotor.configure(elevatorConfig, ResetMode.kResetSafeParameters, PersistMode.kPersistParameters);
     }
 
     @Override
@@ -68,20 +74,24 @@ public class IndexerIOReal implements IndexerIO {
     }
 
     @Override
-    public void tunePID() {
+    public void periodic() {
         if (changableIndexerkP.getAsDouble() != indexerkP || changableIndexerkFF.getAsDouble() != indexerkFF) {
             SparkMaxConfig indexerConfig = new SparkMaxConfig();
             indexerkP = changableElevatorkP.getAsDouble();
             indexerkFF = changableElevatorkFF.getAsDouble();
-            indexerConfig.closedLoop.pidf(indexerkP, 0.0, 0.0, indexerkFF);
-            indexerMotor.configure(indexerConfig, SparkMax.ResetMode.kResetSafeParameters, SparkMax.PersistMode.kPersistParameters);
+            indexerConfig.closedLoop.pid(indexerkP, 0.0, 0.0);
+            indexerConfig.closedLoop.feedForward
+            .kV(indexerkFF);
+            indexerMotor.configure(indexerConfig, ResetMode.kResetSafeParameters, PersistMode.kPersistParameters);
         }
         if (changableElevatorkP.getAsDouble() != elevatorkP || changableElevatorkFF.getAsDouble() != elevatorkFF) {
             SparkMaxConfig elevatorConfig = new SparkMaxConfig();
             elevatorkP = changableElevatorkP.getAsDouble();
             elevatorkFF = changableElevatorkFF.getAsDouble();
-            elevatorConfig.closedLoop.pidf(elevatorkP, 0.0, 0.0, elevatorkFF);
-            elevatorMotor.configure(elevatorConfig, SparkMax.ResetMode.kResetSafeParameters, SparkMax.PersistMode.kPersistParameters);
+            elevatorConfig.closedLoop.pid(elevatorkP, 0.0, 0.0);
+            elevatorConfig.closedLoop.feedForward
+            .kV(elevatorkFF);
+            elevatorMotor.configure(elevatorConfig, ResetMode.kResetSafeParameters, PersistMode.kPersistParameters);
         }
         
     }
