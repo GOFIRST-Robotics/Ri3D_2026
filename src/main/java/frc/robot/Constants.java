@@ -64,10 +64,10 @@ public final class Constants {
     private MecanumConstants() {}
 
     // CAN IDs (FL=1, FR=2, BL=3, BR=4)
-    public static final int frontLeftCanId = 1;
-    public static final int frontRightCanId = 2;
-    public static final int backLeftCanId = 3;
-    public static final int backRightCanId = 4;
+    public static final int frontLeftCanId = 11;
+    public static final int frontRightCanId = 12;
+    public static final int backLeftCanId = 13;
+    public static final int backRightCanId = 14;
 
     // Motor inversions
     public static final boolean frontLeftInverted = false;
@@ -83,7 +83,7 @@ public final class Constants {
     public static final double encoderVelocityFactorRadPerSec = (2.0 * Math.PI) / 60.0 / DRIVE_GEAR_RATIO;
 
     // Closed-loop PID gains
-    public static final double kP = 0.0;
+    public static final double kP = 0.01;
     public static final double kD = 0.0;
 
     // Feedforward gains (V = kS*sign(ω) + kV*ω)
