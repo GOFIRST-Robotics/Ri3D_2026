@@ -72,7 +72,7 @@ public class ClimberIOReal implements ClimberIO {
             .reverseSoftLimit(0.5)
             .reverseSoftLimitEnabled(true);
         config.inverted(false);
-        climbMotor.configure(config, SparkMax.ResetMode.kResetSafeParameters, SparkMax.PersistMode.kPersistParameters);
+        climbMotor.configure(config, ResetMode.kResetSafeParameters, PersistMode.kPersistParameters);
     }
 
     @Override
