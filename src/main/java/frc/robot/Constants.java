@@ -162,5 +162,8 @@ public final class Constants {
     public static final double CLIMB_MOTOR_CRUISE_VEL = 2000;
     public static final double CLIMB_MOTOR_MAX_ACCEL = 4000;
     public static final double CLIMB_ALLOWED_ERROR = 0.5;
+
+    public static final double CLIMB_MIN_POSITION_ALLOWED = 0.5;
+    public static final double CLIMB_MAX_POSITION_ALLOWED = 50.0;
   }
 }

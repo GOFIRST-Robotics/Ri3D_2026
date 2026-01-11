@@ -67,9 +67,9 @@ public class ClimberIOReal implements ClimberIO {
             .maxAcceleration(climbMotorMaxAccel)
             .allowedProfileError(ClimberConstants.CLIMB_ALLOWED_ERROR);
         config.softLimit
-            .forwardSoftLimit(50)
+            .forwardSoftLimit(ClimberConstants.CLIMB_MAX_POSITION_ALLOWED)
             .forwardSoftLimitEnabled(true)
-            .reverseSoftLimit(0.5)
+            .reverseSoftLimit(ClimberConstants.CLIMB_MIN_POSITION_ALLOWED)
             .reverseSoftLimitEnabled(true);
         config.inverted(false);
         climbMotor.configure(config, ResetMode.kResetSafeParameters, PersistMode.kPersistParameters);
