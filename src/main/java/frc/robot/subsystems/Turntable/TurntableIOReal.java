@@ -1,6 +1,8 @@
 package frc.robot.subsystems.Turntable;
 
 import com.revrobotics.AbsoluteEncoder;
+import com.revrobotics.PersistMode;
+import com.revrobotics.ResetMode;
 import com.revrobotics.spark.SparkClosedLoopController;
 import com.revrobotics.spark.SparkMax;
 import com.revrobotics.spark.config.SparkMaxConfig;
@@ -13,6 +15,7 @@ import com.revrobotics.spark.SparkBase.ControlType;
 import com.revrobotics.spark.SparkLowLevel.MotorType;
 
 import frc.robot.Constants;
+import frc.robot.Constants.TurretConstants;
 
 public class TurntableIOReal implements TurntableIO {
 
@@ -20,28 +23,55 @@ public class TurntableIOReal implements TurntableIO {
     private final AbsoluteEncoder turntableEncoder;
     private final SparkClosedLoopController turntableClosedLoop;
 
-    private LoggedNetworkNumber kP = new LoggedNetworkNumber("Tuning/Hood/kP", 0.0);
-    private LoggedNetworkNumber kI = new LoggedNetworkNumber("Tuning/Hood/kI", 0.0);
-    private LoggedNetworkNumber kD = new LoggedNetworkNumber("Tuning/Hood/kD", 0.0);
+    private LoggedNetworkNumber changeablekP;
+    private LoggedNetworkNumber changeablekI;
+    private LoggedNetworkNumber changeablekD;
+    private LoggedNetworkNumber changeablekS;
+    private LoggedNetworkNumber changeablekV;
+    private LoggedNetworkNumber changeablekA;
+    private LoggedNetworkNumber changeableCruiseVel;
+    private LoggedNetworkNumber changeableMaxAccel;
 
-    private double lastkP;
-    private double lastkI;
-    private double lastkD;
+    private double kP;
+    private double kI;
+    private double kD;
+    private double kS;
+    private double kV;
+    private double kA;
+    private double cruiseVel;
+    private double maxAccel;
 
     private void setInitialMotorPIDs() {
+        kP = TurretConstants.TURNTABLE_kP;
+        kI = TurretConstants.TURNTABLE_kI;
+        kD = TurretConstants.TURNTABLE_kD;
+        kS = TurretConstants.TURNTABLE_kS;
+        kV = TurretConstants.TURNTABLE_kV;
+        kA = TurretConstants.TURNTABLE_kA;
+        cruiseVel = TurretConstants.TURNTABLE_CRUISE_VEL;
+        maxAccel = TurretConstants.TURNTABLE_MAX_ACCEL;
+        changeablekP = new LoggedNetworkNumber("Tuning/Hood/kP", kP);
+        changeablekI = new LoggedNetworkNumber("Tuning/Hood/kP", kI);
+        changeablekD = new LoggedNetworkNumber("Tuning/Hood/kP", kD);
+        changeablekS = new LoggedNetworkNumber("Tuning/Hood/kP", kS);
+        changeablekV = new LoggedNetworkNumber("Tuning/Hood/kP", kV);
+        changeablekA = new LoggedNetworkNumber("Tuning/Hood/kP", kA);
+        changeableCruiseVel = new LoggedNetworkNumber("Tuning/Hood/kP", cruiseVel);
+        changeableMaxAccel = new LoggedNetworkNumber("Tuning/Hood/kP", maxAccel);
+
         SparkMaxConfig config = new SparkMaxConfig();
         config.closedLoop
-            .pid(0.0, 0.0, 0.0);
+            .pid(kP, kI, kD);
         config.closedLoop.feedForward
-                .kS(0.0)
-                .kV(0.0)
-                .kA(0.0)
+                .kS(kS)
+                .kV(kV)
+                .kA(kA)
                 .kG(0.0);
         config.closedLoop.maxMotion
-            .cruiseVelocity(2000)
-            .maxAcceleration(10000)
-            .allowedProfileError(0.1);
-        turntableMotorController.configure(config, SparkMax.ResetMode.kResetSafeParameters, SparkMax.PersistMode.kPersistParameters);
+            .cruiseVelocity(cruiseVel)
+            .maxAcceleration(maxAccel)
+            .allowedProfileError(TurretConstants.TURNTABLE_ALLOWED_ERROR);
+        turntableMotorController.configure(config, ResetMode.kResetSafeParameters, PersistMode.kPersistParameters);
     }
 
     public TurntableIOReal()
@@ -55,7 +85,7 @@ public class TurntableIOReal implements TurntableIO {
 
     @Override
     public void updateInputs(TurntableIOInputs inputs) {
-        tunePID();
+        periodic();
 
         ifOk(turntableMotorController, turntableEncoder::getPosition, (value) -> inputs.turntableRadians = value);
     }
@@ -64,27 +94,51 @@ public class TurntableIOReal implements TurntableIO {
     public void setTurntableRadians(double radians)
     { 
         double clampedRadians = radians;
-        if (clampedRadians < -Constants.TURRET_TURNTABLE_MAX_RADIANS) { clampedRadians = -Constants.TURRET_TURNTABLE_MAX_RADIANS; }
-        else if (clampedRadians > Constants.TURRET_TURNTABLE_MAX_RADIANS) {clampedRadians = Constants.TURRET_TURNTABLE_MAX_RADIANS; }
+        if (clampedRadians < -TurretConstants.TURRET_TURNTABLE_MAX_RADIANS) { clampedRadians = -TurretConstants.TURRET_TURNTABLE_MAX_RADIANS; }
+        else if (clampedRadians > TurretConstants.TURRET_TURNTABLE_MAX_RADIANS) {clampedRadians = TurretConstants.TURRET_TURNTABLE_MAX_RADIANS; }
 
-        turntableClosedLoop.setSetpoint(radians * Constants.TURRET_TURNTABLE_GEAR_RATIO, ControlType.kPosition); 
+        turntableClosedLoop.setSetpoint(radians * TurretConstants.TURRET_TURNTABLE_GEAR_RATIO, ControlType.kMAXMotionPositionControl); 
     }
 
-        public void tunePID() {
-        if (kP.getAsDouble() != lastkP || kI.getAsDouble() != lastkI || kD.getAsDouble() != lastkD) {
-                SparkMaxConfig config = new SparkMaxConfig();
+    public void periodic() {
+        
+        boolean hasChanged = false;
+
+        SparkMaxConfig config = new SparkMaxConfig();
+
+        if (changeablekP.getAsDouble() != kP || changeablekI.getAsDouble() != kI || changeablekD.getAsDouble() != kD) {
+            kP = changeablekP.getAsDouble();
+            kI = changeablekI.getAsDouble();
+            kD = changeablekD.getAsDouble();     
             config.closedLoop
-                .pid(kP.getAsDouble(), kI.getAsDouble(), kD.getAsDouble());
+                .pid(kP, kI, kD);
+            hasChanged = true;
+        }
+
+        if (changeablekS.getAsDouble() != kS || changeablekV.getAsDouble() != kV || changeablekA.getAsDouble() != kA) {
+            kS = changeablekS.getAsDouble();
+            kV = changeablekV.getAsDouble();
+            kA = changeablekA.getAsDouble();
             config.closedLoop.feedForward
-                    .kS(0.0)
-                    .kV(0.0)
-                    .kA(0.0)
+                    .kS(kS)
+                    .kV(kV)
+                    .kA(kA)
                     .kG(0.0);
+            hasChanged = true;
+        }
+
+        if (changeableCruiseVel.getAsDouble() != cruiseVel || changeableMaxAccel.getAsDouble() != maxAccel) {
+            cruiseVel = changeableCruiseVel.getAsDouble();
+            maxAccel = changeableMaxAccel.getAsDouble();
             config.closedLoop.maxMotion
-                .cruiseVelocity(2000)
-                .maxAcceleration(10000)
-                .allowedProfileError(0.1);
-            turntableMotorController.configure(config, SparkMax.ResetMode.kResetSafeParameters, SparkMax.PersistMode.kPersistParameters);
+                .cruiseVelocity(cruiseVel)
+                .maxAcceleration(maxAccel)
+                .allowedProfileError(TurretConstants.TURNTABLE_ALLOWED_ERROR);
+            hasChanged = true;
+        }
+
+        if (hasChanged) {
+            turntableMotorController.configure(config, ResetMode.kResetSafeParameters, PersistMode.kPersistParameters);
         }
     }
 }

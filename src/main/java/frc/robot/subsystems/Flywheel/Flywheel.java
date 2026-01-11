@@ -22,10 +22,10 @@ public class Flywheel extends SubsystemBase {
         Logger.processInputs("Flywheel", inputs);
     }
 
-    public void runFlywheels(double leftRPM, double rightRPM)
+    public void runFlywheels(double topRPM, double bottomRPM)
     {
-        io.setTopFlywheelRPM(leftRPM);
-        io.setBottomFlywheelRPM(rightRPM);
+        io.setTopFlywheelRPM(topRPM);
+        io.setBottomFlywheelRPM(bottomRPM);
     }
 
     public void setLaunchSpeed(double launchSpeed)

@@ -1,6 +1,8 @@
 package frc.robot.subsystems.Hood;
 
 import com.revrobotics.AbsoluteEncoder;
+import com.revrobotics.PersistMode;
+import com.revrobotics.ResetMode;
 import com.revrobotics.spark.SparkClosedLoopController;
 import com.revrobotics.spark.SparkMax;
 import com.revrobotics.spark.config.SparkMaxConfig;
@@ -13,6 +15,7 @@ import com.revrobotics.spark.SparkBase.ControlType;
 import com.revrobotics.spark.SparkLowLevel.MotorType;
 
 import frc.robot.Constants;
+import frc.robot.Constants.TurretConstants;
 
 public class HoodIOReal implements HoodIO {
 
@@ -20,33 +23,41 @@ public class HoodIOReal implements HoodIO {
     private final AbsoluteEncoder hoodEncoder;
     private final SparkClosedLoopController hoodClosedLoop;
 
-    private LoggedNetworkNumber kP = new LoggedNetworkNumber("Tuning/Hood/kP", 0.0);
-    private LoggedNetworkNumber kI = new LoggedNetworkNumber("Tuning/Hood/kI", 0.0);
-    private LoggedNetworkNumber kD = new LoggedNetworkNumber("Tuning/Hood/kD", 0.0);
+    private LoggedNetworkNumber changeablekP;
+    private LoggedNetworkNumber changeablekI;
+    private LoggedNetworkNumber changeablekD;
+    private LoggedNetworkNumber changeablekV;
 
-    private double lastkP;
-    private double lastkI;
-    private double lastkD;
+    private double kP;
+    private double kI;
+    private double kD;
+    private double kV;
 
     private void setInitialMotorPIDs() {
+        kP = TurretConstants.HOOD_kP;
+        kI = TurretConstants.HOOD_kI;
+        kD = TurretConstants.HOOD_kD;
+        kV = TurretConstants.HOOD_kV;
+
+        changeablekP = new LoggedNetworkNumber("Tuning/Hood/kP", kP);
+        changeablekI = new LoggedNetworkNumber("Tuning/Hood/kP", kI);
+        changeablekD = new LoggedNetworkNumber("Tuning/Hood/kP", kD);
+        changeablekV = new LoggedNetworkNumber("Tuning/Hood/kP", kV);
+
         SparkMaxConfig config = new SparkMaxConfig();
         config.closedLoop
-            .pid(0.0, 0.0, 0.0);
+            .pid(kP, kI, kD);
         config.closedLoop.feedForward
                 .kS(0.0)
-                .kV(0.0)
+                .kV(kV)
                 .kA(0.0)
                 .kG(0.0);
-        config.closedLoop.maxMotion
-            .cruiseVelocity(2000)
-            .maxAcceleration(10000)
-            .allowedProfileError(0.1);
         config.softLimit
-            .forwardSoftLimit(Constants.TURRET_HOOD_MOTOR_MAX_ROTATIONS)
+            .forwardSoftLimit(TurretConstants.TURRET_HOOD_MOTOR_MAX_ROTATIONS)
             .forwardSoftLimitEnabled(true)
-            .reverseSoftLimit(Constants.TURRET_HOOD_MOTOR_MIN_ROTATIONS)
+            .reverseSoftLimit(TurretConstants.TURRET_HOOD_MOTOR_MIN_ROTATIONS)
             .reverseSoftLimitEnabled(true);
-        hoodMotorController.configure(config, SparkMax.ResetMode.kResetSafeParameters, SparkMax.PersistMode.kPersistParameters);
+        hoodMotorController.configure(config, ResetMode.kResetSafeParameters, PersistMode.kPersistParameters);
     }
 
     public HoodIOReal()
@@ -60,7 +71,7 @@ public class HoodIOReal implements HoodIO {
 
     @Override
     public void updateInputs(HoodIOInputs inputs) {
-        tunePID();
+        periodic();
 
         ifOk(hoodMotorController, hoodEncoder::getPosition, (value) -> inputs.hoodRadians = value);
     }
@@ -69,27 +80,34 @@ public class HoodIOReal implements HoodIO {
     public void setHoodRadians(double radians)
     { 
         double clampedRadians = radians;
-        if (clampedRadians < Constants.TURRET_HOOD_MIN_RADIANS) { clampedRadians = Constants.TURRET_HOOD_MIN_RADIANS; }
-        else if (clampedRadians > Constants.TURRET_HOOD_MAX_RADIANS) {clampedRadians = Constants.TURRET_HOOD_MAX_RADIANS; }
+        if (clampedRadians < TurretConstants.TURRET_HOOD_MIN_RADIANS) { clampedRadians = TurretConstants.TURRET_HOOD_MIN_RADIANS; }
+        else if (clampedRadians > TurretConstants.TURRET_HOOD_MAX_RADIANS) {clampedRadians = TurretConstants.TURRET_HOOD_MAX_RADIANS; }
 
-        hoodClosedLoop.setSetpoint(radians * Constants.TURRET_HOOD_GEAR_RATIO, ControlType.kPosition);
+        hoodClosedLoop.setSetpoint(radians * TurretConstants.TURRET_HOOD_GEAR_RATIO, ControlType.kPosition);
     }
 
-    public void tunePID() {
-        if (kP.getAsDouble() != lastkP || kI.getAsDouble() != lastkI || kD.getAsDouble() != lastkD) {
-                SparkMaxConfig config = new SparkMaxConfig();
+    public void periodic() {
+        boolean hasChanged = false;
+        SparkMaxConfig config = new SparkMaxConfig();
+        if (changeablekP.getAsDouble() != kP || changeablekI.getAsDouble() != kI || changeablekD.getAsDouble() != kD) {
+            kP = changeablekP.getAsDouble();
+            kI = changeablekI.getAsDouble();
+            kD = changeablekD.getAsDouble();
             config.closedLoop
-                .pid(kP.getAsDouble(), kI.getAsDouble(), kD.getAsDouble());
+                .pid(kP, kI, kD);
+            hasChanged = true;
+        }
+        if (changeablekV.getAsDouble() != kV) {
+            kV = changeablekV.getAsDouble();
             config.closedLoop.feedForward
                     .kS(0.0)
                     .kV(0.0)
-                    .kA(0.0)
+                    .kA(kV)
                     .kG(0.0);
-            config.closedLoop.maxMotion
-                .cruiseVelocity(2000)
-                .maxAcceleration(10000)
-                .allowedProfileError(0.1);
-            hoodMotorController.configure(config, SparkMax.ResetMode.kResetSafeParameters, SparkMax.PersistMode.kPersistParameters);
+            hasChanged = true;
+        }
+        if (hasChanged) {
+            hoodMotorController.configure(config, ResetMode.kResetSafeParameters, PersistMode.kPersistParameters);
         }
     }
 }

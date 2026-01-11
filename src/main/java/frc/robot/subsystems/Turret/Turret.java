@@ -1,7 +1,7 @@
 package frc.robot.subsystems.Turret;
 
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
-import frc.robot.Constants;
+import frc.robot.Constants.TurretConstants;
 import frc.robot.subsystems.Flywheel.Flywheel;
 import frc.robot.subsystems.Hood.Hood;
 import frc.robot.subsystems.Turntable.Turntable;
@@ -28,13 +28,13 @@ public class Turret extends SubsystemBase {
     public void autoAimTurret(double robotFieldX, double robotFieldY, double robotFieldRadians)
     {
         double[] turretWorldRelativeToRobot =
-        GeometryHelper.Rotate(Constants.TURRET_LOCAL_POS_X, Constants.TURRET_LOCAL_POS_Y, robotFieldRadians);
+        GeometryHelper.Rotate(TurretConstants.TURRET_LOCAL_POS_X, TurretConstants.TURRET_LOCAL_POS_Y, robotFieldRadians);
 
         double turretWorldX = turretWorldRelativeToRobot[0] + robotFieldX;
         double turretWorldY = turretWorldRelativeToRobot[1] + robotFieldY;
 
-        double dx = Constants.GOAL_FIELD_SPACE_X_POSITION - turretWorldX;
-        double dy = Constants.GOAL_FIELD_SPACE_Y_POSITION - turretWorldY;
+        double dx = TurretConstants.GOAL_FIELD_SPACE_X_POSITION - turretWorldX;
+        double dy = TurretConstants.GOAL_FIELD_SPACE_Y_POSITION - turretWorldY;
 
         double angleToFaceGoalField = Math.atan2(dy, dx);
 
@@ -42,8 +42,8 @@ public class Turret extends SubsystemBase {
 
         turntable.setTargetRadians(angleToFaceGoalLocal);
 
-        double velocity_initial_y = Math.sqrt(-2 * Constants.GRAVITY_CONSTANT * Constants.TURRET_VERTICAL_DISTANCE_TO_GOAL);
-        double time_at_apex = -velocity_initial_y / Constants.GRAVITY_CONSTANT;
+        double velocity_initial_y = Math.sqrt(-2 * TurretConstants.GRAVITY_CONSTANT * TurretConstants.TURRET_VERTICAL_DISTANCE_TO_GOAL);
+        double time_at_apex = -velocity_initial_y / TurretConstants.GRAVITY_CONSTANT;
         double delta_x = Math.sqrt(dx * dx + dy * dy);
         double velocity_inital_x = delta_x / time_at_apex;
 
