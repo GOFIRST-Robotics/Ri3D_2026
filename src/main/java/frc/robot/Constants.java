@@ -13,6 +13,12 @@
 
 package frc.robot;
 
+import java.util.List;
+
+import edu.wpi.first.apriltag.AprilTag;
+import edu.wpi.first.math.geometry.Pose3d;
+import edu.wpi.first.math.geometry.Rotation3d;
+import edu.wpi.first.math.geometry.Translation3d;
 import edu.wpi.first.math.util.Units;
 import edu.wpi.first.wpilibj.RobotBase;
 
@@ -140,4 +146,73 @@ public final class Constants {
   public static final double TARGET_HEIGHT_METERS = Units.inchesToMeters(18.5);
   public static final double CAMERA_PITCH_RADIANS = Units.degreesToRadians(18);
   public static final String USB_CAMERA_NAME = "Arducam_OV9782_USB_Camera";
+
+  public class AprilTagFieldConstants {
+    public static final List<AprilTag> TAGS = List.of(
+        new AprilTag(1, new Pose3d(new Translation3d(4.6764, 2.9231, 0.35),
+                new Rotation3d(0, 0, Math.toRadians(180)))),
+        new AprilTag(2, new Pose3d(new Translation3d(4.6911, 1.8260, 0.4425),
+                new Rotation3d(0, 0, Math.toRadians(90)))),
+        new AprilTag(3, new Pose3d(new Translation3d(4.4535, 1.7284, 0.4425),
+                new Rotation3d(0, 0, Math.toRadians(180)))),
+        new AprilTag(4, new Pose3d(new Translation3d(4.4535, 1.5884, 0.4425),
+                new Rotation3d(0, 0, Math.toRadians(180)))),
+        new AprilTag(5, new Pose3d(new Translation3d(4.6911, 1.3509, 0.4425),
+                new Rotation3d(0, 0, Math.toRadians(270)))),
+        new AprilTag(6, new Pose3d(new Translation3d(4.6764, 0.2537, 0.35),
+                new Rotation3d(0, 0, Math.toRadians(180)))),
+        new AprilTag(7, new Pose3d(new Translation3d(4.7059, 0.2537, 0.35),
+                new Rotation3d(0, 0, Math.toRadians(0)))),
+        new AprilTag(8, new Pose3d(new Translation3d(4.8311, 1.3509, 0.4425),
+                new Rotation3d(0, 0, Math.toRadians(270)))),
+        new AprilTag(9, new Pose3d(new Translation3d(1.5834, 1.4484, 0.4425),
+                new Rotation3d(0, 0, Math.toRadians(0)))),
+        new AprilTag(10, new Pose3d(new Translation3d(4.9288, 1.5884, 0.4425),
+                new Rotation3d(0, 0, Math.toRadians(0)))),
+        new AprilTag(11, new Pose3d(new Translation3d(4.8311, 1.8260, 0.4425),
+                new Rotation3d(0, 0, Math.toRadians(90)))),
+        new AprilTag(12, new Pose3d(new Translation3d(4.7059, 2.9231, 0.35),
+                new Rotation3d(0, 0, Math.toRadians(0)))),
+        new AprilTag(13, new Pose3d(new Translation3d(6.5092, 2.9147, 0.2175),
+                new Rotation3d(0, 0, Math.toRadians(180)))),
+        new AprilTag(14, new Pose3d(new Translation3d(6.5092, 2.7447, 0.2175),
+                new Rotation3d(0, 0, Math.toRadians(180)))),
+        new AprilTag(15, new Pose3d(new Translation3d(6.5090, 1.7022, 0.2175),
+                new Rotation3d(0, 0, Math.toRadians(180)))),
+        new AprilTag(16, new Pose3d(new Translation3d(6.5090, 1.5322, 0.2175),
+                new Rotation3d(0, 0, Math.toRadians(180)))),
+        new AprilTag(17, new Pose3d(new Translation3d(1.8359, 0.2537, 0.35),
+                new Rotation3d(0, 0, Math.toRadians(0)))),
+        new AprilTag(18, new Pose3d(new Translation3d(1.8211, 1.3509, 0.4425),
+                new Rotation3d(0, 0, Math.toRadians(270)))),
+        new AprilTag(19, new Pose3d(new Translation3d(2.0587, 1.4484, 0.4425),
+                new Rotation3d(0, 0, Math.toRadians(0)))),
+        new AprilTag(20, new Pose3d(new Translation3d(2.0587, 1.5884, 0.4425),
+                new Rotation3d(0, 0, Math.toRadians(0)))),
+        new AprilTag(21, new Pose3d(new Translation3d(1.8211, 1.8260, 0.4425),
+                new Rotation3d(0, 0, Math.toRadians(90)))),
+        new AprilTag(22, new Pose3d(new Translation3d(1.8359, 2.9231, 0.35),
+                new Rotation3d(0, 0, Math.toRadians(0)))),
+        new AprilTag(23, new Pose3d(new Translation3d(1.8064, 2.9231, 0.35),
+                new Rotation3d(0, 0, Math.toRadians(180)))),
+        new AprilTag(24, new Pose3d(new Translation3d(1.6811, 1.8260, 0.4425),
+                new Rotation3d(0, 0, Math.toRadians(90)))),
+        new AprilTag(25, new Pose3d(new Translation3d(1.5834, 1.7284, 0.4425),
+                new Rotation3d(0, 0, Math.toRadians(180)))),
+        new AprilTag(26, new Pose3d(new Translation3d(1.5834, 1.5884, 0.4425),
+                new Rotation3d(0, 0, Math.toRadians(180)))),
+        new AprilTag(27, new Pose3d(new Translation3d(1.6811, 1.3509, 0.4425),
+                new Rotation3d(0, 0, Math.toRadians(270)))),
+        new AprilTag(28, new Pose3d(new Translation3d(1.8064, 0.2537, 0.35),
+                new Rotation3d(0, 0, Math.toRadians(180)))),
+        new AprilTag(29, new Pose3d(new Translation3d(0.0030, 0.2622, 0.2175),
+                new Rotation3d(0, 0, Math.toRadians(0)))),
+        new AprilTag(30, new Pose3d(new Translation3d(0.0030, 0.4322, 0.2175),
+                new Rotation3d(0, 0, Math.toRadians(0)))),
+        new AprilTag(31, new Pose3d(new Translation3d(0.0032, 1.4747, 0.2175),
+                new Rotation3d(0, 0, Math.toRadians(0)))),
+        new AprilTag(32, new Pose3d(new Translation3d(0.0032, 1.6447, 0.2175),
+                new Rotation3d(0, 0, Math.toRadians(0))))
+    );
+}
 }
