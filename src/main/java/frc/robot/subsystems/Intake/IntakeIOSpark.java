@@ -4,81 +4,75 @@ import static frc.robot.util.SparkUtil.*;
 
 import java.util.function.DoubleSupplier;
 
+import org.littletonrobotics.junction.networktables.LoggedNetworkNumber;
+
 import com.revrobotics.spark.SparkLowLevel.MotorType;
 import com.revrobotics.RelativeEncoder;
 import com.revrobotics.spark.SparkBase;
 import com.revrobotics.spark.SparkBase.ControlType;
+import com.revrobotics.spark.SparkBase.PersistMode;
+import com.revrobotics.spark.SparkBase.ResetMode;
 import com.revrobotics.spark.SparkClosedLoopController;
 import com.revrobotics.spark.SparkClosedLoopController.ArbFFUnits;
 import com.revrobotics.spark.SparkMax;
 import com.revrobotics.spark.config.SparkMaxConfig;
 import com.revrobotics.spark.config.ClosedLoopConfig.FeedbackSensor;
 
+import edu.wpi.first.wpilibj.motorcontrol.VictorSP;
+import frc.robot.Constants.IntakeConstants;
+
+
+
+
 
 
 public class IntakeIOSpark implements IntakeIO {
-    private final SparkBase spark;
-    private final RelativeEncoder encoder;
-    private final SparkClosedLoopController controller;
+    private final SparkBase rightDoorMotor;
+    private final SparkBase leftDoorMotor;
+    private final VictorSP intakeWheel;
+    
+    private double intakeDoorKp;
+    private LoggedNetworkNumber changeableIntakekP;
 
     public IntakeIOSpark() { 
-        spark = new SparkMax(10, MotorType.kBrushed); // Example CAN ID
-        encoder = spark.getEncoder();
-        controller = spark.getClosedLoopController();
+        rightDoorMotor = new SparkMax(IntakeConstants.INTAKE_UPPER_DOOR_MOTOR_ID, MotorType.kBrushless); 
+        leftDoorMotor = new SparkMax(IntakeConstants.INTAKE_LOWER_DOOR_MOTOR_ID, MotorType.kBrushless);
+        intakeWheel = new VictorSP(IntakeConstants.INTAKE_WHEEL_MOTOR_ID); 
 
-        var config = new SparkMaxConfig();
+        var doorConfig = new SparkMaxConfig();
+        var followerConfig = new SparkMaxConfig();
 
-        config
+        doorConfig
             .closedLoop
-            .feedbackSensor(/** Feedback Val */)
-            .pidf(/** PIDF Values */);
+            .feedbackSensor(FeedbackSensor.kAbsoluteEncoder)
+            .pidf(IntakeConstants.INTAKE_DOOR_kP, 0.0, 0.0, 0.0);
+
+        followerConfig.follow(rightDoorMotor);
+        followerConfig.inverted(true);
+        leftDoorMotor.configure(followerConfig, ResetMode.kResetSafeParameters, PersistMode.kPersistParameters);
 
 
-        //hmm idk yet
-        // tryUntilOk(
-        //     spark, 
-        //     5, 
-        //     () -> spark.configure(config, ResetMode.kResetSafeParameters, PersistMode.kPersistParameters));
-
-
+        setIntakeDoorPlacement();
     }   
 
-    @Override
-    public void updateDoorInputs(IntakeIOInputs inputs) {
 
+    private void setIntakeDoorPlacement() {
+        intakeDoorKp = IntakeConstants.INTAKE_DOOR_kP;
+        changeableIntakekP = new LoggedNetworkNumber("Intake/ChangeableIntakeKP", intakeDoorKp);
 
-        //open/close door
-        ifOk(
-            spark,
-            new DoubleSupplier[] {spark::getAppliedOutput, spark::getBusVoltage},
-            (values) -> inputs.motorAppliedVolts = values[0] * values[1]);
+        SparkMaxConfig doorConfig = new SparkMaxConfig();
 
-        ifOk(spark, encoder::getVelocity, (value) -> inputs.intakeWheelSpeedRPM = value);
-        ifOk(spark, spark::getOutputCurrent, (value) -> inputs.motorCurrentAmps = value);
-
-    }
-
-    @Override
-    public void updateWheelInputs(IntakeIOInputs inputs) {
+        doorConfig.closedLoop.pid(intakeDoorKp, 0.0, 0.0);
         
-
-    }
-
-    @Override 
-    public void setOpenLoopVolts(double volts) {
-        spark.setVoltage(volts);
+        rightDoorMotor.configure(doorConfig, ResetMode.kResetSafeParameters, PersistMode.kPersistParameters);
+        
     }
 
     @Override
-    public void setIntakeWheelSpeedRPM(double speedRPM) {
-        controller.setReference(
-            speedRPM,
-            ControlType.kVelocity,
-            0,
-            0.0,
-            ArbFFUnits.kRPM);
+    public void setIntakeWheelSpeedRPM(double RPM) {
+        intakeWheel.set(RPM);
     }
-
+    
 
 
     

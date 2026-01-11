@@ -134,6 +134,19 @@ public final class Constants {
   public static final double HOLD_CORAL_POSITION = 24;
   public static final double GRAVITY_RESISTANCE = 0.05;
 
+  public static final class IntakeConstants {
+  
+      public static final int INTAKE_UPPER_DOOR_MOTOR_ID = 1; 
+      public static final int INTAKE_LOWER_DOOR_MOTOR_ID = 2;
+      public static final int INTAKE_WHEEL_MOTOR_ID = 3;
+      // public static final int INTAKE_WHEEL_MOTOR_ID = 4;
+
+      public static final double INTAKE_DOOR_kP = 0.001;
+
+  }
+
+
+
   // ==================== VISION CONSTANTS ====================
   
   public static final double CAMERA_HEIGHT_METERS = Units.inchesToMeters(7);

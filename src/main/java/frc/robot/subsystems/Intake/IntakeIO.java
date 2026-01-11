@@ -26,7 +26,7 @@ public interface IntakeIO {
     public default void updateWheelInputs(IntakeIOInputs inputs) {}
 
     /** Run the Intake Belt/Wheels at a specified RPM (closed-loop). */
-    public default void setIntakeWheelSpeedRPM(double speedRPM) {}
+    public default void setIntakeWheelSpeedRPM(double RPM) {}
 
     /** Set the motor voltage directly (open-loop) */
     public default void setOpenLoopVolts(double volts) {}
