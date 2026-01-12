@@ -155,15 +155,15 @@ public final class Constants {
     public static final double HOOD_kV = 0.0;
 
     // Flywheel PIDs
-    public static final double TOP_FLYWHEEL_KP = 0.0;
+    public static final double TOP_FLYWHEEL_KP = 0.0001;
     public static final double TOP_FLYWHEEL_KI = 0.0;
     public static final double TOP_FLYWHEEL_KD = 0.0;
-    public static final double TOP_FLYWHEEL_KV = 0.0;
+    public static final double TOP_FLYWHEEL_KV = 0.000175;
 
-    public static final double BOTTOM_FLYWHEEL_KP = 0.0;
+    public static final double BOTTOM_FLYWHEEL_KP = 0.0001;
     public static final double BOTTOM_FLYWHEEL_KI = 0.0;
     public static final double BOTTOM_FLYWHEEL_KD = 0.0;
-    public static final double BOTTOM_FLYWHEEL_KV = 0.0;
+    public static final double BOTTOM_FLYWHEEL_KV = 0.000175;
 
   }
 

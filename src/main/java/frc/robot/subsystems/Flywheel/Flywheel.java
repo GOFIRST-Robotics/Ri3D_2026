@@ -1,5 +1,6 @@
 package frc.robot.subsystems.Flywheel;
 
+import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.Constants;
 
@@ -33,5 +34,15 @@ public class Flywheel extends SubsystemBase {
         double rpm = (60 / Math.PI) * (launchSpeed / Constants.WHEEL_DIAMETER);
 
         runFlywheels(rpm, -rpm);
+    }
+
+    public Command RunFlywheelsCommand()
+    {
+        return this.runOnce(() -> setLaunchSpeed(5));
+    }
+
+    public Command StopFlywheelsCommand()
+    {
+        return this.runOnce(() -> runFlywheels(0, 0));
     }
 }

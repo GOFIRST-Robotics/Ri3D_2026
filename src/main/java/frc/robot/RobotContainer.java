@@ -2,11 +2,16 @@ package frc.robot;
 
 import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.wpilibj2.command.Command;
+import edu.wpi.first.wpilibj2.command.CommandScheduler;
 import edu.wpi.first.wpilibj2.command.Commands;
 import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
 import frc.robot.commands.MecanumDriveCommands;
+import frc.robot.subsystems.Flywheel.Flywheel;
+import frc.robot.subsystems.Flywheel.FlywheelIO;
+import frc.robot.subsystems.Flywheel.FlywheelIOReal;
 import frc.robot.subsystems.Gyro.GyroIO;
 import frc.robot.subsystems.Gyro.GyroIONavX;
+import frc.robot.subsystems.Turret.Turret;
 import frc.robot.subsystems.drive.MecanumDrive.MecanumDrive;
 import frc.robot.subsystems.drive.MecanumDrive.MecanumModuleIO;
 import frc.robot.subsystems.drive.MecanumDrive.MecanumModuleIOSpark;
@@ -15,6 +20,8 @@ import org.littletonrobotics.junction.networktables.LoggedDashboardChooser;
 public class RobotContainer {
   // Subsystems
   private final MecanumDrive drive;
+  private final Turret turret;
+  private final Flywheel flywheel;
 
   // Controller
   private final CommandXboxController controller = new CommandXboxController(0);
@@ -35,6 +42,7 @@ public class RobotContainer {
                   new MecanumModuleIOSpark(3)  // BR
                 },
                 new GyroIONavX());
+
         break;
 
       case SIM:
@@ -70,6 +78,11 @@ public class RobotContainer {
 
     // Configure the button bindings
     configureButtonBindings();
+
+    
+        flywheel = new Flywheel(new FlywheelIOReal());
+        turret = new Turret(flywheel, null, null);
+    CommandScheduler.getInstance().schedule(flywheel.RunFlywheelsCommand());
   }
 
   private void configureButtonBindings() {
@@ -106,6 +119,9 @@ public class RobotContainer {
 
     // Reset heading when B button is pressed
     controller.b().onTrue(MecanumDriveCommands.resetHeading(drive));
+
+    controller.leftTrigger().onTrue(flywheel.StopFlywheelsCommand());
+    controller.rightTrigger().onTrue(flywheel.RunFlywheelsCommand());
   }
 
   public Command getAutonomousCommand() {
