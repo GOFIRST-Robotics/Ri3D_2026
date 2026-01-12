@@ -96,55 +96,55 @@ public class SimpleNavXStandalone extends SubsystemBase {
         previousRawYaw = latestRawYaw;
     }
 
-    // ...existing code...
-
     // private void updateSerialData() {
     //     if (!portInitialized || port == null) return;
         
     //     try {
     //         int bytesAvailable = port.getBytesReceived();
     //         if (bytesAvailable > 0) {
-    //             // Read whatever is available
     //             String incoming = port.readString();
-                
-    //             // DEBUG: Print what we're receiving
-    //             System.out.println("Serial bytes: " + bytesAvailable + " | Raw: " + incoming);
                 
     //             if (incoming == null) return;
                 
-    //             // Append to our buffer (handles split packets)
     //             serialBuffer += incoming;
-                
-    //             // DEBUG: Print buffer state
-    //             System.out.println("Buffer: " + serialBuffer);
                 
     //             // Safety: prevent buffer from growing infinite if parsing fails
     //             if (serialBuffer.length() > 1000) {
-    //                 System.out.println("WARNING: Buffer overflow, clearing");
     //                 serialBuffer = "";
     //             }
 
     //             // Process ALL complete packets in the buffer
+    //             // Look for lines ending with \r\n or just \n
     //             while (true) {
     //                 int packetStart = serialBuffer.indexOf("!y");
-    //                 int packetEnd = serialBuffer.indexOf('\r', packetStart == -1 ? 0 : packetStart);
+    //                 int packetEnd = serialBuffer.indexOf('\n', packetStart == -1 ? 0 : packetStart);
                     
-    //                 // DEBUG: Print parsing state
-    //                 System.out.println("PacketStart: " + packetStart + " | PacketEnd: " + packetEnd);
-                    
-    //                 if (packetStart == -1) break;
-    //                 if (packetEnd == -1) break;
+    //                 if (packetStart == -1 || packetEnd == -1) break;
 
     //                 String packet = serialBuffer.substring(packetStart, packetEnd);
-    //                 System.out.println("Found packet: [" + packet + "]");
                     
     //                 try {
-    //                     String valStr = packet.substring(2).trim();
-    //                     latestRawYaw = Double.parseDouble(valStr);
-    //                     System.out.println("Parsed yaw: " + latestRawYaw);
+    //                     // Format: "!y 144.25-011.41 003.11 318.53CF"
+    //                     // Skip "!y " (3 chars) to get to the yaw value
+    //                     String afterPrefix = packet.substring(3).trim();
                         
-    //                     lastValidReadTime = Timer.getFPGATimestamp();
-    //                     hasValidData = true;
+    //                     // Find where yaw ends (at the next '-' or space after first char)
+    //                     int yawEnd = -1;
+    //                     for (int i = 1; i < afterPrefix.length(); i++) {
+    //                         char c = afterPrefix.charAt(i);
+    //                         if (c == '-' || c == ' ') {
+    //                             yawEnd = i;
+    //                             break;
+    //                         }
+    //                     }
+                        
+    //                     if (yawEnd > 0) {
+    //                         String yawStr = afterPrefix.substring(0, yawEnd);
+    //                         latestRawYaw = Double.parseDouble(yawStr);
+                            
+    //                         lastValidReadTime = Timer.getFPGATimestamp();
+    //                         hasValidData = true;
+    //                     }
     //                 } catch (Exception e) {
     //                     System.out.println("Parse error: " + e.getMessage());
     //                 }
@@ -156,6 +156,7 @@ public class SimpleNavXStandalone extends SubsystemBase {
     //         System.out.println("Serial error: " + e.getMessage());
     //     }
     // }
+
 
     // ...existing code...
 
@@ -188,12 +189,21 @@ public class SimpleNavXStandalone extends SubsystemBase {
                     
                     try {
                         // Format: "!y 144.25-011.41 003.11 318.53CF"
-                        // Skip "!y " (3 chars) to get to the yaw value
-                        String afterPrefix = packet.substring(3).trim();
+                        // Or:     "!y-144.25-011.41 003.11 318.53CF" (negative yaw)
+                        // Skip "!y" (2 chars), then handle optional space
+                        String afterPrefix = packet.substring(2);
                         
-                        // Find where yaw ends (at the next '-' or space after first char)
+                        // Remove leading space if present
+                        if (afterPrefix.startsWith(" ")) {
+                            afterPrefix = afterPrefix.substring(1);
+                        }
+                        
+                        // Now afterPrefix starts with the yaw value (possibly negative)
+                        // Find where yaw ends (at the next '-' or space, but skip first char in case it's a negative sign)
                         int yawEnd = -1;
-                        for (int i = 1; i < afterPrefix.length(); i++) {
+                        int startIndex = (afterPrefix.charAt(0) == '-') ? 1 : 0; // Skip leading negative sign
+                        
+                        for (int i = startIndex + 1; i < afterPrefix.length(); i++) {
                             char c = afterPrefix.charAt(i);
                             if (c == '-' || c == ' ') {
                                 yawEnd = i;
@@ -208,7 +218,7 @@ public class SimpleNavXStandalone extends SubsystemBase {
                             lastValidReadTime = Timer.getFPGATimestamp();
                             hasValidData = true;
                         }
-                    } catch (Exception e) {
+                    } catch (NumberFormatException e) {
                         System.out.println("Parse error: " + e.getMessage());
                     }
 
@@ -216,7 +226,10 @@ public class SimpleNavXStandalone extends SubsystemBase {
                 }
             }
         } catch (Exception e) {
-            System.out.println("Serial error: " + e.getMessage());
+            // Handle disconnection gracefully - don't crash
+            System.out.println("Serial error (NavX may be disconnected): " + e.getMessage());
+            // Optionally mark as disconnected
+            portInitialized = false;
         }
     }
 
