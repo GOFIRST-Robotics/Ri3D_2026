@@ -34,7 +34,6 @@ public class Robot extends LoggedRobot {
   private RobotContainer robotContainer;
 
   public Robot() {
-
     //comment out since we don't care about the logging
 
     // Record metadata
@@ -79,6 +78,8 @@ public class Robot extends LoggedRobot {
 
     // Initialize URCL
     Logger.registerURCL(URCL.startExternal());
+
+    Logger.recordMetadata("TuningModeEnabled", "true");
 
     // Start AdvantageKit logger
     Logger.start();
