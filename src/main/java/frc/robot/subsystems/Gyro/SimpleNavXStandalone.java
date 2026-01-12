@@ -214,7 +214,7 @@ public class SimpleNavXStandalone extends SubsystemBase {
     }
 
     /**
-     * @return The current yaw in degrees (with offset applied)
+     * @return The current unwrapped yaw in degrees (with offset applied)
      */
     public double getYawDegrees() {
         return getRotation2d().getDegrees();
