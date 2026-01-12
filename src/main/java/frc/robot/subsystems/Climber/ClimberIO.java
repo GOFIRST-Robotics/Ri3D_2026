@@ -12,7 +12,7 @@ public interface ClimberIO {
     }
 
     enum ClimbPosition {
-        NONE,
+        ZERO,
         AUTO,
         RUNG_ONE,
         RUNG_TWO,

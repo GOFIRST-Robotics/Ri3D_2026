@@ -88,7 +88,7 @@ public class ClimberIOReal implements ClimberIO {
     @Override
     public void setClimbPosition(ClimbPosition position) {
         switch (position) {
-            case NONE:
+            case ZERO:
                 climbPID.setSetpoint(ClimberConstants.CLIMBER_ZERO_POS, ControlType.kMAXMotionPositionControl);
                 break;
             case AUTO:
