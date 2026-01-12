@@ -43,6 +43,9 @@ public class RobotContainer {
                 },
                 new GyroIONavX());
 
+        flywheel = new Flywheel(new FlywheelIOReal());
+        turret = new Turret(flywheel, null, null);
+
         break;
 
       case SIM:
@@ -56,6 +59,9 @@ public class RobotContainer {
                   new MecanumModuleIO() {}
                 },
                 new GyroIO() {});
+
+        flywheel = null;
+        turret = null;
         break;
 
       default:
@@ -69,6 +75,9 @@ public class RobotContainer {
                   new MecanumModuleIO() {}
                 },
                 new GyroIO() {});
+
+        flywheel = null;
+        turret = null;
         break;
     }
 
@@ -78,11 +87,6 @@ public class RobotContainer {
 
     // Configure the button bindings
     configureButtonBindings();
-
-    
-        flywheel = new Flywheel(new FlywheelIOReal());
-        turret = new Turret(flywheel, null, null);
-    CommandScheduler.getInstance().schedule(flywheel.RunFlywheelsCommand());
   }
 
   private void configureButtonBindings() {
