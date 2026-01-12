@@ -69,6 +69,8 @@ public class RobotContainer {
                 new GyroIO() {});
 
         flywheel = null;
+        hood = null;
+        turntable = null;
         turret = null;
         break;
 
@@ -85,6 +87,8 @@ public class RobotContainer {
                 new GyroIO() {});
 
         flywheel = null;
+        hood = null;
+        turntable = null;
         turret = null;
         break;
     }
