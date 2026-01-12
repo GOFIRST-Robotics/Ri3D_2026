@@ -10,6 +10,8 @@ import frc.robot.subsystems.Gyro.GyroIONavX;
 import frc.robot.subsystems.drive.MecanumDrive.MecanumDrive;
 import frc.robot.subsystems.drive.MecanumDrive.MecanumModuleIO;
 import frc.robot.subsystems.drive.MecanumDrive.MecanumModuleIOSpark;
+import frc.robot.util.PathPlannerSetup;
+
 import org.littletonrobotics.junction.networktables.LoggedDashboardChooser;
 
 import com.pathplanner.lib.auto.AutoBuilder;
@@ -37,6 +39,8 @@ public class RobotContainer {
                   new MecanumModuleIOSpark(3)  // BR
                 },
                 new GyroIONavX());
+
+            configurePathPlanner();
         break;
 
       case SIM:
@@ -113,5 +117,11 @@ public class RobotContainer {
 
   public Command getAutonomousCommand() {
     return autoChooser.get();
+  }
+
+
+  public void configurePathPlanner() {
+    PathPlannerSetup.initializePathPlannerConfig();
+    PathPlannerSetup.configureAutoBuilder(drive);
   }
 }

@@ -14,7 +14,7 @@ public class PathPlannerSetup {
     public static RobotConfig config;
 
 
-    public static void initializedPathPlannerConfig() {
+    public static void initializePathPlannerConfig() {
         try {
             config = RobotConfig.fromGUISettings();
         } catch (Exception e) {
