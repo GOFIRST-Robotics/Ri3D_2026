@@ -18,6 +18,7 @@ import com.revrobotics.spark.SparkClosedLoopController.ArbFFUnits;
 import com.revrobotics.spark.SparkMax;
 import com.revrobotics.spark.config.SparkMaxConfig;
 
+import edu.wpi.first.math.util.Units;
 import edu.wpi.first.wpilibj.motorcontrol.VictorSP;
 import frc.robot.Constants.IntakeConstants;
 
@@ -32,6 +33,7 @@ public class IntakeIOSpark implements IntakeIO {
     private final VictorSP intakeWheel;
     
     private LoggedNetworkNumber changeableIntakekP;
+    private double previousIntakekP = IntakeConstants.INTAKE_DOOR_kP;
 
     public IntakeIOSpark() { 
         rightDoorMotor = new SparkMax(IntakeConstants.INTAKE_UPPER_DOOR_MOTOR_ID, MotorType.kBrushless); 
@@ -41,52 +43,47 @@ public class IntakeIOSpark implements IntakeIO {
         changeableIntakekP = new LoggedNetworkNumber("Intake/ChangeableIntakeKP", IntakeConstants.INTAKE_DOOR_kP);
 
 
-        var doorConfig = new SparkMaxConfig();
-        var followerConfig = new SparkMaxConfig();
+        
 
+        var doorConfig = new SparkMaxConfig();
         doorConfig
             .closedLoop
             .feedbackSensor(FeedbackSensor.kAbsoluteEncoder)
-            .pidf(IntakeConstants.INTAKE_DOOR_kP, 0.0, 0.0, 0.0);
+            .pid(changeableIntakekP.getAsDouble(), 0.0, 0.0);
+        doorConfig.absoluteEncoder.positionConversionFactor(2 * Math.PI); // Radians to degrees
+        rightDoorMotor.configure(doorConfig, ResetMode.kResetSafeParameters, PersistMode.kPersistParameters);
 
+
+        var followerConfig = new SparkMaxConfig();
         followerConfig.follow(rightDoorMotor);
         followerConfig.inverted(true);
         leftDoorMotor.configure(followerConfig, ResetMode.kResetSafeParameters, PersistMode.kPersistParameters);
-
-
-        setIntakeDoorPlacement();
+        
     }   
 
-
-    private void setIntakeDoorPlacement() {
-
-        SparkMaxConfig doorConfig = new SparkMaxConfig();
-        doorConfig.closedLoop.pid(changeableIntakekP.getAsDouble(), 0.0, 0.0);
-
-        rightDoorMotor.configure(doorConfig, ResetMode.kResetSafeParameters, PersistMode.kPersistParameters);
-        
-        
-    }
-
     @Override
-    public void setIntakeWheelSpeedRPM(double RPM) {
-        intakeWheel.set(RPM);
+    public void setIntakeWheelSpeedPercentOut(double percentOutput) {
+        intakeWheel.set(percentOutput);
     }
 
     public void setIntakeDoorPosition(double position, IntakeIOInputs inputs) {
-        inputs.desiredDoorPosition = position;
+        inputs.desiredDoorPosition = Units.degreesToRadians(position);;
         rightDoorMotor.getClosedLoopController().setSetpoint(position, ControlType.kPosition);
     
     }
 
     @Override
     public void updateInputs(IntakeIOInputs inputs) { 
+        if(changeableIntakekP.getAsDouble() != previousIntakekP) {
+            rightDoorMotor.getClosedLoopController().setSetpoint(changeableIntakekP.getAsDouble(), ControlType.kPosition);
+            previousIntakekP = changeableIntakekP.getAsDouble();   
+        }
+        
         inputs.rightIntakeWheelSpeedRPM = rightDoorMotor.getEncoder().getVelocity();
         inputs.leftIntakeWheelSpeedRPM = leftDoorMotor.getEncoder().getVelocity();
         inputs.currentDoorPosition = rightDoorMotor.getEncoder().getPosition();
 
-        rightDoorMotor.getClosedLoopController().setSetpoint(changeableIntakekP.getAsDouble(), ControlType.kPosition);
-        // changeableIntakekP.setReference(IntakeConstants.INTAKE_DOOR_kP);
+        
 
     }
         

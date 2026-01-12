@@ -5,8 +5,13 @@ import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.Commands;
 import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
 import frc.robot.commands.MecanumDriveCommands;
+import frc.robot.commands.moveIntake;
+import frc.robot.commands.setHigh;
 import frc.robot.subsystems.Gyro.GyroIO;
 import frc.robot.subsystems.Gyro.GyroIONavX;
+import frc.robot.subsystems.Intake.Intake;
+import frc.robot.subsystems.Intake.IntakeIO;
+import frc.robot.subsystems.Intake.IntakeIOSpark;
 import frc.robot.subsystems.drive.MecanumDrive.MecanumDrive;
 import frc.robot.subsystems.drive.MecanumDrive.MecanumModuleIO;
 import frc.robot.subsystems.drive.MecanumDrive.MecanumModuleIOSpark;
@@ -16,8 +21,11 @@ public class RobotContainer {
   // Subsystems
   private final MecanumDrive drive;
 
+  private final Intake intake;
+
   // Controller
   private final CommandXboxController controller = new CommandXboxController(0);
+
 
   // Dashboard inputs
   private final LoggedDashboardChooser<Command> autoChooser;
@@ -35,6 +43,8 @@ public class RobotContainer {
                   new MecanumModuleIOSpark(3)  // BR
                 },
                 new GyroIONavX());
+        
+        intake = new Intake(new IntakeIOSpark());
         break;
 
       case SIM:
@@ -100,6 +110,11 @@ public class RobotContainer {
                 () -> -controller.getLeftY(),
                 () -> -controller.getLeftX(),
                 new Rotation2d(0)));
+
+      controller.rightBumper().whileTrue(new moveIntake(intake));
+      controller.leftBumper().whileTrue(new setHigh(intake)); 
+
+
 
     // Stop when X button is pressed
     controller.x().onTrue(MecanumDriveCommands.stop(drive));

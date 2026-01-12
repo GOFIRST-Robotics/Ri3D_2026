@@ -136,9 +136,9 @@ public final class Constants {
 
   public static final class IntakeConstants {
   
-      public static final int INTAKE_UPPER_DOOR_MOTOR_ID = 1; 
-      public static final int INTAKE_LOWER_DOOR_MOTOR_ID = 2;
-      public static final int INTAKE_WHEEL_MOTOR_ID = 3;
+      public static final int INTAKE_UPPER_DOOR_MOTOR_ID = 20; 
+      public static final int INTAKE_LOWER_DOOR_MOTOR_ID = 21;
+      public static final int INTAKE_WHEEL_MOTOR_ID = 22;
       // public static final int INTAKE_WHEEL_MOTOR_ID = 4;
 
       public static final double INTAKE_DOOR_kP = 0.001;
