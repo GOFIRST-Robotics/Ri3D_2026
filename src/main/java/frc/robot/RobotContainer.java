@@ -11,6 +11,10 @@ import frc.robot.subsystems.Flywheel.FlywheelIO;
 import frc.robot.subsystems.Flywheel.FlywheelIOReal;
 import frc.robot.subsystems.Gyro.GyroIO;
 import frc.robot.subsystems.Gyro.GyroIONavX;
+import frc.robot.subsystems.Hood.Hood;
+import frc.robot.subsystems.Hood.HoodIOReal;
+import frc.robot.subsystems.Turntable.Turntable;
+import frc.robot.subsystems.Turntable.TurntableIOReal;
 import frc.robot.subsystems.Turret.Turret;
 import frc.robot.subsystems.drive.MecanumDrive.MecanumDrive;
 import frc.robot.subsystems.drive.MecanumDrive.MecanumModuleIO;
@@ -22,6 +26,8 @@ public class RobotContainer {
   private final MecanumDrive drive;
   private final Turret turret;
   private final Flywheel flywheel;
+  private final Hood hood;
+  private final Turntable turntable;
 
   // Controller
   private final CommandXboxController controller = new CommandXboxController(0);
@@ -44,7 +50,9 @@ public class RobotContainer {
                 new GyroIONavX());
 
         flywheel = new Flywheel(new FlywheelIOReal());
-        turret = new Turret(flywheel, null, null);
+        hood = new Hood(new HoodIOReal());
+        turntable = new Turntable(new TurntableIOReal());
+        turret = new Turret(flywheel, hood, turntable);
 
         break;
 
@@ -126,6 +134,12 @@ public class RobotContainer {
 
     controller.leftTrigger().onTrue(flywheel.StopFlywheelsCommand());
     controller.rightTrigger().onTrue(flywheel.RunFlywheelsCommand());
+
+    controller.povUp().whileTrue(hood.IncrementHoodAngleCommand());
+    controller.povDown().whileTrue(hood.DecrementHoodAngleCommand());
+
+    controller.povRight().whileTrue(turntable.IncrementTurntableAngleCommand());
+    controller.povLeft().whileTrue(turntable.DecrementTurntableAngleCommand());
   }
 
   public Command getAutonomousCommand() {
