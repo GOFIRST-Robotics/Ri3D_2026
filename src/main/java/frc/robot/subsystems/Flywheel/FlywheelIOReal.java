@@ -52,8 +52,9 @@ public class FlywheelIOReal implements FlywheelIO {
 
     private void setInitialMotorPIDs() {
 
-        tunableTopSpeed = new LoggedNetworkNumber("/Tuning/FlywheelTop/TuneSpeed", 0.0);
-        tunableBottomSpeed = new LoggedNetworkNumber("/Tuning/FlywheelBottom/TuneSpeed", 0.0);
+        // Around the lowest
+        tunableTopSpeed = new LoggedNetworkNumber("/Tuning/FlywheelTop/TuneSpeed", 2000);
+        tunableBottomSpeed = new LoggedNetworkNumber("/Tuning/FlywheelBottom/TuneSpeed", 8000);
 
         kPFlywheelTop = TurretConstants.TOP_FLYWHEEL_KP;
         kIFlywheelTop = TurretConstants.TOP_FLYWHEEL_KI;
@@ -132,8 +133,10 @@ public class FlywheelIOReal implements FlywheelIO {
 
     @Override
     public void tuneTopAndBottomRPM() {
+
         topFlywheelClosedLoop.setSetpoint(tunableTopSpeed.getAsDouble(), ControlType.kMAXMotionVelocityControl);
         bottomFlywheelClosedLoop.setSetpoint(tunableBottomSpeed.getAsDouble(), ControlType.kMAXMotionVelocityControl);
+
     }
 
     @Override

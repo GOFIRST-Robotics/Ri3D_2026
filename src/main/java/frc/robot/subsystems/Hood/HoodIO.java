@@ -7,6 +7,7 @@ public interface HoodIO {
     @AutoLog
     class HoodIOInputs {
         public double hoodRadians;
+        public double motorPosition;
     }
 
     default void updateInputs(HoodIOInputs inputs) {}

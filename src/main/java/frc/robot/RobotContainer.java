@@ -25,8 +25,8 @@ public class RobotContainer {
   // Subsystems
   private final MecanumDrive drive;
   // private final Turret turret;
-  private final Flywheel flywheel;
-  // private final Hood hood;
+  // private final Flywheel flywheel;
+  private final Hood hood;
   // private final Turntable turntable;
 
   // Controller
@@ -49,8 +49,8 @@ public class RobotContainer {
                 },
                 new GyroIONavX());
 
-        flywheel = new Flywheel(new FlywheelIOReal());
-        // hood = new Hood(new HoodIOReal());
+        // flywheel = new Flywheel(new FlywheelIOReal());
+        hood = new Hood(new HoodIOReal());
         // turntable = new Turntable(new TurntableIOReal());
         // turret = new Turret(flywheel, hood, turntable);
 
@@ -68,8 +68,8 @@ public class RobotContainer {
                 },
                 new GyroIO() {});
 
-        flywheel = null;
-        // hood = null;
+        // flywheel = null;
+        hood = null;
         // turntable = null;
         // turret = null;
         break;
@@ -86,8 +86,8 @@ public class RobotContainer {
                 },
                 new GyroIO() {});
 
-        flywheel = null;
-        // hood = null;
+        // flywheel = null;
+        hood = null;
         // turntable = null;
         // turret = null;
         break;
@@ -136,11 +136,11 @@ public class RobotContainer {
     // Reset heading when B button is pressed
     controller.b().onTrue(MecanumDriveCommands.resetHeading(drive));
 
-    controller.leftTrigger().onTrue(flywheel.StopFlywheelsCommand());
-    controller.rightTrigger().onTrue(flywheel.RunTuneableFlywheelsCommand());
+    //controller.leftTrigger().onTrue(flywheel.StopFlywheelsCommand());
+    //controller.rightTrigger().onTrue(flywheel.RunTuneableFlywheelsCommand());
 
-    // controller.povUp().whileTrue(hood.incrementHoodAngleCommand());
-    // controller.povDown().whileTrue(hood.decrementHoodAngleCommand());
+    controller.povUp().whileTrue(hood.incrementHoodAngleCommand());
+    controller.povDown().whileTrue(hood.decrementHoodAngleCommand());
 
     // controller.povRight().whileTrue(turntable.incrementTurntableAngleCommand());
     // controller.povLeft().whileTrue(turntable.decrementTurntableAngleCommand());

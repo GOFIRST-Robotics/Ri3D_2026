@@ -22,14 +22,15 @@ public class Hood extends SubsystemBase {
         Logger.processInputs("Hood", inputs);
     }
 
-    private double currentTargetRadians;
+    private double currentTargetRadians = Constants.TurretConstants.TURRET_HOOD_MIN_RADIANS; // assuming the hood starts fully down
     public void setTargetRadians(double radians) 
     { 
         currentTargetRadians = radians;
         if (currentTargetRadians < Constants.TurretConstants.TURRET_HOOD_MIN_RADIANS) { currentTargetRadians = Constants.TurretConstants.TURRET_HOOD_MIN_RADIANS; }
         else if (currentTargetRadians > Constants.TurretConstants.TURRET_HOOD_MAX_RADIANS) { currentTargetRadians = Constants.TurretConstants.TURRET_HOOD_MAX_RADIANS; }
 
-        io.setHoodRadians(currentTargetRadians); 
+        double currentTargetConverted = currentTargetRadians - Constants.TurretConstants.TURRET_HOOD_MIN_RADIANS;
+        io.setHoodRadians(currentTargetConverted); 
     }
 
     public Command incrementHoodAngleCommand() { return this.run(() -> setTargetRadians(currentTargetRadians + Constants.TurretConstants.TURRET_HOOD_CHANGE_SPEED)); }

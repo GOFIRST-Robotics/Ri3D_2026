@@ -101,7 +101,7 @@ public final class Constants {
   // public static final int END_EFFECTOR_ARM_MOTOR_ID = 8;
   public static final int TURRET_LEFT_FLYWHEEL_MOTOR_ID = 6;
   public static final int TURRET_RIGHT_FLYWHEEL_MOTOR_ID = 10;
-  public static final int TURRET_HOOD_MOTOR_ID = 4576;
+  public static final int TURRET_HOOD_MOTOR_ID = 20;
 
   // ==================== SERVO / PWM ====================
   
@@ -111,7 +111,7 @@ public final class Constants {
   // ==================== TURRET CONSTANTS ====================
 
   public static final class TurretConstants {
-    public static final double TURRET_HOOD_GEAR_RATIO = 475.0/85.0;
+    public static final double TURRET_HOOD_GEAR_RATIO = 4750.0/85.0;
     public static final double TURRET_TURNTABLE_GEAR_RATIO = 1;
 
     public static final double FLYWHEEL_DIAMETER = 1;
@@ -120,8 +120,8 @@ public final class Constants {
     public static final double TURRET_LOCAL_POS_X = 0; // meters, right hand rule!!
     public static final double TURRET_LOCAL_POS_Y = 0; // meters, right hand rule!!
 
-    public static final double TURRET_HOOD_MOTOR_MIN_ROTATIONS = 5;
-    public static final double TURRET_HOOD_MOTOR_MAX_ROTATIONS = 5;
+    public static final double TURRET_HOOD_MOTOR_MIN_ROTATIONS = 0;
+    public static final double TURRET_HOOD_MOTOR_MAX_ROTATIONS = 8;
     public static final double TURRET_HOOD_MIN_RADIANS = Units.degreesToRadians(30);
     public static final double TURRET_HOOD_MAX_RADIANS = Units.degreesToRadians(80);
 
@@ -165,14 +165,14 @@ public final class Constants {
     public static final double TOP_FLYWHEEL_KP = 0.0001;
     public static final double TOP_FLYWHEEL_KI = 0.0;
     public static final double TOP_FLYWHEEL_KD = 0.0;
-    public static final double TOP_FLYWHEEL_KV = 0.000175 * 13;
-    public static final double TOP_FLYWHEEL_ACCEL = 2000.0;
+    public static final double TOP_FLYWHEEL_KV = 0.002275;
+    public static final double TOP_FLYWHEEL_ACCEL = 4000.0;
 
     public static final double BOTTOM_FLYWHEEL_KP = 0.0001;
     public static final double BOTTOM_FLYWHEEL_KI = 0.0;
     public static final double BOTTOM_FLYWHEEL_KD = 0.0;
-    public static final double BOTTOM_FLYWHEEL_KV = 0.000175 * 13;
-    public static final double BOTTOM_FLYWHEEL_ACCEL = 2000.0;
+    public static final double BOTTOM_FLYWHEEL_KV = 0.002275;
+    public static final double BOTTOM_FLYWHEEL_ACCEL = 12000.0;
 
   }
 

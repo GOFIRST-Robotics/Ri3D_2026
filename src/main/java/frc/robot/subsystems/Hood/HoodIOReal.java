@@ -73,7 +73,8 @@ public class HoodIOReal implements HoodIO {
     public void updateInputs(HoodIOInputs inputs) {
         periodic();
 
-        ifOk(hoodMotorController, hoodEncoder::getPosition, (value) -> inputs.hoodRadians = (value / TurretConstants.TURRET_HOOD_GEAR_RATIO) * Constants.TWO_PI);
+        ifOk(hoodMotorController, hoodEncoder::getPosition, (value) -> inputs.motorPosition = value);
+        inputs.hoodRadians = (inputs.motorPosition / TurretConstants.TURRET_HOOD_GEAR_RATIO) * Constants.TWO_PI;
     }
 
     @Override
