@@ -21,7 +21,9 @@ public interface ClimberIO {
 
     default void updateInputs(ClimberIOInputsAutoLogged inputs) {}
 
-    default void setClimbPosition(ClimbPosition position) {}
+    default void setClimbExtentionPos(ClimbPosition position) {}
+
+    default void setClimbRetractionPos(ClimbPosition position) {}
 
     default void setServoOnePos(double position) {}
 

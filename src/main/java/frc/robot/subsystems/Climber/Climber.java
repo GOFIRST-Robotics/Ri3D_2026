@@ -26,10 +26,8 @@ public class Climber extends SubsystemBase {
   }
 
   public void setClimberPos(ClimbPosition position) {
-    io.setClimbPosition(position);
+    io.setClimbExtentionPos(position);
   }
-
-  
 
   @Override
   public void periodic() {
@@ -41,23 +39,23 @@ public class Climber extends SubsystemBase {
   // Commands
 
   public Command goFirstRungPos() {
-     return this.runOnce(() -> setClimberPos(ClimberIO.ClimbPosition.RUNG_ONE)).until(movementFinished).withName("Rung One Pos");
+     return this.run(() -> setClimberPos(ClimberIO.ClimbPosition.RUNG_ONE)).until(movementFinished).withName("Rung One Pos");
   }
 
   public Command goSecondRungPos() {
-     return this.runOnce(() -> setClimberPos(ClimberIO.ClimbPosition.RUNG_TWO)).until(movementFinished).withName("Rung Two Pos");
+     return this.run(() -> setClimberPos(ClimberIO.ClimbPosition.RUNG_TWO)).until(movementFinished).withName("Rung Two Pos");
   }
 
   public Command goThirdRungPos() {
-     return this.runOnce(() -> setClimberPos(ClimberIO.ClimbPosition.RUNG_THREE)).until(movementFinished).withName("Rung Three Pos");
+     return this.run(() -> setClimberPos(ClimberIO.ClimbPosition.RUNG_THREE)).until(movementFinished).withName("Rung Three Pos");
   }
 
   public Command goAutonomousPos() {
-     return this.runOnce(() -> setClimberPos(ClimberIO.ClimbPosition.AUTO)).until(movementFinished).withName("Auto Climber Pos");
+     return this.run(() -> setClimberPos(ClimberIO.ClimbPosition.AUTO)).until(movementFinished).withName("Auto Climber Pos");
   }
 
   public Command goZeroPos() {
-     return this.runOnce(() -> setClimberPos(ClimberIO.ClimbPosition.ZERO)).until(movementFinished).withName("Zero Climber Pos");
+     return this.run(() -> setClimberPos(ClimberIO.ClimbPosition.ZERO)).until(movementFinished).withName("Zero Climber Pos");
   }
 
 
