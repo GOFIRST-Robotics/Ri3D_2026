@@ -34,17 +34,17 @@ public class Indexer extends SubsystemBase {
     io.periodic();
   }
 
-  public Command runIndexer() {
+  public Command startIndexer() {
     return this.run(() -> runIndexer(60)).withName("Run Indexer");
   }  
   public Command stopIndexer() {
     return this.run(() -> runIndexer(0)).withName("Stop Indexer");
   }
-  public Command runElevator() {
+  public Command startElevator() {
     return this.run(() -> runElevator(60)).withName("Run Elevator");
   }
   public Command stopElevator() {
     return this.run(() -> runElevator(0)).withName("Stop Elevator");
   }
-  
+
 }

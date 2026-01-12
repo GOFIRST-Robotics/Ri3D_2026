@@ -7,6 +7,8 @@ import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
 import frc.robot.commands.MecanumDriveCommands;
 import frc.robot.subsystems.Gyro.GyroIO;
 import frc.robot.subsystems.Gyro.GyroIONavX;
+import frc.robot.subsystems.Indexer.Indexer;
+import frc.robot.subsystems.Indexer.IndexerIOReal;
 import frc.robot.subsystems.drive.MecanumDrive.MecanumDrive;
 import frc.robot.subsystems.drive.MecanumDrive.MecanumModuleIO;
 import frc.robot.subsystems.drive.MecanumDrive.MecanumModuleIOSpark;
@@ -15,6 +17,7 @@ import org.littletonrobotics.junction.networktables.LoggedDashboardChooser;
 public class RobotContainer {
   // Subsystems
   private final MecanumDrive drive;
+  private final Indexer indexer;
 
   // Controller
   private final CommandXboxController controller = new CommandXboxController(0);
@@ -64,6 +67,8 @@ public class RobotContainer {
         break;
     }
 
+    indexer = new Indexer(new IndexerIOReal());
+
     // Set up auto routines
     autoChooser = new LoggedDashboardChooser<>("Auto Choices");
     autoChooser.addDefaultOption("None", Commands.none());
@@ -106,6 +111,11 @@ public class RobotContainer {
 
     // Reset heading when B button is pressed
     controller.b().onTrue(MecanumDriveCommands.resetHeading(drive));
+
+    controller.povLeft().onTrue(indexer.startIndexer());
+    controller.povDown().onTrue(indexer.stopIndexer());
+    controller.povRight().onTrue(indexer.startElevator());
+    controller.povUp().onTrue(indexer.stopElevator());
   }
 
   public Command getAutonomousCommand() {
