@@ -137,6 +137,8 @@ public class SimpleNavXStandalone extends SubsystemBase {
         previousRawYaw = latestRawYaw;
     }
 
+// ...existing code...
+
     private void updateSerialData() {
         if (!portInitialized || port == null) return;
         
@@ -204,10 +206,31 @@ public class SimpleNavXStandalone extends SubsystemBase {
             }
         } catch (Exception e) {
             // Handle disconnection gracefully - don't crash
-            System.out.println("Serial error (NavX may be disconnected): " + e.getMessage());
-            // Optionally mark as disconnected
-            portInitialized = false;
+            System.out.println("Serial error (NavX disconnected): " + e.getMessage());
+            handleDisconnect();
         }
+    }
+
+    /**
+     * Cleanly handles a disconnection event.
+     * Closes the port and resets state for reconnection.
+     */
+    private void handleDisconnect() {
+        portInitialized = false;
+        hasValidData = false;
+        serialBuffer = "";
+        
+        // Close the old port to release resources
+        if (port != null) {
+            try {
+                port.close();
+            } catch (Exception e) {
+                // Ignore errors when closing
+            }
+            port = null;
+        }
+        
+        System.out.println("NavX disconnected. Will attempt reconnection...");
     }
 
 // ...existing code...
