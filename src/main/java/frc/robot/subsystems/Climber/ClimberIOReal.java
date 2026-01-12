@@ -10,9 +10,12 @@ import com.revrobotics.spark.SparkBase.ControlType;
 import com.revrobotics.spark.SparkLowLevel.MotorType;
 import com.revrobotics.spark.config.SparkMaxConfig;
 
+import edu.wpi.first.wpilibj.Servo;
 import frc.robot.Constants.ClimberConstants;
 
 public class ClimberIOReal implements ClimberIO {
+    private Servo servo1;
+    private Servo servo2;
     private SparkMax climbMotor;
     private SparkClosedLoopController climbPID;
 
@@ -35,6 +38,8 @@ public class ClimberIOReal implements ClimberIO {
     public ClimberIOReal() {
         climbMotor = new SparkMax(ClimberConstants.CLIMBER_MOTOR_CAN_ID, MotorType.kBrushless);
         climbPID = climbMotor.getClosedLoopController();
+        servo1 = new Servo(0);
+        servo2 = new Servo(1);
         setInitialMotorSettings();
     }
 
@@ -104,6 +109,16 @@ public class ClimberIOReal implements ClimberIO {
                 climbPID.setSetpoint(ClimberConstants.RUNG_THREE_CLIMBER_POS, ControlType.kMAXMotionPositionControl);
                 break;
         }
+    }
+
+    @Override
+    public void setServoOnePos(double position) {
+        servo1.setPosition(position);
+    }
+
+    @Override
+    public void setServoTwoPos(double position) {
+        servo2.setPosition(position);
     }
 
     @Override
