@@ -23,10 +23,6 @@ public class Indexer extends SubsystemBase {
     io.setIndexerRPM(RPM);
   }
 
-  public void runElevator(double RPM) {
-    io.setElevatorRPM(RPM);
-  }
-
   @Override
   public void periodic() {
     io.updateInputs(inputs);
@@ -36,15 +32,12 @@ public class Indexer extends SubsystemBase {
 
   public Command startIndexer() {
     return this.run(() -> runIndexer(60)).withName("Run Indexer");
+  }
+  public Command startIndexerReverse() {
+    return this.run(() -> runIndexer(-60)).withName("Run Indexer");
   }  
   public Command stopIndexer() {
     return this.run(() -> runIndexer(0)).withName("Stop Indexer");
-  }
-  public Command startElevator() {
-    return this.run(() -> runElevator(60)).withName("Run Elevator");
-  }
-  public Command stopElevator() {
-    return this.run(() -> runElevator(0)).withName("Stop Elevator");
   }
 
 }

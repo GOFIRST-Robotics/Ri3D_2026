@@ -14,7 +14,6 @@ import frc.robot.Constants.IndexerConstants;
 
 public class IndexerIOReal implements IndexerIO {
     private SparkMax indexerMotor;
-    private VictorSP elevatorMotor;
     private SparkClosedLoopController indexerPID;
 
     private LoggedNetworkNumber changableIndexerkP;
@@ -25,7 +24,6 @@ public class IndexerIOReal implements IndexerIO {
 
     public IndexerIOReal() {
         indexerMotor = new SparkMax(IndexerConstants.INDEXER_MOTOR_CAN_ID, MotorType.kBrushless);
-        elevatorMotor = new VictorSP(IndexerConstants.ELEVATOR_MOTOR_CAN_ID);
         indexerPID = indexerMotor.getClosedLoopController();
         setInitialMotorSettings();
     }
@@ -51,11 +49,6 @@ public class IndexerIOReal implements IndexerIO {
     @Override
     public void setIndexerRPM(double RPM) {
         indexerPID.setSetpoint(RPM, ControlType.kVelocity);
-    }
-
-    @Override
-    public void setElevatorRPM(double RPM) {
-        elevatorMotor.set(RPM);
     }
 
     @Override

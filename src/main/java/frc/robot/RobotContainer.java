@@ -113,9 +113,8 @@ public class RobotContainer {
     controller.b().onTrue(MecanumDriveCommands.resetHeading(drive));
 
     controller.povLeft().onTrue(indexer.startIndexer());
+    controller.povLeft().onTrue(indexer.startIndexerReverse());
     controller.povDown().onTrue(indexer.stopIndexer());
-    controller.povRight().onTrue(indexer.startElevator());
-    controller.povUp().onTrue(indexer.stopElevator());
   }
 
   public Command getAutonomousCommand() {
