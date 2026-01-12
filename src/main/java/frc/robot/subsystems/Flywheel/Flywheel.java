@@ -44,10 +44,6 @@ public class Flywheel extends SubsystemBase {
         runFlywheels(rpm, rpm);
     }
 
-    public void setTuneFlywheelRPM() {
-        io.tuneTopAndBottomRPM();
-    }
-
     public Command RunFlywheelsCommand() { return this.runOnce(() -> runFlywheels(1200, 1200)); }
     public Command RunTuneableFlywheelsCommand() { return this.runOnce(() -> setTuneFlywheelRPM());}
     public Command StopFlywheelsCommand() { return this.runOnce(() -> runFlywheels(0, 0)); }
