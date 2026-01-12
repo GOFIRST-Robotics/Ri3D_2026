@@ -10,16 +10,17 @@ public class Flywheel extends SubsystemBase {
     private final FlywheelIO io;
     private final FlywheelIOInputsAutoLogged inputs = new FlywheelIOInputsAutoLogged();
 
-    // Dependency Injection: We pass the IO in, we don't create it here.
+    /////////////////////////////////////////////////////
+    // TODO: MAKE METHOD TO DETERMINE WHEN AT SPEED!!! //
+    /////////////////////////////////////////////////////
+
     public Flywheel(FlywheelIO io) {
         this.io = io;
     }
 
     @Override
     public void periodic() {
-        // Update the inputs from Real Hardware or Sim
         io.updateInputs(inputs);
-        // Log the data (AdvantageKit style)
         Logger.processInputs("Flywheel", inputs);
     }
 
@@ -33,16 +34,10 @@ public class Flywheel extends SubsystemBase {
     {
         double rpm = (60 / Math.PI) * (launchSpeed / Constants.WHEEL_DIAMETER);
 
-        runFlywheels(rpm, -rpm);
+        runFlywheels(rpm, rpm);
     }
 
-    public Command RunFlywheelsCommand()
-    {
-        return this.runOnce(() -> setLaunchSpeed(5));
-    }
+    public Command RunFlywheelsCommand() { return this.runOnce(() -> runFlywheels(1200, 1200)); }
 
-    public Command StopFlywheelsCommand()
-    {
-        return this.runOnce(() -> runFlywheels(0, 0));
-    }
+    public Command StopFlywheelsCommand() { return this.runOnce(() -> runFlywheels(0, 0)); }
 }

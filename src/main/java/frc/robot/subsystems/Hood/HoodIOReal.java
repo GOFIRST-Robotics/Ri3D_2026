@@ -40,9 +40,9 @@ public class HoodIOReal implements HoodIO {
         kV = TurretConstants.HOOD_kV;
 
         changeablekP = new LoggedNetworkNumber("Tuning/Hood/kP", kP);
-        changeablekI = new LoggedNetworkNumber("Tuning/Hood/kP", kI);
-        changeablekD = new LoggedNetworkNumber("Tuning/Hood/kP", kD);
-        changeablekV = new LoggedNetworkNumber("Tuning/Hood/kP", kV);
+        changeablekI = new LoggedNetworkNumber("Tuning/Hood/kI", kI);
+        changeablekD = new LoggedNetworkNumber("Tuning/Hood/kD", kD);
+        changeablekV = new LoggedNetworkNumber("Tuning/Hood/kV", kV);
 
         SparkMaxConfig config = new SparkMaxConfig();
         config.closedLoop
@@ -73,7 +73,7 @@ public class HoodIOReal implements HoodIO {
     public void updateInputs(HoodIOInputs inputs) {
         periodic();
 
-        ifOk(hoodMotorController, hoodEncoder::getPosition, (value) -> inputs.hoodRadians = value);
+        ifOk(hoodMotorController, hoodEncoder::getPosition, (value) -> inputs.hoodRadians = (value / TurretConstants.TURRET_HOOD_GEAR_RATIO) * Constants.TWO_PI);
     }
 
     @Override
@@ -83,7 +83,8 @@ public class HoodIOReal implements HoodIO {
         if (clampedRadians < TurretConstants.TURRET_HOOD_MIN_RADIANS) { clampedRadians = TurretConstants.TURRET_HOOD_MIN_RADIANS; }
         else if (clampedRadians > TurretConstants.TURRET_HOOD_MAX_RADIANS) {clampedRadians = TurretConstants.TURRET_HOOD_MAX_RADIANS; }
 
-        hoodClosedLoop.setSetpoint(radians * TurretConstants.TURRET_HOOD_GEAR_RATIO, ControlType.kPosition);
+        double motorRotations = (clampedRadians / Constants.TWO_PI) * TurretConstants.TURRET_HOOD_GEAR_RATIO;
+        hoodClosedLoop.setSetpoint(motorRotations, ControlType.kPosition);
     }
 
     public void periodic() {
@@ -101,8 +102,8 @@ public class HoodIOReal implements HoodIO {
             kV = changeablekV.getAsDouble();
             config.closedLoop.feedForward
                     .kS(0.0)
-                    .kV(0.0)
-                    .kA(kV)
+                    .kV(kV)
+                    .kA(0.0)
                     .kG(0.0);
             hasChanged = true;
         }

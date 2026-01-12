@@ -10,17 +10,14 @@ public class Turntable extends SubsystemBase {
     private final TurntableIO io;
     private final TurntableIOInputsAutoLogged inputs = new TurntableIOInputsAutoLogged();
 
-    // Dependency Injection: We pass the IO in, we don't create it here.
     public Turntable(TurntableIO io) {
         this.io = io;
     }
 
     @Override
     public void periodic() {
-        // Update the inputs from Real Hardware or Sim
         io.updateInputs(inputs);
-        // Log the data (AdvantageKit style)
-        Logger.processInputs("Hood", inputs);
+        Logger.processInputs("Turntable", inputs);
     }
 
     private double currentTargetRadians;
@@ -33,6 +30,6 @@ public class Turntable extends SubsystemBase {
         io.setTurntableRadians(currentTargetRadians); 
     }
 
-    public Command IncrementTurntableAngleCommand() { return this.run(() -> setTargetRadians(currentTargetRadians + Constants.TurretConstants.TURRET_TURNTABLE_CHANGE_SPEED)); }
-    public Command DecrementTurntableAngleCommand() { return this.run(() -> setTargetRadians(currentTargetRadians - Constants.TurretConstants.TURRET_TURNTABLE_CHANGE_SPEED)); }
+    public Command incrementTurntableAngleCommand() { return this.run(() -> setTargetRadians(currentTargetRadians + Constants.TurretConstants.TURRET_TURNTABLE_CHANGE_SPEED)); }
+    public Command decrementTurntableAngleCommand() { return this.run(() -> setTargetRadians(currentTargetRadians - Constants.TurretConstants.TURRET_TURNTABLE_CHANGE_SPEED)); }
 }

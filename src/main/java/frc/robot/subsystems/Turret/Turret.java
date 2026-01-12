@@ -13,7 +13,6 @@ public class Turret extends SubsystemBase {
     private final Hood hood;
     private final Turntable turntable;
 
-    // Dependency Injection: We pass the subsystems in, we don't create them here.
     public Turret(Flywheel flywheel, Hood hood, Turntable turntable) {
         this.flywheel = flywheel;
         this.hood = hood;

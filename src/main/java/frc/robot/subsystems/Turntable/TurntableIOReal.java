@@ -50,14 +50,14 @@ public class TurntableIOReal implements TurntableIO {
         kA = TurretConstants.TURNTABLE_kA;
         cruiseVel = TurretConstants.TURNTABLE_CRUISE_VEL;
         maxAccel = TurretConstants.TURNTABLE_MAX_ACCEL;
-        changeablekP = new LoggedNetworkNumber("Tuning/Hood/kP", kP);
-        changeablekI = new LoggedNetworkNumber("Tuning/Hood/kP", kI);
-        changeablekD = new LoggedNetworkNumber("Tuning/Hood/kP", kD);
-        changeablekS = new LoggedNetworkNumber("Tuning/Hood/kP", kS);
-        changeablekV = new LoggedNetworkNumber("Tuning/Hood/kP", kV);
-        changeablekA = new LoggedNetworkNumber("Tuning/Hood/kP", kA);
-        changeableCruiseVel = new LoggedNetworkNumber("Tuning/Hood/kP", cruiseVel);
-        changeableMaxAccel = new LoggedNetworkNumber("Tuning/Hood/kP", maxAccel);
+        changeablekP = new LoggedNetworkNumber("Tuning/Turntable/kP", kP);
+        changeablekI = new LoggedNetworkNumber("Tuning/Turntable/kI", kI);
+        changeablekD = new LoggedNetworkNumber("Tuning/Turntable/kD", kD);
+        changeablekS = new LoggedNetworkNumber("Tuning/Turntable/kS", kS);
+        changeablekV = new LoggedNetworkNumber("Tuning/Turntable/kV", kV);
+        changeablekA = new LoggedNetworkNumber("Tuning/Turntable/kA", kA);
+        changeableCruiseVel = new LoggedNetworkNumber("Tuning/Turntable/cruiseVel", cruiseVel);
+        changeableMaxAccel = new LoggedNetworkNumber("Tuning/Turntable/maxAccel", maxAccel);
 
         SparkMaxConfig config = new SparkMaxConfig();
         config.closedLoop
@@ -87,7 +87,7 @@ public class TurntableIOReal implements TurntableIO {
     public void updateInputs(TurntableIOInputs inputs) {
         periodic();
 
-        ifOk(turntableMotorController, turntableEncoder::getPosition, (value) -> inputs.turntableRadians = value);
+        ifOk(turntableMotorController, turntableEncoder::getPosition, (value) -> inputs.turntableRadians = (value / TurretConstants.TURRET_TURNTABLE_GEAR_RATIO) * Constants.TWO_PI);
     }
 
     @Override
@@ -97,7 +97,8 @@ public class TurntableIOReal implements TurntableIO {
         if (clampedRadians < -TurretConstants.TURRET_TURNTABLE_MAX_RADIANS) { clampedRadians = -TurretConstants.TURRET_TURNTABLE_MAX_RADIANS; }
         else if (clampedRadians > TurretConstants.TURRET_TURNTABLE_MAX_RADIANS) {clampedRadians = TurretConstants.TURRET_TURNTABLE_MAX_RADIANS; }
 
-        turntableClosedLoop.setSetpoint(radians * TurretConstants.TURRET_TURNTABLE_GEAR_RATIO, ControlType.kMAXMotionPositionControl); 
+        double motorRotations = (clampedRadians / Constants.TWO_PI) * TurretConstants.TURRET_TURNTABLE_GEAR_RATIO;
+        turntableClosedLoop.setSetpoint(motorRotations, ControlType.kMAXMotionPositionControl); 
     }
 
     public void periodic() {

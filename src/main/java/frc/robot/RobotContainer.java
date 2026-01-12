@@ -139,11 +139,11 @@ public class RobotContainer {
     controller.leftTrigger().onTrue(flywheel.StopFlywheelsCommand());
     controller.rightTrigger().onTrue(flywheel.RunFlywheelsCommand());
 
-    controller.povUp().whileTrue(hood.IncrementHoodAngleCommand());
-    controller.povDown().whileTrue(hood.DecrementHoodAngleCommand());
+    controller.povUp().whileTrue(hood.incrementHoodAngleCommand());
+    controller.povDown().whileTrue(hood.decrementHoodAngleCommand());
 
-    controller.povRight().whileTrue(turntable.IncrementTurntableAngleCommand());
-    controller.povLeft().whileTrue(turntable.DecrementTurntableAngleCommand());
+    controller.povRight().whileTrue(turntable.incrementTurntableAngleCommand());
+    controller.povLeft().whileTrue(turntable.decrementTurntableAngleCommand());
   }
 
   public Command getAutonomousCommand() {
