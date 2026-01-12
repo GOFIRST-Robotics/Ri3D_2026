@@ -24,10 +24,10 @@ import org.littletonrobotics.junction.networktables.LoggedDashboardChooser;
 public class RobotContainer {
   // Subsystems
   private final MecanumDrive drive;
-  private final Turret turret;
+  // private final Turret turret;
   private final Flywheel flywheel;
-  private final Hood hood;
-  private final Turntable turntable;
+  // private final Hood hood;
+  // private final Turntable turntable;
 
   // Controller
   private final CommandXboxController controller = new CommandXboxController(0);
@@ -50,9 +50,9 @@ public class RobotContainer {
                 new GyroIONavX());
 
         flywheel = new Flywheel(new FlywheelIOReal());
-        hood = new Hood(new HoodIOReal());
-        turntable = new Turntable(new TurntableIOReal());
-        turret = new Turret(flywheel, hood, turntable);
+        // hood = new Hood(new HoodIOReal());
+        // turntable = new Turntable(new TurntableIOReal());
+        // turret = new Turret(flywheel, hood, turntable);
 
         break;
 
@@ -69,9 +69,9 @@ public class RobotContainer {
                 new GyroIO() {});
 
         flywheel = null;
-        hood = null;
-        turntable = null;
-        turret = null;
+        // hood = null;
+        // turntable = null;
+        // turret = null;
         break;
 
       default:
@@ -87,9 +87,9 @@ public class RobotContainer {
                 new GyroIO() {});
 
         flywheel = null;
-        hood = null;
-        turntable = null;
-        turret = null;
+        // hood = null;
+        // turntable = null;
+        // turret = null;
         break;
     }
 
@@ -137,13 +137,13 @@ public class RobotContainer {
     controller.b().onTrue(MecanumDriveCommands.resetHeading(drive));
 
     controller.leftTrigger().onTrue(flywheel.StopFlywheelsCommand());
-    controller.rightTrigger().onTrue(flywheel.RunFlywheelsCommand());
+    controller.rightTrigger().onTrue(flywheel.RunTuneableFlywheelsCommand());
 
-    controller.povUp().whileTrue(hood.incrementHoodAngleCommand());
-    controller.povDown().whileTrue(hood.decrementHoodAngleCommand());
+    // controller.povUp().whileTrue(hood.incrementHoodAngleCommand());
+    // controller.povDown().whileTrue(hood.decrementHoodAngleCommand());
 
-    controller.povRight().whileTrue(turntable.incrementTurntableAngleCommand());
-    controller.povLeft().whileTrue(turntable.decrementTurntableAngleCommand());
+    // controller.povRight().whileTrue(turntable.incrementTurntableAngleCommand());
+    // controller.povLeft().whileTrue(turntable.decrementTurntableAngleCommand());
   }
 
   public Command getAutonomousCommand() {

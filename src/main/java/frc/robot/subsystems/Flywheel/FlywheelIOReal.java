@@ -2,6 +2,7 @@ package frc.robot.subsystems.Flywheel;
 
 import com.revrobotics.AbsoluteEncoder;
 import com.revrobotics.PersistMode;
+import com.revrobotics.RelativeEncoder;
 import com.revrobotics.ResetMode;
 import com.revrobotics.spark.SparkClosedLoopController;
 import com.revrobotics.spark.SparkMax;
@@ -23,28 +24,32 @@ public class FlywheelIOReal implements FlywheelIO {
     private LoggedNetworkNumber tunableBottomSpeed;
 
     private final SparkMax topFlywheelMotorController;
-    private final AbsoluteEncoder topFlyWheelEncoder;
+    private final RelativeEncoder topFlyWheelEncoder;
     private final SparkClosedLoopController topFlywheelClosedLoop;
     private LoggedNetworkNumber changeablekPFlywheelTop;
     private LoggedNetworkNumber changeablekIFlywheelTop;
     private LoggedNetworkNumber changeablekDFlywheelTop;
     private LoggedNetworkNumber changeablekVFlywheelTop;
+    private LoggedNetworkNumber changeableMaxAccelTop;
     private double kPFlywheelTop;
     private double kIFlywheelTop;
     private double kDFlywheelTop;
     private double kVFlywheelTop;
+    private double maxAccelTop;
 
     private final SparkMax bottomFlywheelMotorController;
-    private final AbsoluteEncoder bottomFlyWheelEncoder;
+    private final RelativeEncoder bottomFlyWheelEncoder;
     private final SparkClosedLoopController bottomFlywheelClosedLoop;
     private LoggedNetworkNumber changeablekPFlywheelBottom;
     private LoggedNetworkNumber changeablekIFlywheelBottom;
     private LoggedNetworkNumber changeablekDFlywheelBottom;
     private LoggedNetworkNumber changeablekVFlywheelBottom;
+    private LoggedNetworkNumber changeableMaxAccelBottom;
     private double kPFlywheelBottom;
     private double kIFlywheelBottom;
     private double kDFlywheelBottom;
     private double kVFlywheelBottom;
+    private double maxAccelBottom;
 
     private void setInitialMotorPIDs() {
 
@@ -55,11 +60,14 @@ public class FlywheelIOReal implements FlywheelIO {
         kIFlywheelTop = TurretConstants.TOP_FLYWHEEL_KI;
         kDFlywheelTop = TurretConstants.TOP_FLYWHEEL_KD;
         kVFlywheelTop = TurretConstants.TOP_FLYWHEEL_KV;
+        maxAccelTop = TurretConstants.TOP_FLYWHEEL_ACCEL;
+        maxAccelBottom = TurretConstants.BOTTOM_FLYWHEEL_ACCEL;
 
         changeablekPFlywheelTop = new LoggedNetworkNumber("/Tuning/FlywheelTop/kP", kPFlywheelTop);
         changeablekIFlywheelTop = new LoggedNetworkNumber("/Tuning/FlywheelTop/kI", kIFlywheelTop);
         changeablekDFlywheelTop = new LoggedNetworkNumber("/Tuning/FlywheelTop/kD", kDFlywheelTop);
         changeablekVFlywheelTop = new LoggedNetworkNumber("/Tuning/FlywheelTop/kV", kVFlywheelTop);
+        changeableMaxAccelTop = new LoggedNetworkNumber("/Tuning/FlywheelTop/maxAccel", maxAccelTop);
 
         SparkMaxConfig topFlywheelConfig = new SparkMaxConfig();
         topFlywheelConfig.closedLoop
@@ -68,6 +76,9 @@ public class FlywheelIOReal implements FlywheelIO {
                 .kS(0.0)
                 .kV(kVFlywheelTop)
                 .kA(0.0);
+        topFlywheelConfig.closedLoop.maxMotion
+                .maxAcceleration(maxAccelTop)
+                .allowedProfileError(10);
         topFlywheelMotorController.configure(topFlywheelConfig, ResetMode.kResetSafeParameters, PersistMode.kPersistParameters);
 
         kPFlywheelBottom = TurretConstants.BOTTOM_FLYWHEEL_KP;
@@ -79,6 +90,7 @@ public class FlywheelIOReal implements FlywheelIO {
         changeablekIFlywheelBottom = new LoggedNetworkNumber("/Tuning/FlywheelBottom/kI", kIFlywheelBottom);
         changeablekDFlywheelBottom = new LoggedNetworkNumber("/Tuning/FlywheelBottom/kD", kDFlywheelBottom);
         changeablekVFlywheelBottom = new LoggedNetworkNumber("/Tuning/FlywheelBottom/kV", kVFlywheelBottom);
+        changeableMaxAccelBottom = new LoggedNetworkNumber("/Tuning/FlywheelBottom/maxAccel", maxAccelBottom);
 
         SparkMaxConfig bottomFlywheelConfig = new SparkMaxConfig();
         bottomFlywheelConfig.closedLoop
@@ -87,6 +99,9 @@ public class FlywheelIOReal implements FlywheelIO {
                 .kS(0.0)
                 .kV(kVFlywheelBottom)
                 .kA(0.0);
+        bottomFlywheelConfig.closedLoop.maxMotion
+                .maxAcceleration(maxAccelBottom)
+                .allowedProfileError(10);
         bottomFlywheelMotorController.configure(bottomFlywheelConfig, ResetMode.kResetSafeParameters, PersistMode.kPersistParameters);
     }
 
@@ -95,8 +110,8 @@ public class FlywheelIOReal implements FlywheelIO {
         topFlywheelMotorController = new SparkMax(Constants.TURRET_LEFT_FLYWHEEL_MOTOR_ID, MotorType.kBrushless);
         bottomFlywheelMotorController = new SparkMax(Constants.TURRET_RIGHT_FLYWHEEL_MOTOR_ID, MotorType.kBrushless);
 
-        topFlyWheelEncoder = topFlywheelMotorController.getAbsoluteEncoder();
-        bottomFlyWheelEncoder = bottomFlywheelMotorController.getAbsoluteEncoder();
+        topFlyWheelEncoder = topFlywheelMotorController.getEncoder();
+        bottomFlyWheelEncoder = bottomFlywheelMotorController.getEncoder();
 
         topFlywheelClosedLoop = topFlywheelMotorController.getClosedLoopController();
         bottomFlywheelClosedLoop = bottomFlywheelMotorController.getClosedLoopController();
@@ -106,22 +121,20 @@ public class FlywheelIOReal implements FlywheelIO {
 
     @Override
     public void updateInputs(FlywheelIOInputs inputs) {
-        periodic();
-
         ifOk(topFlywheelMotorController, topFlyWheelEncoder::getVelocity, (value) -> inputs.topFlywheelRPM = value);
         ifOk(bottomFlywheelMotorController, bottomFlyWheelEncoder::getVelocity, (value) -> inputs.bottomFlywheelRPM = value);
     }
 
     @Override
-    public void setTopFlywheelRPM(double rpm) {  topFlywheelClosedLoop.setSetpoint(rpm, ControlType.kVelocity); }
+    public void setTopFlywheelRPM(double rpm) {  topFlywheelClosedLoop.setSetpoint(rpm, ControlType.kMAXMotionVelocityControl); }
 
     @Override
-    public void setBottomFlywheelRPM(double rpm) { bottomFlywheelClosedLoop.setSetpoint(rpm, ControlType.kVelocity); }
+    public void setBottomFlywheelRPM(double rpm) { bottomFlywheelClosedLoop.setSetpoint(rpm, ControlType.kMAXMotionVelocityControl); }
 
     @Override
     public void tuneTopAndBottomRPM() {
-        topFlywheelClosedLoop.setSetpoint(tunableTopSpeed.getAsDouble(), ControlType.kVelocity);
-        bottomFlywheelClosedLoop.setSetpoint(tunableBottomSpeed.getAsDouble(), ControlType.kVelocity);
+        topFlywheelClosedLoop.setSetpoint(tunableTopSpeed.getAsDouble(), ControlType.kMAXMotionVelocityControl);
+        bottomFlywheelClosedLoop.setSetpoint(tunableBottomSpeed.getAsDouble(), ControlType.kMAXMotionVelocityControl);
     }
 
     @Override
@@ -142,6 +155,13 @@ public class FlywheelIOReal implements FlywheelIO {
                     .kS(0.0)
                     .kV(kVFlywheelTop)
                     .kA(0.0);
+            topHasChanged = true;
+        }
+        if (changeableMaxAccelTop.getAsDouble() != maxAccelTop) {
+            maxAccelTop = changeableMaxAccelTop.getAsDouble();
+            topConfig.closedLoop.maxMotion
+                    .maxAcceleration(maxAccelTop)
+                    .allowedProfileError(10);
             topHasChanged = true;
         }
         if (topHasChanged) {
@@ -165,6 +185,13 @@ public class FlywheelIOReal implements FlywheelIO {
                     .kS(0.0)
                     .kV(kVFlywheelBottom)
                     .kA(0.0);
+            bottomHasChanged = true;
+        }
+        if (changeableMaxAccelBottom.getAsDouble() != maxAccelBottom) {
+            maxAccelBottom = changeableMaxAccelBottom.getAsDouble();
+            bottomConfig.closedLoop.maxMotion
+                    .maxAcceleration(maxAccelBottom)
+                    .allowedProfileError(10);
             bottomHasChanged = true;
         }
         if (bottomHasChanged) {

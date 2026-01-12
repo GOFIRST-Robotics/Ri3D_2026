@@ -166,11 +166,13 @@ public final class Constants {
     public static final double TOP_FLYWHEEL_KI = 0.0;
     public static final double TOP_FLYWHEEL_KD = 0.0;
     public static final double TOP_FLYWHEEL_KV = 0.000175 * 13;
+    public static final double TOP_FLYWHEEL_ACCEL = 2000.0;
 
     public static final double BOTTOM_FLYWHEEL_KP = 0.0001;
     public static final double BOTTOM_FLYWHEEL_KI = 0.0;
     public static final double BOTTOM_FLYWHEEL_KD = 0.0;
     public static final double BOTTOM_FLYWHEEL_KV = 0.000175 * 13;
+    public static final double BOTTOM_FLYWHEEL_ACCEL = 2000.0;
 
   }
 
