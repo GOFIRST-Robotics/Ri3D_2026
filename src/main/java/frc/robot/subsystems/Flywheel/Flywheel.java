@@ -24,8 +24,13 @@ public class Flywheel extends SubsystemBase {
         Logger.processInputs("Flywheel", inputs);
     }
 
+    double topTargetRPM;
+    double bottomTargetRPM;
     public void runFlywheels(double topRPM, double bottomRPM)
     {
+        topTargetRPM = topRPM;
+        bottomTargetRPM = bottomRPM;
+
         io.setTopFlywheelRPM(topRPM);
         io.setBottomFlywheelRPM(bottomRPM);
     }
@@ -39,6 +44,10 @@ public class Flywheel extends SubsystemBase {
     }
 
     public Command RunFlywheelsCommand() { return this.runOnce(() -> runFlywheels(1200, 1200)); }
-
     public Command StopFlywheelsCommand() { return this.runOnce(() -> runFlywheels(0, 0)); }
+
+    public boolean FlywheelSpeedWithinError()
+    {
+        return Math.abs(inputs.bottomFlywheelRPM - bottomTargetRPM) <= Constants.TurretConstants.TURRET_FLYWHEEL_ACCEPTABLE_FLYWHEEL_RPM_ERROR && Math.abs(inputs.topFlywheelRPM - topTargetRPM) <= Constants.TurretConstants.TURRET_FLYWHEEL_ACCEPTABLE_FLYWHEEL_RPM_ERROR;
+    }
 }

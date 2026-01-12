@@ -117,23 +117,24 @@ public final class Constants {
     public static final double FLYWHEEL_DIAMETER = 1;
     public static final double FLYWHEEL_BALL_COMPRESSION = 0.25;
     
-    public static final double TURRET_LOCAL_POS_X = 0; // meters, right hand hand rule!!
-    public static final double TURRET_LOCAL_POS_Y = 0; // meters, right hand hand rule!!
+    public static final double TURRET_LOCAL_POS_X = 0; // meters, right hand rule!!
+    public static final double TURRET_LOCAL_POS_Y = 0; // meters, right hand rule!!
 
     public static final double TURRET_HOOD_MOTOR_MIN_ROTATIONS = 5;
     public static final double TURRET_HOOD_MOTOR_MAX_ROTATIONS = 5;
-
     public static final double TURRET_HOOD_MIN_RADIANS = Units.degreesToRadians(30);
     public static final double TURRET_HOOD_MAX_RADIANS = Units.degreesToRadians(80);
 
-    public static final double TURRET_HOOD_CHANGE_SPEED = 0.01;
-
     public static final double TURRET_TURNTABLE_MOTOR_MIN_ROTATIONS = 5;
     public static final double TURRET_TURNTABLE_MOTOR_MAX_ROTATIONS = 5;
-
     public static final double TURRET_TURNTABLE_MAX_RADIANS = Units.degreesToRadians(175);
 
     public static final double TURRET_TURNTABLE_CHANGE_SPEED = 0.01;
+    public static final double TURRET_HOOD_CHANGE_SPEED = 0.01;
+
+    public static final double TURRET_FLYWHEEL_ACCEPTABLE_FLYWHEEL_RPM_ERROR = 100;
+    public static final double TURRET_HOOD_ACCEPTABLE_RADIAN_ERROR = Units.degreesToRadians(2);
+    public static final double TURRET_TURNTABLE_ACCEPTABLE_RADIAN_ERROR = Units.degreesToRadians(2);
 
     public static final double GRAVITY_CONSTANT = -9.81;
 

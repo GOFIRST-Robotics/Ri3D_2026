@@ -32,4 +32,9 @@ public class Turntable extends SubsystemBase {
 
     public Command incrementTurntableAngleCommand() { return this.run(() -> setTargetRadians(currentTargetRadians + Constants.TurretConstants.TURRET_TURNTABLE_CHANGE_SPEED)); }
     public Command decrementTurntableAngleCommand() { return this.run(() -> setTargetRadians(currentTargetRadians - Constants.TurretConstants.TURRET_TURNTABLE_CHANGE_SPEED)); }
+
+    public boolean TurntableHeadingWithinError()
+    {
+        return Math.abs(inputs.turntableRadians - currentTargetRadians) <= Constants.TurretConstants.TURRET_TURNTABLE_ACCEPTABLE_RADIAN_ERROR;
+    }
 }

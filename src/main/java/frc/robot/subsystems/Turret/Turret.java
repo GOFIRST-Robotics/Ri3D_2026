@@ -1,6 +1,7 @@
 package frc.robot.subsystems.Turret;
 
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
+import frc.robot.Constants;
 import frc.robot.Constants.TurretConstants;
 import frc.robot.subsystems.Flywheel.Flywheel;
 import frc.robot.subsystems.Hood.Hood;
@@ -54,5 +55,12 @@ public class Turret extends SubsystemBase {
 
         hood.setTargetRadians(launch_angle);
         flywheel.setLaunchSpeed(launch_velocity);
+    }
+
+    public boolean TurretReadyToShoot()
+    {
+        return flywheel.FlywheelSpeedWithinError() 
+            && hood.HoodRotationWithinError()
+            && turntable.TurntableHeadingWithinError();
     }
 }

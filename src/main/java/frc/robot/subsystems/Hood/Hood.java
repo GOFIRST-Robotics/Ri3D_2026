@@ -33,4 +33,9 @@ public class Hood extends SubsystemBase {
 
     public Command incrementHoodAngleCommand() { return this.run(() -> setTargetRadians(currentTargetRadians + Constants.TurretConstants.TURRET_HOOD_CHANGE_SPEED)); }
     public Command decrementHoodAngleCommand() { return this.run(() -> setTargetRadians(currentTargetRadians - Constants.TurretConstants.TURRET_HOOD_CHANGE_SPEED)); }
+
+    public boolean HoodRotationWithinError()
+    {
+        return Math.abs(inputs.hoodRadians - currentTargetRadians) <= Constants.TurretConstants.TURRET_HOOD_ACCEPTABLE_RADIAN_ERROR;
+    }
 }
