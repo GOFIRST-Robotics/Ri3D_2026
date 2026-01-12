@@ -96,54 +96,131 @@ public class SimpleNavXStandalone extends SubsystemBase {
         previousRawYaw = latestRawYaw;
     }
 
+    // ...existing code...
+
+    // private void updateSerialData() {
+    //     if (!portInitialized || port == null) return;
+        
+    //     try {
+    //         int bytesAvailable = port.getBytesReceived();
+    //         if (bytesAvailable > 0) {
+    //             // Read whatever is available
+    //             String incoming = port.readString();
+                
+    //             // DEBUG: Print what we're receiving
+    //             System.out.println("Serial bytes: " + bytesAvailable + " | Raw: " + incoming);
+                
+    //             if (incoming == null) return;
+                
+    //             // Append to our buffer (handles split packets)
+    //             serialBuffer += incoming;
+                
+    //             // DEBUG: Print buffer state
+    //             System.out.println("Buffer: " + serialBuffer);
+                
+    //             // Safety: prevent buffer from growing infinite if parsing fails
+    //             if (serialBuffer.length() > 1000) {
+    //                 System.out.println("WARNING: Buffer overflow, clearing");
+    //                 serialBuffer = "";
+    //             }
+
+    //             // Process ALL complete packets in the buffer
+    //             while (true) {
+    //                 int packetStart = serialBuffer.indexOf("!y");
+    //                 int packetEnd = serialBuffer.indexOf('\r', packetStart == -1 ? 0 : packetStart);
+                    
+    //                 // DEBUG: Print parsing state
+    //                 System.out.println("PacketStart: " + packetStart + " | PacketEnd: " + packetEnd);
+                    
+    //                 if (packetStart == -1) break;
+    //                 if (packetEnd == -1) break;
+
+    //                 String packet = serialBuffer.substring(packetStart, packetEnd);
+    //                 System.out.println("Found packet: [" + packet + "]");
+                    
+    //                 try {
+    //                     String valStr = packet.substring(2).trim();
+    //                     latestRawYaw = Double.parseDouble(valStr);
+    //                     System.out.println("Parsed yaw: " + latestRawYaw);
+                        
+    //                     lastValidReadTime = Timer.getFPGATimestamp();
+    //                     hasValidData = true;
+    //                 } catch (Exception e) {
+    //                     System.out.println("Parse error: " + e.getMessage());
+    //                 }
+
+    //                 serialBuffer = serialBuffer.substring(packetEnd + 1);
+    //             }
+    //         }
+    //     } catch (Exception e) {
+    //         System.out.println("Serial error: " + e.getMessage());
+    //     }
+    // }
+
+    // ...existing code...
+
     private void updateSerialData() {
         if (!portInitialized || port == null) return;
         
         try {
-            if (port.getBytesReceived() > 0) {
-                // Read whatever is available
+            int bytesAvailable = port.getBytesReceived();
+            if (bytesAvailable > 0) {
                 String incoming = port.readString();
+                
                 if (incoming == null) return;
                 
-                // Append to our buffer (handles split packets)
                 serialBuffer += incoming;
                 
                 // Safety: prevent buffer from growing infinite if parsing fails
-                if (serialBuffer.length() > 1000) serialBuffer = "";
+                if (serialBuffer.length() > 1000) {
+                    serialBuffer = "";
+                }
 
                 // Process ALL complete packets in the buffer
-                // We use a while loop in case multiple packets arrived at once
+                // Look for lines ending with \r\n or just \n
                 while (true) {
                     int packetStart = serialBuffer.indexOf("!y");
-                    if (packetStart == -1) break; // No start tag found
+                    int packetEnd = serialBuffer.indexOf('\n', packetStart == -1 ? 0 : packetStart);
+                    
+                    if (packetStart == -1 || packetEnd == -1) break;
 
-                    int packetEnd = serialBuffer.indexOf('\r', packetStart);
-                    if (packetEnd == -1) break; // No end tag found yet, wait for next loop
-
-                    // Extract the packet: "!y 123.45"
                     String packet = serialBuffer.substring(packetStart, packetEnd);
                     
-                    // Parse the number
                     try {
-                        // Remove "!y" (first 2 chars) and whitespace
-                        // Packet is likely "!y 123.45" or "!y123.45"
-                        String valStr = packet.substring(2).trim();
-                        latestRawYaw = Double.parseDouble(valStr);
+                        // Format: "!y 144.25-011.41 003.11 318.53CF"
+                        // Skip "!y " (3 chars) to get to the yaw value
+                        String afterPrefix = packet.substring(3).trim();
                         
-                        lastValidReadTime = Timer.getFPGATimestamp();
-                        hasValidData = true; // We are now live!
+                        // Find where yaw ends (at the next '-' or space after first char)
+                        int yawEnd = -1;
+                        for (int i = 1; i < afterPrefix.length(); i++) {
+                            char c = afterPrefix.charAt(i);
+                            if (c == '-' || c == ' ') {
+                                yawEnd = i;
+                                break;
+                            }
+                        }
+                        
+                        if (yawEnd > 0) {
+                            String yawStr = afterPrefix.substring(0, yawEnd);
+                            latestRawYaw = Double.parseDouble(yawStr);
+                            
+                            lastValidReadTime = Timer.getFPGATimestamp();
+                            hasValidData = true;
+                        }
                     } catch (Exception e) {
-                        // Bad packet, ignore
+                        System.out.println("Parse error: " + e.getMessage());
                     }
 
-                    // Remove this packet from the buffer and continue checking
                     serialBuffer = serialBuffer.substring(packetEnd + 1);
                 }
             }
         } catch (Exception e) {
-            // Serial error handling
+            System.out.println("Serial error: " + e.getMessage());
         }
     }
+
+// ...existing code...
 
     /**
      * Gets the current yaw angle as a Rotation2d.
