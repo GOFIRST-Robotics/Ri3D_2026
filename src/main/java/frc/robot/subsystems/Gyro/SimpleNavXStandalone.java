@@ -10,7 +10,7 @@ public class SimpleNavXStandalone extends SubsystemBase {
     private boolean portInitialized = false;
     
     // Variables for continuous angle tracking (fixes offset issues)
-    private double latestRawYaw = 0;       // Current reading from sensor (0-360)
+    private double latestRawYaw = 0;       // Current reading from sensor (-180 to 180)
     private double previousRawYaw = 0;     // Reading from the previous loop
     private double accumulatedYaw = 0;     // Continuous total angle (unbounded)
 
@@ -21,34 +21,75 @@ public class SimpleNavXStandalone extends SubsystemBase {
     
     private static final double CONNECTION_TIMEOUT = 0.5; // seconds
     private static final double VELOCITY_FILTER_CONSTANT = 0.8; // 0-1, higher = more smoothing
+    private static final double RECONNECT_INTERVAL = 2.0; // seconds between reconnect attempts
 
     // Buffer to hold split packets between loops
     private String serialBuffer = ""; 
     // Flag to prevent logic running before first real read
     private boolean hasValidData = false;
+    // Track last reconnect attempt
+    private double lastReconnectAttempt = 0;
 
     public SimpleNavXStandalone() {
-        try {
-            port = new SerialPort(115200, SerialPort.Port.kUSB);
-            portInitialized = true;
-            System.out.println("NavX serial port initialized successfully");
-        } catch (Exception e) {
-            System.err.println("Failed to initialize NavX serial port: " + e.getMessage());
-            portInitialized = false;
-        }
+        tryConnect();
         
-        // Initialize values to prevent startup startup jumps
-        updateSerialData(); 
-        previousRawYaw = latestRawYaw;
-        accumulatedYaw = latestRawYaw; 
+        if (portInitialized) {
+            // Initialize values to prevent startup jumps
+            updateSerialData(); 
+            previousRawYaw = latestRawYaw;
+            accumulatedYaw = latestRawYaw; 
+        }
         
         lastTimestamp = Timer.getFPGATimestamp();
         lastValidReadTime = Timer.getFPGATimestamp();
     }
 
-  @Override
+    /**
+     * Attempts to connect to the NavX serial port.
+     * Tries all USB ports in sequence.
+     */
+    private void tryConnect() {
+        SerialPort.Port[] portsToTry = {
+            SerialPort.Port.kUSB,
+            SerialPort.Port.kUSB1,
+            SerialPort.Port.kUSB2
+        };
+        
+        for (SerialPort.Port portOption : portsToTry) {
+            try {
+                port = new SerialPort(115200, portOption);
+                portInitialized = true;
+                serialBuffer = "";
+                hasValidData = false;
+                System.out.println("NavX serial port initialized successfully on " + portOption);
+                return;
+            } catch (Exception e) {
+                // Try next port
+            }
+        }
+        
+        System.err.println("Failed to initialize NavX on any USB port");
+        portInitialized = false;
+    }
+
+    @Override
     public void periodic() {
-        if (!portInitialized) return;
+        // Try to reconnect if disconnected
+        if (!portInitialized) {
+            double now = Timer.getFPGATimestamp();
+            if (now - lastReconnectAttempt > RECONNECT_INTERVAL) {
+                lastReconnectAttempt = now;
+                tryConnect();
+                
+                if (portInitialized) {
+                    // Reset tracking variables on reconnect
+                    previousRawYaw = 0;
+                    accumulatedYaw = 0;
+                    hasValidData = false;
+                }
+            }
+            return;
+        }
         
         // 1. Update latestRawYaw from Serial
         updateSerialData();
@@ -62,7 +103,7 @@ public class SimpleNavXStandalone extends SubsystemBase {
 
         double currentTimestamp = Timer.getFPGATimestamp();
         
-        // 2. Calculate raw change and handle 0-360 wrap
+        // 2. Calculate raw change and handle -180 to 180 wrap
         double deltaYaw = latestRawYaw - previousRawYaw;
         
         // Normalize delta to -180 to 180 (shortest path)
@@ -95,70 +136,6 @@ public class SimpleNavXStandalone extends SubsystemBase {
         
         previousRawYaw = latestRawYaw;
     }
-
-    // private void updateSerialData() {
-    //     if (!portInitialized || port == null) return;
-        
-    //     try {
-    //         int bytesAvailable = port.getBytesReceived();
-    //         if (bytesAvailable > 0) {
-    //             String incoming = port.readString();
-                
-    //             if (incoming == null) return;
-                
-    //             serialBuffer += incoming;
-                
-    //             // Safety: prevent buffer from growing infinite if parsing fails
-    //             if (serialBuffer.length() > 1000) {
-    //                 serialBuffer = "";
-    //             }
-
-    //             // Process ALL complete packets in the buffer
-    //             // Look for lines ending with \r\n or just \n
-    //             while (true) {
-    //                 int packetStart = serialBuffer.indexOf("!y");
-    //                 int packetEnd = serialBuffer.indexOf('\n', packetStart == -1 ? 0 : packetStart);
-                    
-    //                 if (packetStart == -1 || packetEnd == -1) break;
-
-    //                 String packet = serialBuffer.substring(packetStart, packetEnd);
-                    
-    //                 try {
-    //                     // Format: "!y 144.25-011.41 003.11 318.53CF"
-    //                     // Skip "!y " (3 chars) to get to the yaw value
-    //                     String afterPrefix = packet.substring(3).trim();
-                        
-    //                     // Find where yaw ends (at the next '-' or space after first char)
-    //                     int yawEnd = -1;
-    //                     for (int i = 1; i < afterPrefix.length(); i++) {
-    //                         char c = afterPrefix.charAt(i);
-    //                         if (c == '-' || c == ' ') {
-    //                             yawEnd = i;
-    //                             break;
-    //                         }
-    //                     }
-                        
-    //                     if (yawEnd > 0) {
-    //                         String yawStr = afterPrefix.substring(0, yawEnd);
-    //                         latestRawYaw = Double.parseDouble(yawStr);
-                            
-    //                         lastValidReadTime = Timer.getFPGATimestamp();
-    //                         hasValidData = true;
-    //                     }
-    //                 } catch (Exception e) {
-    //                     System.out.println("Parse error: " + e.getMessage());
-    //                 }
-
-    //                 serialBuffer = serialBuffer.substring(packetEnd + 1);
-    //             }
-    //         }
-    //     } catch (Exception e) {
-    //         System.out.println("Serial error: " + e.getMessage());
-    //     }
-    // }
-
-
-    // ...existing code...
 
     private void updateSerialData() {
         if (!portInitialized || port == null) return;
