@@ -1,6 +1,8 @@
 package frc.robot.subsystems.Turntable;
 
+import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
+import frc.robot.Constants;
 
 import org.littletonrobotics.junction.Logger;
 
@@ -21,8 +23,16 @@ public class Turntable extends SubsystemBase {
         Logger.processInputs("Hood", inputs);
     }
 
-    public void setTargetRadians(double radians)
-    {
-        io.setTurntableRadians(radians);
+    private double currentTargetRadians;
+    public void setTargetRadians(double radians) 
+    { 
+        currentTargetRadians = radians;
+        if (currentTargetRadians < -Constants.TurretConstants.TURRET_TURNTABLE_MAX_RADIANS) { currentTargetRadians = -Constants.TurretConstants.TURRET_TURNTABLE_MAX_RADIANS; }
+        else if (currentTargetRadians > Constants.TurretConstants.TURRET_TURNTABLE_MAX_RADIANS) { currentTargetRadians = Constants.TurretConstants.TURRET_TURNTABLE_MAX_RADIANS; }
+
+        io.setTurntableRadians(currentTargetRadians); 
     }
+
+    public Command IncrementTurntableAngleCommand() { return this.run(() -> setTargetRadians(currentTargetRadians + Constants.TurretConstants.TURRET_TURNTABLE_CHANGE_SPEED)); }
+    public Command DecrementTurntableAngleCommand() { return this.run(() -> setTargetRadians(currentTargetRadians - Constants.TurretConstants.TURRET_TURNTABLE_CHANGE_SPEED)); }
 }

@@ -1,5 +1,7 @@
 package frc.robot.subsystems.Hood;
 
+import edu.wpi.first.math.util.Units;
+import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 
 import org.littletonrobotics.junction.Logger;
@@ -23,5 +25,16 @@ public class Hood extends SubsystemBase {
         Logger.processInputs("Hood", inputs);
     }
 
-    public void setTargetRadians(double radians) { io.setHoodRadians(radians); }
+    private double currentTargetRadians;
+    public void setTargetRadians(double radians) 
+    { 
+        currentTargetRadians = radians;
+        if (currentTargetRadians < Constants.TurretConstants.TURRET_HOOD_MIN_RADIANS) { currentTargetRadians = Constants.TurretConstants.TURRET_HOOD_MIN_RADIANS; }
+        else if (currentTargetRadians > Constants.TurretConstants.TURRET_HOOD_MAX_RADIANS) { currentTargetRadians = Constants.TurretConstants.TURRET_HOOD_MAX_RADIANS; }
+
+        io.setHoodRadians(currentTargetRadians); 
+    }
+
+    public Command IncrementHoodAngleCommand() { return this.run(() -> setTargetRadians(currentTargetRadians + Constants.TurretConstants.TURRET_HOOD_CHANGE_SPEED)); }
+    public Command DecrementHoodAngleCommand() { return this.run(() -> setTargetRadians(currentTargetRadians - Constants.TurretConstants.TURRET_HOOD_CHANGE_SPEED)); }
 }
