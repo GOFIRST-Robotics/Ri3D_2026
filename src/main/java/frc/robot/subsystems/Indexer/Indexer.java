@@ -6,6 +6,7 @@ package frc.robot.subsystems.Indexer;
 
 import org.littletonrobotics.junction.Logger;
 
+import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 
 public class Indexer extends SubsystemBase {
@@ -32,4 +33,18 @@ public class Indexer extends SubsystemBase {
     Logger.processInputs("Indexer", inputs);
     io.periodic();
   }
+
+  public Command runIndexer() {
+    return this.run(() -> runIndexer(60)).withName("Run Indexer");
+  }  
+  public Command stopIndexer() {
+    return this.run(() -> runIndexer(0)).withName("Stop Indexer");
+  }
+  public Command runElevator() {
+    return this.run(() -> runElevator(60)).withName("Run Elevator");
+  }
+  public Command stopElevator() {
+    return this.run(() -> runElevator(0)).withName("Stop Elevator");
+  }
+  
 }
