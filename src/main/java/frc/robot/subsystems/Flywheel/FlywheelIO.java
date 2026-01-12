@@ -13,4 +13,6 @@ public interface FlywheelIO {
     default void updateInputs(FlywheelIOInputs inputs) {}
     default void setTopFlywheelRPM(double rpm) {}
     default void setBottomFlywheelRPM(double rpm) {}
+    default void tuneTopAndBottomRPM() {}
+    default void periodic() {}
 }

@@ -11,4 +11,5 @@ public interface HoodIO {
 
     default void updateInputs(HoodIOInputs inputs) {}
     default void setHoodRadians(double radians) {}
+    default void periodic() {}
 }

@@ -101,6 +101,7 @@ public class TurntableIOReal implements TurntableIO {
         turntableClosedLoop.setSetpoint(motorRotations, ControlType.kMAXMotionPositionControl); 
     }
 
+    @Override
     public void periodic() {
         
         boolean hasChanged = false;

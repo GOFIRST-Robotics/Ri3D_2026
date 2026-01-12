@@ -87,6 +87,7 @@ public class HoodIOReal implements HoodIO {
         hoodClosedLoop.setSetpoint(motorRotations, ControlType.kPosition);
     }
 
+    @Override
     public void periodic() {
         boolean hasChanged = false;
         SparkMaxConfig config = new SparkMaxConfig();

@@ -18,6 +18,10 @@ import frc.robot.Constants;
 import frc.robot.Constants.TurretConstants;
 
 public class FlywheelIOReal implements FlywheelIO {
+
+    private LoggedNetworkNumber tunableTopSpeed;
+    private LoggedNetworkNumber tunableBottomSpeed;
+
     private final SparkMax topFlywheelMotorController;
     private final AbsoluteEncoder topFlyWheelEncoder;
     private final SparkClosedLoopController topFlywheelClosedLoop;
@@ -43,6 +47,10 @@ public class FlywheelIOReal implements FlywheelIO {
     private double kVFlywheelBottom;
 
     private void setInitialMotorPIDs() {
+
+        tunableTopSpeed = new LoggedNetworkNumber("/Tuning/FlywheelTop/TuneSpeed", 0.0);
+        tunableBottomSpeed = new LoggedNetworkNumber("/Tuning/FlywheelBottom/TuneSpeed", 0.0);
+
         kPFlywheelTop = TurretConstants.TOP_FLYWHEEL_KP;
         kIFlywheelTop = TurretConstants.TOP_FLYWHEEL_KI;
         kDFlywheelTop = TurretConstants.TOP_FLYWHEEL_KD;
@@ -110,6 +118,13 @@ public class FlywheelIOReal implements FlywheelIO {
     @Override
     public void setBottomFlywheelRPM(double rpm) { bottomFlywheelClosedLoop.setSetpoint(rpm, ControlType.kVelocity); }
 
+    @Override
+    public void tuneTopAndBottomRPM() {
+        topFlywheelClosedLoop.setSetpoint(tunableTopSpeed.getAsDouble(), ControlType.kVelocity);
+        bottomFlywheelClosedLoop.setSetpoint(tunableBottomSpeed.getAsDouble(), ControlType.kVelocity);
+    }
+
+    @Override
     public void periodic() {
         boolean topHasChanged = false;
         SparkMaxConfig topConfig = new SparkMaxConfig();

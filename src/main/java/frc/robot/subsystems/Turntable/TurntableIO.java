@@ -11,4 +11,5 @@ public interface TurntableIO {
 
     default void updateInputs(TurntableIOInputs inputs) {}
     default void setTurntableRadians(double radians) {}
+    default void periodic() {}
 }
