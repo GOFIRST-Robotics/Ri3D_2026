@@ -12,6 +12,8 @@ import frc.robot.subsystems.drive.MecanumDrive.MecanumModuleIO;
 import frc.robot.subsystems.drive.MecanumDrive.MecanumModuleIOSpark;
 import org.littletonrobotics.junction.networktables.LoggedDashboardChooser;
 
+import com.pathplanner.lib.auto.AutoBuilder;
+
 public class RobotContainer {
   // Subsystems
   private final MecanumDrive drive;
@@ -67,6 +69,7 @@ public class RobotContainer {
     // Set up auto routines
     autoChooser = new LoggedDashboardChooser<>("Auto Choices");
     autoChooser.addDefaultOption("None", Commands.none());
+    autoChooser.addOption("drive backward", AutoBuilder.buildAuto("drive backward"));
 
     // Configure the button bindings
     configureButtonBindings();

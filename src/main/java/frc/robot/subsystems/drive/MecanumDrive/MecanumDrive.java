@@ -18,6 +18,8 @@ import frc.robot.subsystems.Gyro.GyroIOInputsAutoLogged;
 
 import org.littletonrobotics.junction.Logger;
 
+import com.pathplanner.lib.util.DriveFeedforwards;
+
 /**
  * Mecanum drive subsystem built from four {@link MecanumModule}s.
  */
@@ -124,6 +126,10 @@ public class MecanumDrive extends SubsystemBase {
         modules[3].getWheelVelocityMetersPerSec());
   }
 
+  public ChassisSpeeds getChassisSpeeds() {
+    return kinematics.toChassisSpeeds(getWheelSpeeds());
+  }
+
   /** Drives robot-relative. */
   public void runRobotRelative(double vxMetersPerSec, double vyMetersPerSec, double omegaRadPerSec) {
     runRobotRelative(new ChassisSpeeds(vxMetersPerSec, vyMetersPerSec, omegaRadPerSec));
@@ -141,6 +147,16 @@ public class MecanumDrive extends SubsystemBase {
         ChassisSpeeds.fromFieldRelativeSpeeds(
             vxMetersPerSec, vyMetersPerSec, omegaRadPerSec, gyroInputs.yawPosition);
     runRobotRelative(speeds);
+  }
+
+  public void runFieldRelative(ChassisSpeeds speeds, DriveFeedforwards feedforwards) {
+    ChassisSpeeds fieldRelativeSpeeds =
+        ChassisSpeeds.fromFieldRelativeSpeeds(
+            speeds.vxMetersPerSecond,
+            speeds.vyMetersPerSecond,
+            speeds.omegaRadiansPerSecond,
+            gyroInputs.yawPosition);
+    runRobotRelative(fieldRelativeSpeeds);
   }
 
   /** Sets wheel speeds using each module's closed-loop velocity (m/s). */
