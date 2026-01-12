@@ -99,9 +99,9 @@ public final class Constants {
   // public static final int ELEVATOR_STAGE_2_MOTOR_ID = 10;
   // public static final int END_EFFECTOR_WHEEL_MOTOR_ID = 7;
   // public static final int END_EFFECTOR_ARM_MOTOR_ID = 8;
-  public static final int TURRET_LEFT_FLYWHEEL_MOTOR_ID = 8;
-  public static final int TURRET_RIGHT_FLYWHEEL_MOTOR_ID = 7;
-  public static final int TURRET_HOOD_MOTOR_ID = 6;
+  public static final int TURRET_LEFT_FLYWHEEL_MOTOR_ID = 6;
+  public static final int TURRET_RIGHT_FLYWHEEL_MOTOR_ID = 10;
+  public static final int TURRET_HOOD_MOTOR_ID = 4576;
 
   // ==================== SERVO / PWM ====================
   
@@ -164,12 +164,12 @@ public final class Constants {
     public static final double TOP_FLYWHEEL_KP = 0.0001;
     public static final double TOP_FLYWHEEL_KI = 0.0;
     public static final double TOP_FLYWHEEL_KD = 0.0;
-    public static final double TOP_FLYWHEEL_KV = 0.000175;
+    public static final double TOP_FLYWHEEL_KV = 0.000175 * 13;
 
     public static final double BOTTOM_FLYWHEEL_KP = 0.0001;
     public static final double BOTTOM_FLYWHEEL_KI = 0.0;
     public static final double BOTTOM_FLYWHEEL_KD = 0.0;
-    public static final double BOTTOM_FLYWHEEL_KV = 0.000175;
+    public static final double BOTTOM_FLYWHEEL_KV = 0.000175 * 13;
 
   }
 

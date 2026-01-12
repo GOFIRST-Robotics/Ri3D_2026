@@ -35,6 +35,7 @@ public class Flywheel extends SubsystemBase {
         double rpm = (60 / Math.PI) * (launchSpeed / Constants.WHEEL_DIAMETER);
 
         runFlywheels(rpm, rpm);
+        runFlywheels(rpm, rpm);
     }
 
     public Command RunFlywheelsCommand() { return this.runOnce(() -> runFlywheels(1200, 1200)); }
