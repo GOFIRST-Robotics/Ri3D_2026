@@ -255,4 +255,48 @@ public class SimpleNavXStandalone extends SubsystemBase {
     public double getRawYaw() {
         return latestRawYaw;
     }
+
+    /**
+     * Sends initialization commands to the NavX to configure yaw streaming.
+     * Sends "!Sa3C4B" to set up the stream format, then "!y" to request yaw data.
+     */
+    public void sendInitCommands() {
+        if (!portInitialized || port == null) {
+            System.err.println("Cannot send commands: NavX not connected");
+            return;
+        }
+        
+        try {
+            // Send stream configuration command
+            port.writeString("!Sa3C4B\n");
+            
+            // Small delay to allow NavX to process
+            Timer.delay(0.05);
+            
+            // Send yaw request command
+            port.writeString("!y\n");
+            
+            System.out.println("NavX init commands sent successfully");
+        } catch (Exception e) {
+            System.err.println("Failed to send NavX commands: " + e.getMessage());
+        }
+    }
+
+    /**
+     * Sends a custom command string to the NavX.
+     * @param command The command to send (newline will be appended)
+     */
+    public void sendCommand(String command) {
+        if (!portInitialized || port == null) {
+            System.err.println("Cannot send command: NavX not connected");
+            return;
+        }
+        
+        try {
+            port.writeString(command + "\n");
+        } catch (Exception e) {
+            System.err.println("Failed to send NavX command: " + e.getMessage());
+        }
+    }
+
 }
