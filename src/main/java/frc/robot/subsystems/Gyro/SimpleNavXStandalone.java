@@ -9,8 +9,11 @@ public class SimpleNavXStandalone extends SubsystemBase {
     private SerialPort port;
     private boolean portInitialized = false;
     
-    private double currentYaw = 0;
-    private double lastYaw = 0;
+    // Variables for continuous angle tracking (fixes offset issues)
+    private double latestRawYaw = 0;       // Current reading from sensor (0-360)
+    private double previousRawYaw = 0;     // Reading from the previous loop
+    private double accumulatedYaw = 0;     // Continuous total angle (unbounded)
+
     private double yawOffset = 0;
     private double lastTimestamp = 0;
     private double lastValidReadTime = 0;
@@ -19,9 +22,12 @@ public class SimpleNavXStandalone extends SubsystemBase {
     private static final double CONNECTION_TIMEOUT = 0.5; // seconds
     private static final double VELOCITY_FILTER_CONSTANT = 0.8; // 0-1, higher = more smoothing
 
+    // Buffer to hold split packets between loops
+    private String serialBuffer = ""; 
+    // Flag to prevent logic running before first real read
+    private boolean hasValidData = false;
+
     public SimpleNavXStandalone() {
-        // Typically kUSB, kUSB1, or kUSB2 for the USB ports
-        // Use 115200 baud for NavX
         try {
             port = new SerialPort(115200, SerialPort.Port.kUSB);
             portInitialized = true;
@@ -30,145 +36,174 @@ public class SimpleNavXStandalone extends SubsystemBase {
             System.err.println("Failed to initialize NavX serial port: " + e.getMessage());
             portInitialized = false;
         }
+        
+        // Initialize values to prevent startup startup jumps
+        updateSerialData(); 
+        previousRawYaw = latestRawYaw;
+        accumulatedYaw = latestRawYaw; 
+        
         lastTimestamp = Timer.getFPGATimestamp();
         lastValidReadTime = Timer.getFPGATimestamp();
     }
 
-    @Override
+  @Override
     public void periodic() {
-        // Don't try to read if port isn't initialized
-        if (!portInitialized) {
-            return;
-        }
+        if (!portInitialized) return;
         
-        double newYaw = readYawFromSerial();
+        // 1. Update latestRawYaw from Serial
+        updateSerialData();
+
+        // SAFETY CHECK: Don't run physics if we haven't received real data yet
+        if (!hasValidData) {
+            previousRawYaw = latestRawYaw; // Keep them synced so delta is 0
+            accumulatedYaw = latestRawYaw; // Prevent jumping from 0 to actual angle
+            return; 
+        }
+
         double currentTimestamp = Timer.getFPGATimestamp();
         
-        // Calculate yaw velocity
+        // 2. Calculate raw change and handle 0-360 wrap
+        double deltaYaw = latestRawYaw - previousRawYaw;
+        
+        // Normalize delta to -180 to 180 (shortest path)
+        if (deltaYaw > 180) {
+            deltaYaw -= 360;
+        } else if (deltaYaw < -180) {
+            deltaYaw += 360;
+        }
+
+        // 3. Accumulate total continuous yaw
+        accumulatedYaw += deltaYaw;
+
+        // 4. Calculate Velocity
         double deltaTime = currentTimestamp - lastTimestamp;
+        
         if (deltaTime > 0) {
-            double deltaYaw = newYaw - currentYaw;
+            double rawVelocity = 0;
             
-            // Handle wrap-around (e.g., going from 359 to 1 degrees)
-            if (deltaYaw > 180) {
-                deltaYaw -= 360;
-            } else if (deltaYaw < -180) {
-                deltaYaw += 360;
-            }
+            // Only calc velocity if we moved enough to be outside noise floor
+            if (Math.abs(deltaYaw) > 0.001) {
+                rawVelocity = Math.toRadians(deltaYaw) / deltaTime;
+            } 
             
-            // Apply low-pass filter to smooth velocity
-            double rawVelocity = Math.toRadians(deltaYaw) / deltaTime;
+            // Filter
             yawVelocityRadPerSec = (VELOCITY_FILTER_CONSTANT * yawVelocityRadPerSec) 
-                                 + ((1 - VELOCITY_FILTER_CONSTANT) * rawVelocity);
+                                + ((1 - VELOCITY_FILTER_CONSTANT) * rawVelocity);
+                                
+            lastTimestamp = currentTimestamp;
         }
         
-        // Update stored values
-        currentYaw = newYaw;
-        lastTimestamp = currentTimestamp;
-        System.out.println(currentYaw);
+        previousRawYaw = latestRawYaw;
+    }
+
+    private void updateSerialData() {
+        if (!portInitialized || port == null) return;
+        
+        try {
+            if (port.getBytesReceived() > 0) {
+                // Read whatever is available
+                String incoming = port.readString();
+                if (incoming == null) return;
+                
+                // Append to our buffer (handles split packets)
+                serialBuffer += incoming;
+                
+                // Safety: prevent buffer from growing infinite if parsing fails
+                if (serialBuffer.length() > 1000) serialBuffer = "";
+
+                // Process ALL complete packets in the buffer
+                // We use a while loop in case multiple packets arrived at once
+                while (true) {
+                    int packetStart = serialBuffer.indexOf("!y");
+                    if (packetStart == -1) break; // No start tag found
+
+                    int packetEnd = serialBuffer.indexOf('\r', packetStart);
+                    if (packetEnd == -1) break; // No end tag found yet, wait for next loop
+
+                    // Extract the packet: "!y 123.45"
+                    String packet = serialBuffer.substring(packetStart, packetEnd);
+                    
+                    // Parse the number
+                    try {
+                        // Remove "!y" (first 2 chars) and whitespace
+                        // Packet is likely "!y 123.45" or "!y123.45"
+                        String valStr = packet.substring(2).trim();
+                        latestRawYaw = Double.parseDouble(valStr);
+                        
+                        lastValidReadTime = Timer.getFPGATimestamp();
+                        hasValidData = true; // We are now live!
+                    } catch (Exception e) {
+                        // Bad packet, ignore
+                    }
+
+                    // Remove this packet from the buffer and continue checking
+                    serialBuffer = serialBuffer.substring(packetEnd + 1);
+                }
+            }
+        } catch (Exception e) {
+            // Serial error handling
+        }
     }
 
     /**
      * Gets the current yaw angle as a Rotation2d.
-     * @return The yaw angle with offset applied
+     * @return The yaw angle with offset applied (CCW+)
      */
     public Rotation2d getRotation2d() {
-        return Rotation2d.fromDegrees(-(currentYaw - yawOffset));
+        // Negate to convert NavX CW+ to standard CCW+
+        return Rotation2d.fromDegrees(-(accumulatedYaw - yawOffset));
     }
 
     /**
      * Gets the current yaw angle in degrees.
-     * @return The yaw angle with offset applied, in degrees
+     * @return The yaw angle (-180 to 180) with offset applied
      */
     public double getYawDegrees() {
-        return -(currentYaw - yawOffset);
+        return getRotation2d().getDegrees();
     }
 
-    /**
-     * Gets the current yaw angle in radians.
-     * @return The yaw angle with offset applied, in radians
-     */
     public double getYawRadians() {
-        return Math.toRadians(-(currentYaw - yawOffset));
+        return getRotation2d().getRadians();
     }
 
     /**
      * Gets the yaw velocity in radians per second.
-     * @return The filtered yaw velocity
+     * @return The filtered yaw velocity (CCW+)
      */
     public double getYawVelocityRadPerSec() {
-        return yawVelocityRadPerSec;
+        // Negate velocity to match CCW+ position convention
+        return -yawVelocityRadPerSec;
     }
 
-    /**
-     * Gets the yaw velocity in degrees per second.
-     * @return The filtered yaw velocity
-     */
     public double getYawVelocityDegreesPerSec() {
-        return Math.toDegrees(yawVelocityRadPerSec);
+        return Math.toDegrees(getYawVelocityRadPerSec());
     }
 
     /**
      * Zeros the yaw at the current position.
-     * Call this when the robot is facing the desired "forward" direction.
      */
     public void zeroYaw() {
-        yawOffset = currentYaw;
-        System.out.println("NavX yaw zeroed at: " + currentYaw + " degrees");
+        yawOffset = accumulatedYaw;
+        System.out.println("NavX yaw zeroed at: " + accumulatedYaw);
     }
 
     /**
      * Sets the current yaw to a specific angle.
-     * @param angleDegrees The angle to set as current heading
+     * @param angleDegrees The desired current heading (CCW+)
      */
     public void setYaw(double angleDegrees) {
-        yawOffset = currentYaw + angleDegrees;
+        // Output = -(Input - Offset)  => Offset = Input + Output
+        yawOffset = accumulatedYaw + angleDegrees;
     }
 
-    /**
-     * Checks if the NavX is connected based on recent valid data.
-     * @return true if data has been received within the timeout period
-     */
     public boolean isConnected() {
-        if (!portInitialized) {
-            return false;
-        }
+        if (!portInitialized) return false;
         return (Timer.getFPGATimestamp() - lastValidReadTime) < CONNECTION_TIMEOUT;
     }
 
-    /**
-     * Gets the raw yaw value from the NavX (before offset is applied).
-     * @return The raw yaw in degrees
-     */
     public double getRawYaw() {
-        return currentYaw;
+        return latestRawYaw;
     }
 
-    private double readYawFromSerial() {
-        if (!portInitialized || port == null) {
-            return lastYaw;
-        }
-        
-        try {
-            // Read the entire buffer
-            String data = port.readString();
-            
-            // Find the last complete packet in the buffer (to get the freshest data)
-            int startIndex = data.lastIndexOf("!y");
-            
-            // A full '!y' packet is 34 characters (including \r\n)
-            if (startIndex != -1 && data.length() >= startIndex + 32) {
-                // Yaw is 7 characters long starting at index 2 of the packet
-                // Example: "!y 001.46" -> sub-string is " 001.46"
-                String yawStr = data.substring(startIndex + 2, startIndex + 9);
-                lastYaw = Double.parseDouble(yawStr.trim());
-                lastValidReadTime = Timer.getFPGATimestamp(); // Track successful read
-            }
-        } catch (Exception e) {
-            // Parse error, partial packet, or serial error - keep last valid value
-            System.err.println("NavX read error: " + e.getMessage());
-        }
-        
-        return lastYaw;
-    }
+    
 }
