@@ -23,6 +23,10 @@ public interface ClimberIO {
 
     default void setClimbPosition(ClimbPosition position) {}
 
+    default void setServoOnePos(double position) {}
+
+    default void setServoTwoPos(double position) {}
+
     default boolean isMovementFinished() {return false;}
 
     default void periodic() {}
