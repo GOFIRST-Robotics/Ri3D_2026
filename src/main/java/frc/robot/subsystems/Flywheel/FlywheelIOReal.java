@@ -1,6 +1,5 @@
 package frc.robot.subsystems.Flywheel;
 
-import com.revrobotics.AbsoluteEncoder;
 import com.revrobotics.PersistMode;
 import com.revrobotics.RelativeEncoder;
 import com.revrobotics.ResetMode;

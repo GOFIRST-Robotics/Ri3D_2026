@@ -1,7 +1,7 @@
 package frc.robot.subsystems.Turntable;
 
-import com.revrobotics.AbsoluteEncoder;
 import com.revrobotics.PersistMode;
+import com.revrobotics.RelativeEncoder;
 import com.revrobotics.ResetMode;
 import com.revrobotics.spark.SparkClosedLoopController;
 import com.revrobotics.spark.SparkMax;
@@ -20,7 +20,7 @@ import frc.robot.Constants.TurretConstants;
 public class TurntableIOReal implements TurntableIO {
 
     private final SparkMax turntableMotorController;
-    private final AbsoluteEncoder turntableEncoder;
+    private final RelativeEncoder turntableEncoder;
     private final SparkClosedLoopController turntableClosedLoop;
 
     private LoggedNetworkNumber changeablekP;
@@ -77,7 +77,7 @@ public class TurntableIOReal implements TurntableIO {
     public TurntableIOReal()
     {
         turntableMotorController = new SparkMax(Constants.TURRET_HOOD_MOTOR_ID, MotorType.kBrushless);
-        turntableEncoder = turntableMotorController.getAbsoluteEncoder();
+        turntableEncoder = turntableMotorController.getEncoder();
         turntableClosedLoop = turntableMotorController.getClosedLoopController();
 
         setInitialMotorPIDs();

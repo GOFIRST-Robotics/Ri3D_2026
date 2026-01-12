@@ -1,7 +1,7 @@
 package frc.robot.subsystems.Hood;
 
-import com.revrobotics.AbsoluteEncoder;
 import com.revrobotics.PersistMode;
+import com.revrobotics.RelativeEncoder;
 import com.revrobotics.ResetMode;
 import com.revrobotics.spark.SparkClosedLoopController;
 import com.revrobotics.spark.SparkMax;
@@ -20,7 +20,7 @@ import frc.robot.Constants.TurretConstants;
 public class HoodIOReal implements HoodIO {
 
     private final SparkMax hoodMotorController;
-    private final AbsoluteEncoder hoodEncoder;
+    private final RelativeEncoder hoodEncoder;
     private final SparkClosedLoopController hoodClosedLoop;
 
     private LoggedNetworkNumber changeablekP;
@@ -63,7 +63,7 @@ public class HoodIOReal implements HoodIO {
     public HoodIOReal()
     {
         hoodMotorController = new SparkMax(Constants.TURRET_HOOD_MOTOR_ID, MotorType.kBrushless);
-        hoodEncoder = hoodMotorController.getAbsoluteEncoder();
+        hoodEncoder = hoodMotorController.getEncoder();
         hoodClosedLoop = hoodMotorController.getClosedLoopController();
 
         setInitialMotorPIDs();
