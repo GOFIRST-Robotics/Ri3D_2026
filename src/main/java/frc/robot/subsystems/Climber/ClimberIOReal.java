@@ -5,7 +5,6 @@ import com.revrobotics.PersistMode;
 import com.revrobotics.ResetMode;
 import com.revrobotics.spark.SparkClosedLoopController;
 import com.revrobotics.spark.SparkMax;
-import com.revrobotics.spark.ClosedLoopSlot;
 import com.revrobotics.spark.FeedbackSensor;
 import com.revrobotics.spark.SparkBase.ControlType;
 import com.revrobotics.spark.SparkLowLevel.MotorType;
@@ -45,11 +44,11 @@ public class ClimberIOReal implements ClimberIO {
     }
 
     private void setInitialMotorSettings() {
-        climbMotorkP = ClimberConstants.CLIMB_MOTOR_KP_SLOT0;
-        climbMotorkI = ClimberConstants.CLIMB_MOTOR_KI_SLOT0;
-        climbMotorkD = ClimberConstants.CLIMB_MOTOR_KD_SLOT0;
-        climbMotorkV = ClimberConstants.CLIMB_MOTOR_KV_SLOT0;
-        climbMotorkG = ClimberConstants.CLIMB_MOTOR_KG_SLOT0;
+        climbMotorkP = ClimberConstants.CLIMB_MOTOR_KP;
+        climbMotorkI = ClimberConstants.CLIMB_MOTOR_KI;
+        climbMotorkD = ClimberConstants.CLIMB_MOTOR_KD;
+        climbMotorkV = ClimberConstants.CLIMB_MOTOR_KV;
+        climbMotorkG = ClimberConstants.CLIMB_MOTOR_KG;
         climbMotorCruiseVel = ClimberConstants.CLIMB_MOTOR_CRUISE_VEL;
         climbMotorMaxAccel = ClimberConstants.CLIMB_MOTOR_MAX_ACCEL;
 
@@ -67,7 +66,7 @@ public class ClimberIOReal implements ClimberIO {
         config.closedLoop
             .feedbackSensor(FeedbackSensor.kPrimaryEncoder);
         config.closedLoop
-            .pid(climbMotorkP, climbMotorkI, climbMotorkD, ClosedLoopSlot.kSlot0);
+            .pid(climbMotorkP, climbMotorkI, climbMotorkD);
         config.closedLoop.feedForward
                 .kS(0.0)
                 .kV(climbMotorkV)
@@ -92,7 +91,7 @@ public class ClimberIOReal implements ClimberIO {
     }
 
     @Override
-    public void setClimbExtentionPos(ClimbPosition position) {
+    public void setClimbPosition(ClimbPosition position) {
         switch (position) {
             case ZERO:
                 climbPID.setSetpoint(ClimberConstants.CLIMBER_ZERO_POS, ControlType.kMAXMotionPositionControl);
