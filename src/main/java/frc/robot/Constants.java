@@ -13,6 +13,7 @@
 
 package frc.robot;
 
+import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.math.util.Units;
 import edu.wpi.first.wpilibj.RobotBase;
 
@@ -142,6 +143,11 @@ public final class Constants {
       // public static final int INTAKE_WHEEL_MOTOR_ID = 4;
 
       public static final double INTAKE_DOOR_kP = 0.001;
+
+      public static final double INTAKE_DOOR_POSITION_STORED = 0.0;
+
+      // Intake door positions (degrees) soft limits
+      public static final double FINAL_INTAKE_DOOR_POSITION = Rotation2d.fromDegrees(90).getDegrees(); // 90 degrees
 
   }
 

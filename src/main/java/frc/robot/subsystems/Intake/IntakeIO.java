@@ -9,10 +9,10 @@ public interface IntakeIO {
     public static class IntakeIOInputs {  
 
         /** Wheel speed in RPM */
-        public double rightIntakeWheelSpeedRPM = 0.0;
+        public double rightIntakeWheelSpeedRPM = 0.0; 
         public double leftIntakeWheelSpeedRPM = 0.0;
 
-
+        /** Door position in degrees */
         public double currentDoorPosition = 0.0;
         public double desiredDoorPosition = 0.0;
 
