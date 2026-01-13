@@ -31,14 +31,12 @@ public class Indexer extends SubsystemBase {
     io.periodic();
   }
 
-  public Command startIndexer() {
-    return this.run(() -> runIndexer(IndexerConstants.INDEXER_MOTOR_RPM)).withName("Run Indexer");
-  }
-  public Command startIndexerReverse() {
-    return this.run(() -> runIndexer(-IndexerConstants.INDEXER_MOTOR_RPM)).withName("Run Indexer");
-  }  
-  public Command stopIndexer() {
-    return this.run(() -> runIndexer(0)).withName("Stop Indexer");
+
+  public Command runIndexer() {
+      return this.startEnd(
+          () -> runIndexer(IndexerConstants.INDEXER_MOTOR_RPM), 
+          () -> runIndexer(0)                                   
+      ).withName("Run Indexer");
   }
 
 }

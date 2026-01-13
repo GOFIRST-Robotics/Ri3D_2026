@@ -16,7 +16,7 @@ import org.littletonrobotics.junction.networktables.LoggedDashboardChooser;
 
 public class RobotContainer {
   // Subsystems
-  private final MecanumDrive drive;
+  // private final MecanumDrive drive;
   private final Indexer indexer;
 
   // Controller
@@ -29,41 +29,41 @@ public class RobotContainer {
     switch (Constants.currentMode) {
       case REAL:
         // Real robot with NavX and Spark MAX mecanum modules
-        drive =
-            new MecanumDrive(
-                new MecanumModuleIO[] {
-                  new MecanumModuleIOSpark(0), // FL
-                  new MecanumModuleIOSpark(1), // FR
-                  new MecanumModuleIOSpark(2), // BL
-                  new MecanumModuleIOSpark(3)  // BR
-                },
-                new GyroIONavX());
+        // drive =
+        //     new MecanumDrive(
+        //         new MecanumModuleIO[] {
+        //           new MecanumModuleIOSpark(0), // FL
+        //           new MecanumModuleIOSpark(1), // FR
+        //           new MecanumModuleIOSpark(2), // BL
+        //           new MecanumModuleIOSpark(3)  // BR
+        //         },
+        //         new GyroIONavX());
         break;
 
       case SIM:
         // Sim robot - use empty IO implementations
-        drive =
-            new MecanumDrive(
-                new MecanumModuleIO[] {
-                  new MecanumModuleIO() {},
-                  new MecanumModuleIO() {},
-                  new MecanumModuleIO() {},
-                  new MecanumModuleIO() {}
-                },
-                new GyroIO() {});
+        // drive =
+        //     new MecanumDrive(
+        //         new MecanumModuleIO[] {
+        //           new MecanumModuleIO() {},
+        //           new MecanumModuleIO() {},
+        //           new MecanumModuleIO() {},
+        //           new MecanumModuleIO() {}
+        //         },
+        //         new GyroIO() {});
         break;
 
       default:
         // Replayed robot, disable IO implementations
-        drive =
-            new MecanumDrive(
-                new MecanumModuleIO[] {
-                  new MecanumModuleIO() {},
-                  new MecanumModuleIO() {},
-                  new MecanumModuleIO() {},
-                  new MecanumModuleIO() {}
-                },
-                new GyroIO() {});
+        // drive =
+        //     new MecanumDrive(
+        //         new MecanumModuleIO[] {
+        //           new MecanumModuleIO() {},
+        //           new MecanumModuleIO() {},
+        //           new MecanumModuleIO() {},
+        //           new MecanumModuleIO() {}
+        //         },
+        //         new GyroIO() {});
         break;
     }
 
@@ -80,41 +80,39 @@ public class RobotContainer {
   private void configureButtonBindings() {
     // Default command: field-relative mecanum drive with squared inputs
     drive.setDefaultCommand(
-        MecanumDriveCommands.joystickDriveFieldRelative(
-            drive,
-            () -> -controller.getLeftY(),  // Forward/back
-            () -> -controller.getLeftX(),  // Strafe
-            () -> -controller.getRightX())); // Rotation
+        // MecanumDriveCommands.joystickDriveFieldRelative(
+        //     drive,
+        //     () -> -controller.getLeftY(),  // Forward/back
+        //     () -> -controller.getLeftX(),  // Strafe
+        //     () -> -controller.getRightX())); // Rotation
 
     // Robot-relative drive when A button is held
-    controller
-        .a()
-        .whileTrue(
-            MecanumDriveCommands.joystickDriveRobotRelative(
-                drive,
-                () -> -controller.getLeftY(),
-                () -> -controller.getLeftX(),
-                () -> -controller.getRightX()));
+    // controller
+    //     .a()
+    //     .whileTrue(
+    //         MecanumDriveCommands.joystickDriveRobotRelative(
+    //             drive,
+    //             () -> -controller.getLeftY(),
+    //             () -> -controller.getLeftX(),
+    //             () -> -controller.getRightX()));
 
     // Snap to 0° when Y button is held
-    controller
-        .y()
-        .whileTrue(
-            MecanumDriveCommands.snapToAngle(
-                drive,
-                () -> -controller.getLeftY(),
-                () -> -controller.getLeftX(),
-                new Rotation2d(0)));
+    // controller
+    //     .y()
+    //     .whileTrue(
+    //         MecanumDriveCommands.snapToAngle(
+    //             drive,
+    //             () -> -controller.getLeftY(),
+    //             () -> -controller.getLeftX(),
+    //             new Rotation2d(0)));
 
     // Stop when X button is pressed
-    controller.x().onTrue(MecanumDriveCommands.stop(drive));
+    // controller.x().onTrue(MecanumDriveCommands.stop(drive));
 
     // Reset heading when B button is pressed
-    controller.b().onTrue(MecanumDriveCommands.resetHeading(drive));
+    // controller.b().onTrue(MecanumDriveCommands.resetHeading(drive));
 
-    controller.povLeft().onTrue(indexer.startIndexer());
-    controller.povLeft().onTrue(indexer.startIndexerReverse());
-    controller.povDown().onTrue(indexer.stopIndexer());
+    controller.povLeft().whileTrue(indexer.runIndexerCommand());
   }
 
   public Command getAutonomousCommand() {
