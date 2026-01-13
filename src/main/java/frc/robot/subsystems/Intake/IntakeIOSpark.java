@@ -66,15 +66,17 @@ public class IntakeIOSpark implements IntakeIO {
     }
 
     public void stop(IntakeIOInputs inputs) { 
-        if(inputs.currentDoorPosition > IntakeConstants.FINAL_INTAKE_DOOR_POSITION - 5.0) {
-            // If the door is near the final position, hold it there
-            rightDoorMotor.getClosedLoopController().setSetpoint(IntakeConstants.FINAL_INTAKE_DOOR_POSITION, ControlType.kPosition);
-        } else {
-            // Otherwise, stop the motors
-            rightDoorMotor.stopMotor();
-            intakeWheel.set(0.0);
-        }
+
+    if(!(inputs.currentDoorPosition > IntakeConstants.FINAL_INTAKE_DOOR_POSITION)) {
+        // If the door is near the final position, hold it there
+        rightDoorMotor.stopMotor();
+        intakeWheel.set(0.0);
     }
+        
+      rightDoorMotor.getClosedLoopController().setSetpoint(IntakeConstants.FINAL_INTAKE_DOOR_POSITION, ControlType.kPosition);
+    }
+
+
 
 
     @Override
