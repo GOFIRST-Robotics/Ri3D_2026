@@ -3,6 +3,7 @@ package frc.robot;
 import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.Commands;
+import edu.wpi.first.wpilibj2.command.InstantCommand;
 import edu.wpi.first.wpilibj2.command.RunCommand;
 import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
 import edu.wpi.first.wpilibj2.command.button.Trigger;
@@ -119,8 +120,9 @@ public class RobotContainer {
       controller.rightBumper().onTrue(new SetIntakeLow(intake));
       controller.leftBumper().onTrue(new SetIntakeHigh(intake));
       controller.rightTrigger().onTrue(new RunCommand(()-> intake.stopIntake(), intake));
-
-
+      controller.leftTrigger(0.1).whileTrue(new RunCommand(()-> intake.runIntake(controller.getLeftTriggerAxis()), intake)).
+                                            onFalse(new InstantCommand(()-> intake.runIntake(0.0), intake));
+                                            
     // Stop when X button is pressed
     controller.x().onTrue(MecanumDriveCommands.stop(drive));
 
