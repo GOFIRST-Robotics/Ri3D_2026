@@ -40,6 +40,7 @@ public class IndexerIOReal implements IndexerIO {
         indexerConfig.closedLoop.maxMotion
         .cruiseVelocity(IndexerConstants.INDEXER_MOTOR_MAX_VEL)
         .maxAcceleration(IndexerConstants.INDEXER_MOTOR_MAX_ACCEL);
+        indexerConfig.inverted(true);
         indexerMotor.configure(indexerConfig, ResetMode.kResetSafeParameters, PersistMode.kPersistParameters);
     }
 

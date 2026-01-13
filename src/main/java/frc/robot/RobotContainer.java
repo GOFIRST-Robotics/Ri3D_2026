@@ -111,7 +111,7 @@ public class RobotContainer {
     // Reset heading when B button is pressed
     // controller.b().onTrue(MecanumDriveCommands.resetHeading(drive));
 
-    controller.povLeft().whileTrue(indexer.runIndexerCommand());
+    controller.povLeft().whileTrue(indexer.runIndexerCommandDutyCycle());
   }
 
   public Command getAutonomousCommand() {

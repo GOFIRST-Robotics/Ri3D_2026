@@ -146,7 +146,7 @@ public final class Constants {
     public static final double INDEXER_MOTOR_RPM = 500;
 
     public static final double INDEXER_MOTOR_kP = 0.0001;
-    public static final double INDEXER_MOTOR_kV = 0.000175; // 0.0024
+    public static final double INDEXER_MOTOR_kV = 0.0024;
     public static final double INDEXER_MOTOR_MAX_VEL = 1500.0;
     public static final double INDEXER_MOTOR_MAX_ACCEL = 4500.0;
   }
