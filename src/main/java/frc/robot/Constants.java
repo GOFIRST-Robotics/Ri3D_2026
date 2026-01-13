@@ -101,7 +101,7 @@ public final class Constants {
 
   public static final class TurretConstants {
     public static final double TURRET_HOOD_GEAR_RATIO = 475.0*10.0/85.0;
-    public static final double TURRET_TURNTABLE_GEAR_RATIO = 1;
+    public static final double TURRET_TURNTABLE_GEAR_RATIO = (130.0 / 50.0) * 10.0;
 
     public static final double FLYWHEEL_DIAMETER = 1;
     public static final double FLYWHEEL_BALL_COMPRESSION = 0.25;
