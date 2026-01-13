@@ -6,6 +6,10 @@ import edu.wpi.first.math.kinematics.MecanumDriveKinematics;
 import edu.wpi.first.math.kinematics.MecanumDriveOdometry;
 import edu.wpi.first.math.kinematics.MecanumDriveWheelPositions;
 import edu.wpi.first.math.kinematics.MecanumDriveWheelSpeeds;
+import edu.wpi.first.math.numbers.N1;
+import edu.wpi.first.math.numbers.N3;
+import edu.wpi.first.math.Matrix;
+import edu.wpi.first.math.estimator.MecanumDrivePoseEstimator;
 import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.geometry.Translation2d;
 import edu.wpi.first.wpilibj.Alert;
@@ -27,6 +31,7 @@ public class MecanumDrive extends SubsystemBase {
 
   private final MecanumDriveKinematics kinematics;
   private final MecanumDriveOdometry odometry;
+  private final MecanumDrivePoseEstimator odometryEstimator;
 
   // Gyro IO
   private final GyroIO gyroIO;
@@ -83,6 +88,9 @@ public class MecanumDrive extends SubsystemBase {
 
     // Update odometry
     odometry.update(gyroInputs.yawPosition, getWheelPositions());
+
+    // Update odometry estimator
+    odometryEstimator.update(getGyroYaw(), getWheelPositions());
 
     // Update gyro disconnected alert
     gyroDisconnectedAlert.set(!gyroInputs.connected && Constants.currentMode != Mode.SIM);
@@ -168,5 +176,10 @@ public class MecanumDrive extends SubsystemBase {
     for (var module : modules) {
       module.stop();
     }
+  }
+
+
+  public void addVisionMeasurement(Pose2d visionPose, double timestampSeconds, Matrix<N3, N1> stdDevs) {
+    odometryEstimator.updateWithTime(timestampSeconds, getGyroYaw(), getWheelPositions());
   }
 }
