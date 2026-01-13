@@ -15,6 +15,8 @@ import frc.robot.subsystems.Intake.Intake;
 import frc.robot.subsystems.Intake.IntakeIO;
 import frc.robot.subsystems.Intake.IntakeIOSpark;
 import frc.robot.subsystems.Intake.IntakeIOSparkOnboardPID;
+import frc.robot.subsystems.Indexer.Indexer;
+import frc.robot.subsystems.Indexer.IndexerIOReal;
 import frc.robot.subsystems.drive.MecanumDrive.MecanumDrive;
 import frc.robot.subsystems.drive.MecanumDrive.MecanumModuleIO;
 import frc.robot.subsystems.drive.MecanumDrive.MecanumModuleIOSpark;
@@ -23,7 +25,7 @@ import org.littletonrobotics.junction.networktables.LoggedDashboardChooser;
 public class RobotContainer {
   // Subsystems
   // private final MecanumDrive drive;
-
+  private final Indexer indexer;
   private final Intake intake;
 
   // Controller
@@ -46,8 +48,6 @@ public class RobotContainer {
         //           new MecanumModuleIOSpark(3)  // BR
         //         },
         //         new GyroIONavX());
-        
-        intake = new Intake(new IntakeIOSparkOnboardPID());
         break;
 
       case SIM:
@@ -61,7 +61,6 @@ public class RobotContainer {
         //           new MecanumModuleIO() {}
         //         },
         //         new GyroIO() {});
-        intake = new Intake(new IntakeIO() {});
         break;
 
       default:
@@ -75,10 +74,11 @@ public class RobotContainer {
         //           new MecanumModuleIO() {}
         //         },
         //         new GyroIO() {});
-
-        intake = new Intake(new IntakeIO() {});
         break;
     }
+
+    intake = new Intake(new IntakeIOSparkOnboardPID());
+    indexer = new Indexer(new IndexerIOReal());
 
     // Set up auto routines
     autoChooser = new LoggedDashboardChooser<>("Auto Choices");
@@ -89,15 +89,14 @@ public class RobotContainer {
   }
 
   private void configureButtonBindings() {
-    // // Default command: field-relative mecanum drive with squared inputs
-    // drive.setDefaultCommand(
-    //     MecanumDriveCommands.joystickDriveFieldRelative(
-    //         drive,
-    //         () -> -controller.getLeftY(),  // Forward/back
-    //         () -> -controller.getLeftX(),  // Strafe
-    //         () -> -controller.getRightX())); // Rotation
+    // Default command: field-relative mecanum drive with squared inputs
+        // MecanumDriveCommands.joystickDriveFieldRelative(
+        //     drive,
+        //     () -> -controller.getLeftY(),  // Forward/back
+        //     () -> -controller.getLeftX(),  // Strafe
+        //     () -> -controller.getRightX())); // Rotation
 
-    // // Robot-relative drive when A button is held
+    // Robot-relative drive when A button is held
     // controller
     //     .a()
     //     .whileTrue(
@@ -107,7 +106,7 @@ public class RobotContainer {
     //             () -> -controller.getLeftX(),
     //             () -> -controller.getRightX()));
 
-    // // Snap to 0° when Y button is held
+    // Snap to 0° when Y button is held
     // controller
     //     .y()
     //     .whileTrue(
@@ -131,6 +130,13 @@ public class RobotContainer {
 
     // // Reset heading when B button is pressed
     // controller.b().onTrue(MecanumDriveCommands.resetHeading(drive));
+    // Stop when X button is pressed
+    // controller.x().onTrue(MecanumDriveCommands.stop(drive));
+
+    // Reset heading when B button is pressed
+    // controller.b().onTrue(MecanumDriveCommands.resetHeading(drive));
+
+    controller.povLeft().whileTrue(indexer.runIndexerCommandDutyCycle());
   }
 
   public Command getAutonomousCommand() {
