@@ -148,6 +148,9 @@ public final class Constants {
       public static final double INTAKE_DOOR_POSITION_DEPLOYED = Units.degreesToRadians(19.44); //0.054
       public static final boolean IS_INTAKE_DIRECTION_INVERTED = false;
       public static final boolean IS_INTAKE_ENCODER_INVERTED = true;
+    public static final double INTAKE_DOOR_kI = 0;
+    public static final double INTAKE_DOOR_kD = 0;
+    public static final double INTAKE_WHEEL_SPEED = 0;
 
   }
 

@@ -126,7 +126,7 @@ public class IntakeIOSim implements IntakeIO {
   }
 
   @Override
-  public void stop() {
+  public void stop(IntakeIOInputs inputs) {
     wheelPercentOut = 0.0;
   }
 }

@@ -24,7 +24,7 @@ public class Intake extends SubsystemBase {
     }
 
     public void stopIntake() {
-        io.stop();
+        io.stop(inputs);
     }
 
 
@@ -38,6 +38,74 @@ public class Intake extends SubsystemBase {
         return this.runOnce(()->MoveIntakeToPosition(position));
     }
 
+
+
+
+        /** Run intake wheels outward (eject game piece) */
+    public Command ejectCommand() {
+        return this.startEnd(
+            () -> runIntake(-IntakeConstants.INTAKE_WHEEL_SPEED),
+            () -> runIntake(0)
+        );
+    }
+
+    /** Run intake wheels at custom speed (while held) */
+    public Command runWheelsCommand(double percentOutput) {
+        return this.startEnd(
+            () -> runIntake(percentOutput),
+            () -> runIntake(0)
+        );
+    }
+
+    /** Stop all intake motors */
+    public Command stopCommand() {
+        return this.runOnce(() -> stopIntake());
+    }
+
+
+        /** Move door to deployed/open position */
+    public Command deployDoorCommand() {
+        return this.runOnce(() -> MoveIntakeToPosition(IntakeConstants.INTAKE_DOOR_POSITION_DEPLOYED));
+    }
+
+    /** Move door to stowed/closed position */
+    public Command stowDoorCommand() {
+        return this.runOnce(() -> MoveIntakeToPosition(IntakeConstants.INTAKE_DOOR_POSITION_STORED));
+    }
+
+    /** Run intake wheels inward (intake game piece) */
+    public Command intakeCommand() {
+        return this.startEnd(
+            () -> runIntake(IntakeConstants.INTAKE_WHEEL_SPEED),
+            () -> runIntake(0)
+        );
+    }
+
+        /** Deploy door and run intake wheels (full intake sequence) */
+    public Command fullIntakeCommand() {
+        return deployDoorCommand()
+            .andThen(intakeCommand());
+    }
+
+    /** Stop wheels and stow door (full stow sequence) */
+    public Command fullStowCommand() {
+        return this.runOnce(() -> runIntake(0))
+            .andThen(stowDoorCommand());
+    }
+
+    /** Deploy, intake, then stow when released */
+    public Command intakeAndStowCommand() {
+        return this.startEnd(
+            () -> {
+                MoveIntakeToPosition(IntakeConstants.INTAKE_DOOR_POSITION_DEPLOYED);
+                runIntake(IntakeConstants.INTAKE_WHEEL_SPEED);
+            },
+            () -> {
+                runIntake(0);
+                MoveIntakeToPosition(IntakeConstants.INTAKE_DOOR_POSITION_STORED);
+            }
+        );
+    }
 
     
 }
