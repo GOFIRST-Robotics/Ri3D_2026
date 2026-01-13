@@ -130,8 +130,8 @@ public final class Constants {
     public static final double TURRET_VERTICAL_DISTANCE_TO_GOAL = 1.8288;
     public static final double TURRET_VERTICAL_DISTANCE_APEX_OFFSET = 0.254;
     public static final double TURRET_TIME_INTO_GOAL_AFTER_APEX = Math.sqrt(-TURRET_VERTICAL_DISTANCE_APEX_OFFSET / GRAVITY_CONSTANT);
-    public static final double GOAL_FIELD_SPACE_X_POSITION = 10;
-    public static final double GOAL_FIELD_SPACE_Y_POSITION = -10;
+    public static final double GOAL_FIELD_SPACE_X_POSITION = 11.915521;
+    public static final double GOAL_FIELD_SPACE_Y_POSITION = 4.034536;
 
     // Turntable PIDs
     public static final double TURNTABLE_kP = 0.0;
