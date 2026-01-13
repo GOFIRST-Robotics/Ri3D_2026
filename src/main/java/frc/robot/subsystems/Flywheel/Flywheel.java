@@ -55,8 +55,8 @@ public class Flywheel extends SubsystemBase {
     }
 
     public Command StopFlywheelsCommand() { return this.runOnce(() -> runFlywheels(0, 0)); }
-    public Command decrementRpmSetPoint() { return this.runOnce(() -> IncrementSetRPM(-Constants.TurretConstants.TURRET_FLYWHEEL_CHANGE_SPEED)); }
-    public Command incrementRpmSetPoint() { return this.runOnce(() -> IncrementSetRPM(Constants.TurretConstants.TURRET_FLYWHEEL_CHANGE_SPEED)); }
+    public Command decrementRpmSetPoint() { return this.run(() -> IncrementSetRPM(-Constants.TurretConstants.TURRET_FLYWHEEL_CHANGE_SPEED)); }
+    public Command incrementRpmSetPoint() { return this.run(() -> IncrementSetRPM(Constants.TurretConstants.TURRET_FLYWHEEL_CHANGE_SPEED)); }
 
     public boolean FlywheelSpeedWithinError()
     {

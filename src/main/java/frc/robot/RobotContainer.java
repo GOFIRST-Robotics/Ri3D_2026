@@ -154,8 +154,8 @@ public class RobotContainer {
 
     controller.rightBumper().whileTrue(indexer.runIndexerCommandDutyCycle());
 
-    controller.leftTrigger().onTrue(flywheel.decrementRpmSetPoint());
-    controller.rightTrigger().onTrue(flywheel.incrementRpmSetPoint());
+    controller.leftTrigger().whileTrue(flywheel.decrementRpmSetPoint());
+    controller.rightTrigger().whileTrue(flywheel.incrementRpmSetPoint());
     controller.b().onTrue(flywheel.StopFlywheelsCommand());
 
     controller.povUp().whileTrue(hood.incrementHoodAngleCommand());
