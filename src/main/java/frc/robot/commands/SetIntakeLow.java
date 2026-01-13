@@ -9,11 +9,11 @@ import edu.wpi.first.wpilibj2.command.Command;
 import frc.robot.subsystems.Intake.Intake;
 
 /* You should consider using the more terse Command factories API instead https://docs.wpilib.org/en/stable/docs/software/commandbased/organizing-command-based.html#defining-commands */
-public class setLow extends Command {
+public class SetIntakeLow extends Command {
   /** Creates a new moveIntake. */
   Intake m_intake;
 
-  public setLow(Intake intake) {
+  public SetIntakeLow(Intake intake) {
     // Use addRequirements() here to declare subsystem dependencies.
     m_intake = intake;
     addRequirements(intake);
