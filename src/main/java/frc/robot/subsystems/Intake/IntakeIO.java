@@ -25,6 +25,7 @@ public interface IntakeIO {
     public default void updateInputs(IntakeIOInputs inputs) {}
 
     public default void setIntakeDoorPosition(double position, IntakeIOInputs inputs) {}
+    
 
 
     /** Stop all outputs. */

@@ -3,7 +3,9 @@ package frc.robot;
 import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.Commands;
+import edu.wpi.first.wpilibj2.command.RunCommand;
 import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
+import edu.wpi.first.wpilibj2.command.button.Trigger;
 import frc.robot.commands.MecanumDriveCommands;
 import frc.robot.commands.SetIntakeHigh;
 import frc.robot.commands.SetIntakeLow;
@@ -114,9 +116,9 @@ public class RobotContainer {
                 () -> -controller.getLeftX(),
                 new Rotation2d(0)));
 
-      controller.rightBumper().whileTrue(new SetIntakeLow(intake));
-      controller.leftBumper().whileTrue(new SetIntakeHigh(intake)); 
-
+      controller.rightBumper().onTrue(new SetIntakeLow(intake));
+      controller.leftBumper().onTrue(new SetIntakeHigh(intake));
+      controller.rightTrigger().onTrue(new RunCommand(()-> intake.stopIntake(), intake));
 
 
     // Stop when X button is pressed

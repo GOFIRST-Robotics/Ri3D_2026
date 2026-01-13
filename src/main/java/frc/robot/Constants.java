@@ -144,7 +144,11 @@ public final class Constants {
 
       public static final double INTAKE_DOOR_kP = 0.001;
 
-      public static final double INTAKE_DOOR_POSITION_STORED = 0.0;
+      public static final double INTAKE_DOOR_POSITION_STORED = 90.0; //degrees
+      public static final double INTAKE_DOOR_POSITION_DEPLOYED = 30.0;
+      public static final boolean IS_INTAKE_DIRECTION_INVERTED = false;
+      public static final boolean IS_INTAKE_ENCODER_INVERTED = false;
+
 
       // Intake door positions (degrees) soft limits
       public static final double FINAL_INTAKE_DOOR_POSITION = Rotation2d.fromDegrees(90).getDegrees(); // 90 degrees

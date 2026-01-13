@@ -23,6 +23,12 @@ public class Intake extends SubsystemBase {
         io.setIntakeDoorPosition(position, inputs);
     }
 
+    public void stopIntake() {
+        io.stop();
+    }
+
+
+
     @Override
     public void periodic() {
         io.updateInputs(inputs);

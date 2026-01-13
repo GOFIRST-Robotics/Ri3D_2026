@@ -41,6 +41,8 @@ public class IntakeIOSpark implements IntakeIO {
             .feedbackSensor(FeedbackSensor.kAbsoluteEncoder)
             .pid(changeableIntakekP.getAsDouble(), 0.0, 0.0);
         doorConfig.absoluteEncoder.positionConversionFactor(2 * Math.PI); // Radians to degrees
+        doorConfig.inverted(IntakeConstants.IS_INTAKE_DIRECTION_INVERTED);
+        doorConfig.absoluteEncoder.inverted(IntakeConstants.IS_INTAKE_ENCODER_INVERTED);
         rightDoorMotor.configure(doorConfig, ResetMode.kResetSafeParameters, PersistMode.kPersistParameters);
 
         // Left door motor follows the right door motor, inverted
