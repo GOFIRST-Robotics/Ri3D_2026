@@ -32,10 +32,17 @@ public class Indexer extends SubsystemBase {
   }
 
 
-  public Command runIndexer() {
+  public Command runIndexerCommand() {
       return this.startEnd(
           () -> runIndexer(IndexerConstants.INDEXER_MOTOR_RPM), 
           () -> runIndexer(0)                                   
+      ).withName("Run Indexer");
+  }
+
+  public Command runIndexerCommandDutyCycle() {
+      return this.startEnd(
+          () -> io.setIndexerKDutyCycle(0.25), 
+          () -> io.setIndexerKDutyCycle(0.0)                                   
       ).withName("Run Indexer");
   }
 

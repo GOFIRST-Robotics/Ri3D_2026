@@ -79,7 +79,6 @@ public class RobotContainer {
 
   private void configureButtonBindings() {
     // Default command: field-relative mecanum drive with squared inputs
-    drive.setDefaultCommand(
         // MecanumDriveCommands.joystickDriveFieldRelative(
         //     drive,
         //     () -> -controller.getLeftY(),  // Forward/back

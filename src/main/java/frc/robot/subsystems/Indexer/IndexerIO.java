@@ -12,5 +12,6 @@ public interface IndexerIO {
 
     default void updateInputs(IndexerIOInputsAutoLogged inputs) {}
     default void setIndexerRPM(double RPM) {}
+    default void setIndexerKDutyCycle(double percentOutput) {}
     default void periodic() {}
 }

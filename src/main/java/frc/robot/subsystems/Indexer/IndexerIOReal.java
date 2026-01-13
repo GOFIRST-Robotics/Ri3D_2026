@@ -55,6 +55,11 @@ public class IndexerIOReal implements IndexerIO {
     }
 
     @Override
+    public void setIndexerKDutyCycle(double percentOutput) {
+        indexerPID.setSetpoint(percentOutput, ControlType.kDutyCycle);
+    }
+
+    @Override
     public void periodic() {
         if (changableIndexerkP.getAsDouble() != indexerkP || changableIndexerkFF.getAsDouble() != indexerkV) {
             SparkMaxConfig indexerConfig = new SparkMaxConfig();
