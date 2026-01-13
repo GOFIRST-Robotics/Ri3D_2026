@@ -110,7 +110,7 @@ public final class Constants {
     public static final double TURRET_LOCAL_POS_Y = 0; // meters, right hand rule!!
 
     public static final double TURRET_HOOD_MOTOR_MIN_ROTATIONS = 0;
-    public static final double TURRET_HOOD_MOTOR_MAX_ROTATIONS = 8;
+    public static final double TURRET_HOOD_MOTOR_MAX_ROTATIONS = 6.7;
     public static final double TURRET_HOOD_MIN_RADIANS = Units.degreesToRadians(30);
     public static final double TURRET_HOOD_MAX_RADIANS = Units.degreesToRadians(65);
     public static final double TURRET_HOOD_RANGE_RADIANS = TURRET_HOOD_MAX_RADIANS - TURRET_HOOD_MIN_RADIANS;
