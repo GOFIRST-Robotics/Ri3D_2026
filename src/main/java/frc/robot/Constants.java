@@ -13,6 +13,7 @@
 
 package frc.robot;
 
+import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.math.util.Units;
 import edu.wpi.first.wpilibj.RobotBase;
 
@@ -87,6 +88,74 @@ public final class Constants {
     public static final double kS = 0.0;
     public static final double kV = 0.0;
   }
+
+  // ==================== OTHER MOTOR CAN IDs ====================
+  
+  public static final int INTAKE_BAR_MOTOR_ID = 11;
+  public static final int INTAKE_ARM_MOTOR_ID = 6;
+  public static final int ELEVATOR_STAGE_1_MOTOR_ID = 12;
+  public static final int ELEVATOR_STAGE_2_MOTOR_ID = 10;
+  public static final int END_EFFECTOR_WHEEL_MOTOR_ID = 7;
+  public static final int END_EFFECTOR_ARM_MOTOR_ID = 8;
+
+  // ==================== SERVO / PWM ====================
+  
+  public static final int ELEVATOR_DROP_SERVO_ID = 0;
+  public static final int LED_PWM_ID = 4;
+
+  // ==================== ELEVATOR CONSTANTS ====================
+  
+  public static final boolean ELEVATOR_STAGE_1_INVERT = true;
+  public static final boolean ELEVATOR_STAGE_2_INVERT = true;
+  public static final boolean ELEVATOR_WHEEL_INVERT = true;
+  public static final boolean ELEVATOR_ARM_INVERT = true;
+  public static final double ELEVATOR_SPEED = 0.2;
+  public static final double ARM_SPEED = 0.2;
+  public static final double WHEEL_SPEED = 0.6;
+  public static final double ARM_GRAVITY_CONST = -0.03;
+  public static final int ELEVATOR_ROTATIONS_PER_INCH = 13;
+
+  // ==================== INTAKE CONSTANTS ====================
+  
+  public static final double INTAKE_LIFT_GEAR_RATIO = 3 * 7 * 7 * 48 / 29;
+  public static final double INTAKE_ARM_MAX_POWER = 0.25;
+  public static final double INTAKE_ARM_MIN_POWER = 0.05;
+  public static final double INTAKE_ARM_kP = 0.035;
+  public static final double INTAKE_DEPLOY_LIMIT = 51;
+  public static final double INTAKE_RETURN_LIMIT = 0;
+  public static final boolean INTAKE_ARM_INVERT = true;
+  public static final double DEPLOY_SPEED = 0.1;
+  public static final boolean INTAKE_BAR_INVERT = false;
+  public static final double INTAKE_BAR_SPEED = 0.8;
+
+  // Intake positions
+  public static final double PICK_UP_ALGAE_POSITION = 33;
+  public static final double HOLD_ALGAE_POSITION = 2.0;
+  public static final double PICK_UP_CORAL_POSITION = 53;
+  public static final double HOLD_CORAL_POSITION = 24;
+  public static final double GRAVITY_RESISTANCE = 0.05;
+
+  public static final class IntakeConstants {
+  
+      public static final int INTAKE_RIGHT_DOOR_MOTOR_ID = 20; 
+      public static final int INTAKE_LEFT_DOOR_MOTOR_ID = 21;
+      public static final int INTAKE_WHEEL_MOTOR_ID = 22;
+      // public static final int INTAKE_WHEEL_MOTOR_ID = 4;
+
+      public static final double INTAKE_DOOR_kP = .1;
+      public static final double INTAKE_DOOR_kI = .0006;
+      public static final double INTAKE_DOOR_kD = 0;
+
+
+      public static final double INTAKE_DOOR_POSITION_STORED = Units.degreesToRadians(118); //degrees -0.33
+      public static final double INTAKE_DOOR_POSITION_DEPLOYED = Units.degreesToRadians(0.0); //0.054
+      public static final boolean IS_INTAKE_DIRECTION_INVERTED = false;
+      public static final boolean IS_INTAKE_ENCODER_INVERTED = true;
+    public static final double INTAKE_WHEEL_SPEED = 0;
+
+  }
+
+
 
   // ==================== VISION CONSTANTS ====================
   
