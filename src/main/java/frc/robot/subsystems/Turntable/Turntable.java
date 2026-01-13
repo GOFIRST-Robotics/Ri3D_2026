@@ -18,6 +18,9 @@ public class Turntable extends SubsystemBase {
     public void periodic() {
         io.updateInputs(inputs);
         io.periodic();
+
+        inputs.targetTurntableRadians = currentTargetRadians;
+
         Logger.processInputs("Turntable", inputs);
     }
 
@@ -33,6 +36,7 @@ public class Turntable extends SubsystemBase {
 
     public Command incrementTurntableAngleCommand() { return this.run(() -> setTargetRadians(currentTargetRadians + Constants.TurretConstants.TURRET_TURNTABLE_CHANGE_SPEED)); }
     public Command decrementTurntableAngleCommand() { return this.run(() -> setTargetRadians(currentTargetRadians - Constants.TurretConstants.TURRET_TURNTABLE_CHANGE_SPEED)); }
+    public Command setTurntableAngleCommand(double radians) { return this.run(() -> setTargetRadians(radians)); }
 
     public boolean TurntableHeadingWithinError()
     {

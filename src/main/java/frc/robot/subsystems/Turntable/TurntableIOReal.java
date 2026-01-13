@@ -87,7 +87,9 @@ public class TurntableIOReal implements TurntableIO {
     public void updateInputs(TurntableIOInputs inputs) {
         periodic();
 
-        ifOk(turntableMotorController, turntableEncoder::getPosition, (value) -> inputs.turntableRadians = (value / TurretConstants.TURRET_TURNTABLE_GEAR_RATIO) * Constants.TWO_PI);
+        ifOk(turntableMotorController, turntableEncoder::getPosition, (value) -> inputs.motorPosition = value);
+        inputs.turntableRadians = (inputs.motorPosition / TurretConstants.TURRET_TURNTABLE_GEAR_RATIO) * Constants.TWO_PI;
+        inputs.targetMotorPosition = turntableClosedLoop.getSetpoint();
     }
 
     @Override

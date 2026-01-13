@@ -7,6 +7,9 @@ public interface TurntableIO {
     @AutoLog
     class TurntableIOInputs {
         public double turntableRadians;
+        public double motorPosition;
+        public double targetTurntableRadians;
+        public double targetMotorPosition;
     }
 
     default void updateInputs(TurntableIOInputs inputs) {}
