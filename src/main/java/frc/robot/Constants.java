@@ -92,9 +92,10 @@ public final class Constants {
   }
 
 
-  public static final int TURRET_LEFT_FLYWHEEL_MOTOR_ID = 6;
-  public static final int TURRET_RIGHT_FLYWHEEL_MOTOR_ID = 10;
-  public static final int TURRET_HOOD_MOTOR_ID = 20;
+  public static final int TURRET_LEFT_FLYWHEEL_MOTOR_ID = 40;
+  public static final int TURRET_RIGHT_FLYWHEEL_MOTOR_ID = 41;
+  public static final int TURRET_HOOD_MOTOR_ID = 42;
+  public static final int TURRET_TURNTABLE_MOTOR_ID = 43;
 
   // ==================== TURRET CONSTANTS ====================
 
