@@ -140,7 +140,7 @@ public final class Constants {
     public static final double TURNTABLE_kS = 0.0;
     public static final double TURNTABLE_kV = 0.0;
     public static final double TURNTABLE_kA = 0.0;
-    public static final double TURNTABLE_CRUISE_VEL = 0.0;
+    public static final double TURNTABLE_CRUISE_VEL = (0 * Constants.TurretConstants.TURRET_TURNTABLE_GEAR_RATIO / 360) * 60;;
     public static final double TURNTABLE_MAX_ACCEL = 0.0;
     public static final double TURNTABLE_ALLOWED_ERROR = 0.5;
 
