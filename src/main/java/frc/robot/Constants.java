@@ -112,7 +112,7 @@ public final class Constants {
     public static final double FLYWHEEL_BALL_COMPRESSION = 0.25;
     
     public static final double TURRET_LOCAL_POS_X = 0; // meters, right hand rule!!
-    public static final double TURRET_LOCAL_POS_Y = 0; // meters, right hand rule!!
+    public static final double TURRET_LOCAL_POS_Y = 0; // meters, right hand rule!! 
 
     public static final double TURRET_HOOD_MOTOR_MIN_ROTATIONS = 0;
     public static final double TURRET_HOOD_MOTOR_MAX_ROTATIONS = 8;
@@ -137,6 +137,11 @@ public final class Constants {
     public static final double TURRET_TIME_INTO_GOAL_AFTER_APEX = Math.sqrt(-TURRET_VERTICAL_DISTANCE_APEX_OFFSET / GRAVITY_CONSTANT);
     public static final double GOAL_FIELD_SPACE_X_POSITION = 10;
     public static final double GOAL_FIELD_SPACE_Y_POSITION = -10;
+
+    //Isaac's maybe unnessary constants for turret positinoing
+    public static final double TURRET_LOCAL_POS_Z = 0; //we arbitratilly define its height as 0 meters off the ground and measure direct camera height from ground
+    public static final double CAMERA_RADIUS = 0; //radius from center of turret to lens of camera
+    public static final double CAMERA_HEIGHT = 0; 
 
     // Turntable PIDs
     public static final double TURNTABLE_kP = 0.0;

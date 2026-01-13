@@ -38,4 +38,9 @@ public class Turntable extends SubsystemBase {
     {
         return Math.abs(inputs.turntableRadians - currentTargetRadians) <= Constants.TurretConstants.TURRET_TURNTABLE_ACCEPTABLE_RADIAN_ERROR;
     }
+
+    public double getyawOffsetRadiants()
+    {
+        return inputs.turntableRadians;
+    }
 }
