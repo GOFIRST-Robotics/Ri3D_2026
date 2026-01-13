@@ -55,7 +55,7 @@ public class Turret extends SubsystemBase {
         double launch_angle = Math.atan2(velocity_initial_y, velocity_inital_x);
         double launch_velocity = Math.sqrt(velocity_inital_x * velocity_inital_x + velocity_initial_y * velocity_initial_y);
 
-        hood.setTargetRadians(launch_angle);
+        hood.setDesiredLaunchAngle(launch_angle);
         flywheel.setLaunchSpeed(launch_velocity);
     }
 
