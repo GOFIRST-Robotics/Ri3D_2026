@@ -133,19 +133,40 @@ public class ClimberIOReal implements ClimberIO {
     public void setClimbPositionWithLoad(ClimbPosition position) {
         switch (position) {
             case ZERO:
-                climbPID.setSetpoint(ClimberConstants.CLIMBER_ZERO_POS, ControlType.kMAXMotionPositionControl);
+                climbPID.setSetpoint(ClimberConstants.CLIMBER_ZERO_POS, ControlType.kMAXMotionPositionControl, ClosedLoopSlot.kSlot0);
                 break;
             case AUTO:
-                climbPID.setSetpoint(ClimberConstants.AUTO_CLIMB_POS, ControlType.kMAXMotionPositionControl);
+                climbPID.setSetpoint(ClimberConstants.AUTO_CLIMB_POS, ControlType.kMAXMotionPositionControl, ClosedLoopSlot.kSlot0);
                 break;
             case RUNG_ONE:
-                climbPID.setSetpoint(ClimberConstants.RUNG_ONE_CLIMBER_POS, ControlType.kMAXMotionPositionControl);
+                climbPID.setSetpoint(ClimberConstants.RUNG_ONE_CLIMBER_POS, ControlType.kMAXMotionPositionControl, ClosedLoopSlot.kSlot0);
                 break;
             case RUNG_TWO:
-                climbPID.setSetpoint(ClimberConstants.RUNG_TWO_CLIMBER_POS, ControlType.kMAXMotionPositionControl);
+                climbPID.setSetpoint(ClimberConstants.RUNG_TWO_CLIMBER_POS, ControlType.kMAXMotionPositionControl, ClosedLoopSlot.kSlot0);
                 break;
             case RUNG_THREE:
-                climbPID.setSetpoint(ClimberConstants.RUNG_THREE_CLIMBER_POS, ControlType.kMAXMotionPositionControl);
+                climbPID.setSetpoint(ClimberConstants.RUNG_THREE_CLIMBER_POS, ControlType.kMAXMotionPositionControl, ClosedLoopSlot.kSlot0);
+                break;
+        }
+    }
+
+    @Override
+    public void setClimbPositionNoLoad(ClimbPosition position) {
+        switch (position) {
+            case ZERO:
+                climbPID.setSetpoint(ClimberConstants.CLIMBER_ZERO_POS, ControlType.kMAXMotionPositionControl, ClosedLoopSlot.kSlot1);
+                break;
+            case AUTO:
+                climbPID.setSetpoint(ClimberConstants.AUTO_CLIMB_POS, ControlType.kMAXMotionPositionControl, ClosedLoopSlot.kSlot1);
+                break;
+            case RUNG_ONE:
+                climbPID.setSetpoint(ClimberConstants.RUNG_ONE_CLIMBER_POS, ControlType.kMAXMotionPositionControl, ClosedLoopSlot.kSlot1);
+                break;
+            case RUNG_TWO:
+                climbPID.setSetpoint(ClimberConstants.RUNG_TWO_CLIMBER_POS, ControlType.kMAXMotionPositionControl, ClosedLoopSlot.kSlot1);
+                break;
+            case RUNG_THREE:
+                climbPID.setSetpoint(ClimberConstants.RUNG_THREE_CLIMBER_POS, ControlType.kMAXMotionPositionControl, ClosedLoopSlot.kSlot1);
                 break;
         }
     }

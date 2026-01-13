@@ -25,10 +25,13 @@ public class Climber extends SubsystemBase {
     movementFinished = io::isMovementFinished;
   }
 
-  public void setClimberPos(ClimbPosition position) {
-    io.setClimbPosition(position);
+  public void setClimberPosLoad(ClimbPosition position) {
+    io.setClimbPositionWithLoad(position);
   }
 
+  public void setClimberPosNoLoad(ClimbPosition position) {
+   io.setClimbPositionNoLoad(position);
+  }
   
 
   @Override
@@ -40,25 +43,13 @@ public class Climber extends SubsystemBase {
 
   // Commands
 
-  public Command goFirstRungPos() {
-     return this.runOnce(() -> setClimberPos(ClimberIO.ClimbPosition.RUNG_ONE)).until(movementFinished).withName("Rung One Pos");
-  }
-
-  public Command goSecondRungPos() {
-     return this.runOnce(() -> setClimberPos(ClimberIO.ClimbPosition.RUNG_TWO)).until(movementFinished).withName("Rung Two Pos");
-  }
-
-  public Command goThirdRungPos() {
-     return this.runOnce(() -> setClimberPos(ClimberIO.ClimbPosition.RUNG_THREE)).until(movementFinished).withName("Rung Three Pos");
-  }
-
-  public Command goAutonomousPos() {
-     return this.runOnce(() -> setClimberPos(ClimberIO.ClimbPosition.AUTO)).until(movementFinished).withName("Auto Climber Pos");
-  }
-
-  public Command goZeroPos() {
-     return this.runOnce(() -> setClimberPos(ClimberIO.ClimbPosition.ZERO)).until(movementFinished).withName("Zero Climber Pos");
-  }
-
-
+   public Command climbElevatorCommand(ClimbPosition pos, int pidSlot) {
+      if (pidSlot == 0) {
+         return this.runOnce(() -> setClimberPosNoLoad(pos)).until(movementFinished).withName("Climber elevatorNo Load");
+      } else if (pidSlot == 1) {
+         return this.runOnce(() -> setClimberPosLoad(pos)).until(movementFinished).withName("Climber elevator Load");
+      }
+      return null;
+   }
+    
 }
