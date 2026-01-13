@@ -26,9 +26,9 @@ public class RobotContainer {
   // Subsystems
   private final MecanumDrive drive;
   // private final Turret turret;
-  // private final Flywheel flywheel;
-  // private final Hood hood;
-  private final Turntable turntable;
+  private final Flywheel flywheel;
+  private final Hood hood;
+  // private final Turntable turntable;
 
   // Controller
   private final CommandXboxController controller = new CommandXboxController(0);
@@ -50,9 +50,9 @@ public class RobotContainer {
                 },
                 new GyroIONavX());
 
-        // flywheel = new Flywheel(new FlywheelIOReal());
-        // hood = new Hood(new HoodIOReal());
-        turntable = new Turntable(new TurntableIOReal());
+        flywheel = new Flywheel(new FlywheelIOReal());
+        hood = new Hood(new HoodIOReal());
+        // turntable = new Turntable(new TurntableIOReal());
         // turret = new Turret(flywheel, hood, turntable);
 
         break;
@@ -69,9 +69,9 @@ public class RobotContainer {
                 },
                 new GyroIO() {});
 
-        // flywheel = null;
-        // hood = null;
-        turntable = null;
+        flywheel = null;
+        hood = null;
+        // turntable = null;
         // turret = null;
         break;
 
@@ -87,9 +87,9 @@ public class RobotContainer {
                 },
                 new GyroIO() {});
 
-        // flywheel = null;
-        // hood = null;
-        turntable = null;
+        flywheel = null;
+        hood = null;
+        // turntable = null;
         // turret = null;
         break;
     }
@@ -137,16 +137,11 @@ public class RobotContainer {
     // Reset heading when B button is pressed
     controller.b().onTrue(MecanumDriveCommands.resetHeading(drive));
 
-    //controller.leftTrigger().onTrue(flywheel.StopFlywheelsCommand());
-    //controller.rightTrigger().onTrue(flywheel.RunTuneableFlywheelsCommand());
+    controller.leftTrigger().onTrue(flywheel.StopFlywheelsCommand());
+    controller.rightTrigger().onTrue(flywheel.RunFlywheelsCommand());
 
-    // controller.povUp().whileTrue(hood.incrementHoodAngleCommand());
-    // controller.povDown().whileTrue(hood.decrementHoodAngleCommand());
-    // controller.povRight().onTrue(hood.setHoodAngleCommand(Units.degreesToRadians(35)));
-
-    controller.povRight().whileTrue(turntable.incrementTurntableAngleCommand());
-    controller.povLeft().whileTrue(turntable.decrementTurntableAngleCommand());
-    controller.povUp().onTrue(turntable.setTurntableAngleCommand(0));
+    controller.povUp().whileTrue(hood.incrementHoodAngleCommand());
+    controller.povDown().whileTrue(hood.decrementHoodAngleCommand());
   }
 
   public Command getAutonomousCommand() {
