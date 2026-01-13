@@ -137,17 +137,17 @@ public final class Constants {
 
   public static final class IntakeConstants {
   
-      public static final int INTAKE_UPPER_DOOR_MOTOR_ID = 20; 
-      public static final int INTAKE_LOWER_DOOR_MOTOR_ID = 21;
+      public static final int INTAKE_RIGHT_DOOR_MOTOR_ID = 20; 
+      public static final int INTAKE_LEFT_DOOR_MOTOR_ID = 21;
       public static final int INTAKE_WHEEL_MOTOR_ID = 22;
       // public static final int INTAKE_WHEEL_MOTOR_ID = 4;
 
       public static final double INTAKE_DOOR_kP = 0.001;
 
-      public static final double INTAKE_DOOR_POSITION_STORED = 90.0; //degrees
-      public static final double INTAKE_DOOR_POSITION_DEPLOYED = 30.0;
+      public static final double INTAKE_DOOR_POSITION_STORED = 118; //degrees -0.33
+      public static final double INTAKE_DOOR_POSITION_DEPLOYED = 19.44; //0.054
       public static final boolean IS_INTAKE_DIRECTION_INVERTED = false;
-      public static final boolean IS_INTAKE_ENCODER_INVERTED = false;
+      public static final boolean IS_INTAKE_ENCODER_INVERTED = true;
 
 
       // Intake door positions (degrees) soft limits

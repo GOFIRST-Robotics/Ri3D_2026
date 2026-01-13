@@ -26,12 +26,12 @@ public class IntakeIOSpark implements IntakeIO {
     public IntakeIOSpark() { 
 
         // Initialize motors
-        rightDoorMotor = new SparkMax(IntakeConstants.INTAKE_UPPER_DOOR_MOTOR_ID, MotorType.kBrushless); 
-        leftDoorMotor = new SparkMax(IntakeConstants.INTAKE_LOWER_DOOR_MOTOR_ID, MotorType.kBrushless);
+        rightDoorMotor = new SparkMax(IntakeConstants.INTAKE_RIGHT_DOOR_MOTOR_ID, MotorType.kBrushless); 
+        leftDoorMotor = new SparkMax(IntakeConstants.INTAKE_LEFT_DOOR_MOTOR_ID, MotorType.kBrushless);
         intakeWheel = new VictorSP(IntakeConstants.INTAKE_WHEEL_MOTOR_ID); 
 
         // Configure intake door motors
-        changeableIntakekP = new LoggedNetworkNumber("Intake/ChangeableIntakeKP", IntakeConstants.INTAKE_DOOR_kP);
+        changeableIntakekP = new LoggedNetworkNumber("/Tuning/Intake/ChangeableIntakeKP", IntakeConstants.INTAKE_DOOR_kP);
         
 
         // Right door motor is the leader with an absolute encoder for position feedback
