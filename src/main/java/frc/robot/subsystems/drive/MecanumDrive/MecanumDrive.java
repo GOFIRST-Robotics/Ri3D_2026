@@ -73,6 +73,14 @@ public class MecanumDrive extends SubsystemBase {
             gyroInputs.yawPosition,
             getWheelPositions(),
             new Pose2d());
+
+    odometryEstimator = new MecanumDrivePoseEstimator(
+        kinematics,
+        gyroInputs.yawPosition,
+        getWheelPositions(),
+        new Pose2d(),
+        Constants.DRIVE_STANDARD_DEVIATIONS,
+        Constants.DRIVE_VISION_MEASUREMENT_STD_DEVS);
   }
 
   @Override
@@ -97,6 +105,7 @@ public class MecanumDrive extends SubsystemBase {
 
     // Log outputs
     Logger.recordOutput("Drive/Mecanum/Pose", odometry.getPoseMeters());
+    Logger.recordOutput("Drive/Mecanum/EstimatedPose", odometryEstimator.getEstimatedPosition());
     Logger.recordOutput("Drive/Mecanum/Heading", gyroInputs.yawPosition.getRadians());
   }
 
@@ -110,8 +119,13 @@ public class MecanumDrive extends SubsystemBase {
     return odometry.getPoseMeters();
   }
 
+  public Pose2d getEstimatedPose() {
+    return odometryEstimator.getEstimatedPosition();
+  }
+
   public void resetPose(Pose2d pose) {
-    odometry.resetPosition(gyroInputs.yawPosition, getWheelPositions(), pose);
+        odometry.resetPosition(gyroInputs.yawPosition, getWheelPositions(), pose);
+    odometryEstimator.resetPosition(gyroInputs.yawPosition, getWheelPositions(), pose);
   }
 
   /** Wheel distances (meters) used by WPILib odometry. */
@@ -179,7 +193,10 @@ public class MecanumDrive extends SubsystemBase {
   }
 
 
+
+
   public void addVisionMeasurement(Pose2d visionPose, double timestampSeconds, Matrix<N3, N1> stdDevs) {
-    odometryEstimator.updateWithTime(timestampSeconds, getGyroYaw(), getWheelPositions());
+    odometryEstimator.addVisionMeasurement(visionPose, timestampSeconds, stdDevs);
   }
+
 }
