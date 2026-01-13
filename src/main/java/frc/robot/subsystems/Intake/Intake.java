@@ -1,5 +1,6 @@
 package frc.robot.subsystems.Intake;
 
+import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.Constants.IntakeConstants;
 import frc.robot.subsystems.Intake.IntakeIO.IntakeIOInputs;
@@ -12,14 +13,13 @@ public class Intake extends SubsystemBase {
     public Intake(IntakeIO io) {
         this.io = io;
         this.inputs = new IntakeIOInputs();
-        setIntakeDoorPosition(IntakeConstants.INTAKE_DOOR_POSITION_STORED);
     }
 
     public void runIntake(double percentOutput) {
         io.setIntakeWheelSpeedPercentOut(percentOutput);
     }
 
-    public void setIntakeDoorPosition(double position) {
+    public void MoveIntakeToPosition(double position) {
         io.setIntakeDoorPosition(position, inputs);
     }
 
@@ -32,7 +32,10 @@ public class Intake extends SubsystemBase {
     @Override
     public void periodic() {
         io.updateInputs(inputs);
-        io.stop();
+    }
+
+    public Command setIntake(double position) {
+        return this.runOnce(()->MoveIntakeToPosition(position));
     }
 
 

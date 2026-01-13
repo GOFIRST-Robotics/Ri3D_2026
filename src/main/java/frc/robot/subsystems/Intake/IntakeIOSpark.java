@@ -12,6 +12,7 @@ import com.revrobotics.spark.SparkAbsoluteEncoder;
 import com.revrobotics.spark.SparkBase.ControlType;
 import com.revrobotics.spark.SparkMax;
 import com.revrobotics.spark.config.FeedForwardConfig;
+import com.revrobotics.spark.config.MAXMotionConfig;
 import com.revrobotics.spark.config.SparkMaxConfig;
 
 import edu.wpi.first.math.util.Units;
@@ -34,21 +35,21 @@ public class IntakeIOSpark implements IntakeIO {
         var doorConfig = new SparkMaxConfig();
         doorConfig
             .closedLoop
-            .feedbackSensor(FeedbackSensor.kAbsoluteEncoder)
+            .feedbackSensor(FeedbackSensor.kDetachedAbsoluteEncoder)
             .pid(IntakeConstants.INTAKE_DOOR_kP, 0.0, 0.0);
-        doorConfig.closedLoop.apply(new FeedForwardConfig().kCos(0.8));
+        doorConfig.closedLoop.apply(new FeedForwardConfig().kCos(0.8) .kCosRatio(1));
         doorConfig.absoluteEncoder.positionConversionFactor(2 * Math.PI);
         doorConfig.inverted(IntakeConstants.IS_INTAKE_DIRECTION_INVERTED);
         doorConfig.absoluteEncoder.inverted(IntakeConstants.IS_INTAKE_ENCODER_INVERTED);
-        doorConfig.softLimit
-            .forwardSoftLimit(Units.degreesToRadians(125))
-            .forwardSoftLimitEnabled(true)
-            .reverseSoftLimit(0)
-            .reverseSoftLimitEnabled(true);
+        // doorConfig.softLimit
+        //     .forwardSoftLimit(Units.degreesToRadians(125))
+        //     .forwardSoftLimitEnabled(true)
+        //     .reverseSoftLimit(0)
+        //     .reverseSoftLimitEnabled(true);
         doorConfig.closedLoop.maxMotion
             .cruiseVelocity(0.5)
-            .maxAcceleration(0.4)
-            .allowedProfileError(0.5);
+            .maxAcceleration(10000)
+            .allowedProfileError(0.017);
         leftDoorMotor.configure(doorConfig, ResetMode.kResetSafeParameters, PersistMode.kPersistParameters);
 
         // RIGHT door motor follows the LEFT door motor, inverted
@@ -68,12 +69,14 @@ public class IntakeIOSpark implements IntakeIO {
     @Override
     public void setIntakeDoorPosition(double position, IntakeIOInputs inputs) {
         // Control the LEADER motor (leftDoorMotor)
+        System.out.println("intake target position changed" + position);
         leftDoorMotor.getClosedLoopController().setSetpoint(position, ControlType.kMAXMotionPositionControl); 
+
     }
 
     public void stop(IntakeIOInputs inputs) { 
-        leftDoorMotor.stopMotor();
-        intakeWheel.set(VictorSPXControlMode.PercentOutput, 0);
+        // leftDoorMotor.stopMotor();
+        // intakeWheel.set(VictorSPXControlMode.PercentOutput, 0);
     }
 
     @Override

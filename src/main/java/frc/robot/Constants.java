@@ -144,8 +144,8 @@ public final class Constants {
 
       public static final double INTAKE_DOOR_kP = 0.05;
 
-      public static final double INTAKE_DOOR_POSITION_STORED = 118; //degrees -0.33
-      public static final double INTAKE_DOOR_POSITION_DEPLOYED = 19.44; //0.054
+      public static final double INTAKE_DOOR_POSITION_STORED = Units.degreesToRadians(118); //degrees -0.33
+      public static final double INTAKE_DOOR_POSITION_DEPLOYED = Units.degreesToRadians(19.44); //0.054
       public static final boolean IS_INTAKE_DIRECTION_INVERTED = false;
       public static final boolean IS_INTAKE_ENCODER_INVERTED = true;
 
