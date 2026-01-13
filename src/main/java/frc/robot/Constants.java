@@ -143,11 +143,11 @@ public final class Constants {
 
   public static final class IndexerConstants{
     public static final int INDEXER_MOTOR_CAN_ID = 50;
-    public static final int ELEVATOR_MOTOR_CAN_ID = 51;
     public static final double INDEXER_MOTOR_RPM = 5;
-    public static final double ELEVATOR_MOTOR_RPM = 5;
 
     public static final double INDEXER_MOTOR_kP = 0.0001;
-    public static final double INDEXER_MOTOR_kFF = 0.000175;
+    public static final double INDEXER_MOTOR_kV = 0.000175;
+    public static final double INDEXER_MOTOR_MAX_VEL = 1500.0;
+    public static final double INDEXER_MOTOR_MAX_ACCEL = 4500.0;
   }
 }
