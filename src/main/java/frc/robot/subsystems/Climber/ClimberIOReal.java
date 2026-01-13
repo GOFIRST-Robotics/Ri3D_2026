@@ -197,7 +197,7 @@ public class ClimberIOReal implements ClimberIO {
             newConfig = true;
         }
         if (newConfig) {
-            climbMotor.configure(config, ResetMode.kResetSafeParameters, PersistMode.kPersistParameters);
+            climbMotor.configure(config, ResetMode.kNoResetSafeParameters, PersistMode.kPersistParameters);
         }
     }
 
