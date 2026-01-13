@@ -10,6 +10,7 @@ import com.revrobotics.spark.SparkBase.ControlType;
 import com.revrobotics.spark.SparkMax;
 import com.revrobotics.spark.config.SparkMaxConfig;
 
+import edu.wpi.first.math.util.Units;
 import edu.wpi.first.wpilibj.motorcontrol.VictorSP;
 import frc.robot.Constants.IntakeConstants;
 
@@ -43,6 +44,16 @@ public class IntakeIOSpark implements IntakeIO {
         doorConfig.absoluteEncoder.positionConversionFactor(2 * Math.PI); // Radians to degrees
         doorConfig.inverted(IntakeConstants.IS_INTAKE_DIRECTION_INVERTED);
         doorConfig.absoluteEncoder.inverted(IntakeConstants.IS_INTAKE_ENCODER_INVERTED);
+        doorConfig.softLimit
+            .forwardSoftLimit(Units.degreesToRadians(125))
+            .forwardSoftLimitEnabled(true)
+            .reverseSoftLimit(0)
+            .reverseSoftLimitEnabled(true);
+        doorConfig.closedLoop.maxMotion
+            .cruiseVelocity(0.5) //0.5 radians per second
+            .maxAcceleration(0.4) //radian accelerations
+            //.cruiseVelocity(10000)
+            .allowedProfileError(0.5); //0.5 radians off
         rightDoorMotor.configure(doorConfig, ResetMode.kResetSafeParameters, PersistMode.kPersistParameters);
 
         // Left door motor follows the right door motor, inverted
