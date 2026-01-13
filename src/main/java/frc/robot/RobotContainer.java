@@ -5,8 +5,8 @@ import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.Commands;
 import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
 import frc.robot.commands.MecanumDriveCommands;
-import frc.robot.commands.setLow;
-import frc.robot.commands.setHigh;
+import frc.robot.commands.SetIntakeHigh;
+import frc.robot.commands.SetIntakeLow;
 import frc.robot.subsystems.Gyro.GyroIO;
 import frc.robot.subsystems.Gyro.GyroIONavX;
 import frc.robot.subsystems.Intake.Intake;
@@ -114,8 +114,8 @@ public class RobotContainer {
                 () -> -controller.getLeftX(),
                 new Rotation2d(0)));
 
-      controller.rightBumper().whileTrue(new setLow(intake));
-      controller.leftBumper().whileTrue(new setHigh(intake)); 
+      controller.rightBumper().whileTrue(new SetIntakeLow(intake));
+      controller.leftBumper().whileTrue(new SetIntakeHigh(intake)); 
 
 
 
