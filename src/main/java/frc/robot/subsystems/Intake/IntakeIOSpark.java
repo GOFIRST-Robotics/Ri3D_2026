@@ -3,21 +3,24 @@ package frc.robot.subsystems.Intake;
 import org.littletonrobotics.junction.networktables.LoggedNetworkNumber;
 
 import com.revrobotics.spark.SparkLowLevel.MotorType;
+import com.ctre.phoenix.motorcontrol.VictorSPXControlMode;
+import com.ctre.phoenix.motorcontrol.can.VictorSPX;
+import com.ctre.phoenix.motorcontrol.can.WPI_VictorSPX;
 import com.revrobotics.PersistMode;
 import com.revrobotics.ResetMode;
 import com.revrobotics.spark.FeedbackSensor;
 import com.revrobotics.spark.SparkBase.ControlType;
 import com.revrobotics.spark.SparkMax;
+import com.revrobotics.spark.config.FeedForwardConfig;
 import com.revrobotics.spark.config.SparkMaxConfig;
 
 import edu.wpi.first.math.util.Units;
-import edu.wpi.first.wpilibj.motorcontrol.VictorSP;
 import frc.robot.Constants.IntakeConstants;
 
 public class IntakeIOSpark implements IntakeIO {
     private final SparkMax rightDoorMotor; // NEO 550 motor 
     private final SparkMax leftDoorMotor;  // NEO 550 motor
-    private final VictorSP intakeWheel; // Victor SP motor for inner intake wheel
+    private final VictorSPX intakeWheel; // Victor SP motor for inner intake wheel
     
     private LoggedNetworkNumber changeableIntakekP; // kP for the intake door position controller
     private double previousIntakekP = IntakeConstants.INTAKE_DOOR_kP;
@@ -29,7 +32,9 @@ public class IntakeIOSpark implements IntakeIO {
         // Initialize motors
         rightDoorMotor = new SparkMax(IntakeConstants.INTAKE_RIGHT_DOOR_MOTOR_ID, MotorType.kBrushless); 
         leftDoorMotor = new SparkMax(IntakeConstants.INTAKE_LEFT_DOOR_MOTOR_ID, MotorType.kBrushless);
-        intakeWheel = new VictorSP(IntakeConstants.INTAKE_WHEEL_MOTOR_ID); 
+        intakeWheel = new VictorSPX(IntakeConstants.INTAKE_WHEEL_MOTOR_ID); 
+
+        
 
         // Configure intake door motors
         changeableIntakekP = new LoggedNetworkNumber("/Tuning/Intake/ChangeableIntakeKP", IntakeConstants.INTAKE_DOOR_kP);
@@ -41,6 +46,7 @@ public class IntakeIOSpark implements IntakeIO {
             .closedLoop
             .feedbackSensor(FeedbackSensor.kAbsoluteEncoder)
             .pid(changeableIntakekP.getAsDouble(), 0.0, 0.0);
+        doorConfig.closedLoop.apply(new FeedForwardConfig().kCos(0.8));
         doorConfig.absoluteEncoder.positionConversionFactor(2 * Math.PI); // Radians to degrees
         doorConfig.inverted(IntakeConstants.IS_INTAKE_DIRECTION_INVERTED);
         doorConfig.absoluteEncoder.inverted(IntakeConstants.IS_INTAKE_ENCODER_INVERTED);
@@ -67,7 +73,7 @@ public class IntakeIOSpark implements IntakeIO {
     @Override
     public void setIntakeWheelSpeedPercentOut(double percentOutput) {
         // Set the intake wheel motor speed as a percent output
-        intakeWheel.set(percentOutput);
+        intakeWheel.set(VictorSPXControlMode.PercentOutput, percentOutput);
     }
 
     public void setIntakeDoorPosition(double position, IntakeIOInputs inputs) {
@@ -83,7 +89,7 @@ public class IntakeIOSpark implements IntakeIO {
     if(!(inputs.currentDoorPosition > IntakeConstants.FINAL_INTAKE_DOOR_POSITION)) {
         // If the door is near the final position, hold it there
         rightDoorMotor.stopMotor();
-        intakeWheel.set(0.0);
+        intakeWheel.set(VictorSPXControlMode.PercentOutput, 0);
     }
         
       rightDoorMotor.getClosedLoopController().setSetpoint(IntakeConstants.FINAL_INTAKE_DOOR_POSITION, ControlType.kPosition);

@@ -142,7 +142,7 @@ public final class Constants {
       public static final int INTAKE_WHEEL_MOTOR_ID = 22;
       // public static final int INTAKE_WHEEL_MOTOR_ID = 4;
 
-      public static final double INTAKE_DOOR_kP = 0.001;
+      public static final double INTAKE_DOOR_kP = 0.05;
 
       public static final double INTAKE_DOOR_POSITION_STORED = 118; //degrees -0.33
       public static final double INTAKE_DOOR_POSITION_DEPLOYED = 19.44; //0.054
