@@ -18,6 +18,9 @@ public class Turntable extends SubsystemBase {
     public void periodic() {
         io.updateInputs(inputs);
         io.periodic();
+
+        inputs.targetTurntableRadians = currentTargetRadians;
+
         Logger.processInputs("Turntable", inputs);
     }
 
