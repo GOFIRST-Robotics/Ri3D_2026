@@ -60,14 +60,13 @@ public class IntakeIOSpark implements IntakeIO {
             .maxAcceleration(0.4) //radian accelerations
             //.cruiseVelocity(10000)
             .allowedProfileError(0.5); //0.5 radians off
-        rightDoorMotor.configure(doorConfig, ResetMode.kResetSafeParameters, PersistMode.kPersistParameters);
+        leftDoorMotor.configure(doorConfig, ResetMode.kResetSafeParameters, PersistMode.kPersistParameters);
 
         // Left door motor follows the right door motor, inverted
         var followerConfig = new SparkMaxConfig();
-        followerConfig.follow(rightDoorMotor);
-        followerConfig.inverted(true);
-        leftDoorMotor.configure(followerConfig, ResetMode.kResetSafeParameters, PersistMode.kPersistParameters);
-        
+        followerConfig.follow(leftDoorMotor, true);
+        rightDoorMotor.configure(followerConfig, ResetMode.kResetSafeParameters, PersistMode.kPersistParameters);
+
     }   
 
     @Override
@@ -77,22 +76,18 @@ public class IntakeIOSpark implements IntakeIO {
     }
 
     public void setIntakeDoorPosition(double position, IntakeIOInputs inputs) {
-        // Set the desired position for the intake door (in degrees)
-        if(position > IntakeConstants.FINAL_INTAKE_DOOR_POSITION) {
-            position = IntakeConstants.FINAL_INTAKE_DOOR_POSITION;
-        }
-        rightDoorMotor.getClosedLoopController().setSetpoint(position, ControlType.kPosition); 
+        rightDoorMotor.getClosedLoopController().setSetpoint(position, ControlType.kMAXMotionPositionControl); 
     }
 
     public void stop(IntakeIOInputs inputs) { 
 
-    if(!(inputs.currentDoorPosition > IntakeConstants.FINAL_INTAKE_DOOR_POSITION)) {
-        // If the door is near the final position, hold it there
-        rightDoorMotor.stopMotor();
-        intakeWheel.set(VictorSPXControlMode.PercentOutput, 0);
-    }
+    // if(!(inputs.currentDoorPosition > IntakeConstants.FINAL_INTAKE_DOOR_POSITION)) {
+    //     // If the door is near the final position, hold it there
+    //     rightDoorMotor.stopMotor();
+    //     intakeWheel.set(VictorSPXControlMode.PercentOutput, 0);
+    // }
         
-      rightDoorMotor.getClosedLoopController().setSetpoint(IntakeConstants.FINAL_INTAKE_DOOR_POSITION, ControlType.kPosition);
+    //   rightDoorMotor.getClosedLoopController().setSetpoint(IntakeConstants.FINAL_INTAKE_DOOR_POSITION, ControlType.kMAXMotionPositionControl);
     }
 
 
@@ -102,7 +97,7 @@ public class IntakeIOSpark implements IntakeIO {
     public void updateInputs(IntakeIOInputs inputs) { 
         // Update kP if it has changed from previous value
         if(changeableIntakekP.getAsDouble() != previousIntakekP) {
-            rightDoorMotor.getClosedLoopController().setSetpoint(changeableIntakekP.getAsDouble(), ControlType.kPosition);
+            rightDoorMotor.getClosedLoopController().setSetpoint(changeableIntakekP.getAsDouble(), ControlType.kMAXMotionPositionControl);
             previousIntakekP = changeableIntakekP.getAsDouble();   
         }
 
