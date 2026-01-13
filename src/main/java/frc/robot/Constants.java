@@ -146,7 +146,7 @@ public final class Constants {
 
 
   public static final class ClimberConstants{
-    public static final int CLIMBER_MOTOR_CAN_ID = 40;
+    public static final int CLIMBER_MOTOR_CAN_ID = 50;
 
     public static final double CLIMBER_ZERO_POS = 0.0;
     public static final double AUTO_CLIMB_POS = 1.0;
