@@ -140,7 +140,7 @@ public class TurntableIOReal implements TurntableIO {
         }
 
         if (hasChanged) {
-            turntableMotorController.configure(config, ResetMode.kResetSafeParameters, PersistMode.kPersistParameters);
+            turntableMotorController.configure(config, ResetMode.kNoResetSafeParameters, PersistMode.kNoPersistParameters);
         }
     }
 }
