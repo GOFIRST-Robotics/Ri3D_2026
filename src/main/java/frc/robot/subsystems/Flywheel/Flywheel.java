@@ -10,10 +10,6 @@ public class Flywheel extends SubsystemBase {
     private final FlywheelIO io;
     private final FlywheelIOInputsAutoLogged inputs = new FlywheelIOInputsAutoLogged();
 
-    /////////////////////////////////////////////////////
-    // TODO: MAKE METHOD TO DETERMINE WHEN AT SPEED!!! //
-    /////////////////////////////////////////////////////
-
     public Flywheel(FlywheelIO io) {
         this.io = io;
     }
@@ -45,11 +41,10 @@ public class Flywheel extends SubsystemBase {
     }
 
     public Command RunFlywheelsCommand() { return this.runOnce(() -> runFlywheels(1200, 1200)); }
-    public Command RunTuneableFlywheelsCommand() { return this.runOnce(() -> setTuneFlywheelRPM());}
     public Command StopFlywheelsCommand() { return this.runOnce(() -> runFlywheels(0, 0)); }
 
     public boolean FlywheelSpeedWithinError()
     {
-        return Math.abs(inputs.bottomFlywheelRPM - bottomTargetRPM) <= Constants.TurretConstants.TURRET_FLYWHEEL_ACCEPTABLE_FLYWHEEL_RPM_ERROR && Math.abs(inputs.topFlywheelRPM - topTargetRPM) <= Constants.TurretConstants.TURRET_FLYWHEEL_ACCEPTABLE_FLYWHEEL_RPM_ERROR;
+        return Math.abs(inputs.bottomFlywheelRPM - bottomTargetRPM) <= Constants.TurretConstants.TURRET_FLYWHEEL_ACCEPTABLE_RPM_ERROR && Math.abs(inputs.topFlywheelRPM - topTargetRPM) <= Constants.TurretConstants.TURRET_FLYWHEEL_ACCEPTABLE_RPM_ERROR;
     }
 }

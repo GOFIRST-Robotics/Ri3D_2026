@@ -1,5 +1,7 @@
 package frc.robot.subsystems.Turret;
 
+import java.util.function.BooleanSupplier;
+
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.Constants;
 import frc.robot.Constants.TurretConstants;
@@ -63,4 +65,6 @@ public class Turret extends SubsystemBase {
             && hood.HoodRotationWithinError()
             && turntable.TurntableHeadingWithinError();
     }
+
+    public BooleanSupplier SubsystemsWithinError = () -> TurretReadyToShoot();
 }
