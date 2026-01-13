@@ -122,6 +122,10 @@ public final class Constants {
 
     public static final double TURRET_TURNTABLE_CHANGE_SPEED = 0.015;
     public static final double TURRET_HOOD_CHANGE_SPEED = 0.01;
+    public static final double TURRET_FLYWHEEL_CHANGE_SPEED = 1;
+
+    public static final double TURRET_FLYWHEEL_MIN_RPM = 2000;
+    public static final double TURRET_FLYWHEEL_MAX_RPM = 4000;
 
     public static final double TURRET_FLYWHEEL_ACCEPTABLE_RPM_ERROR = 100;
     public static final double TURRET_HOOD_ACCEPTABLE_RADIAN_ERROR = Units.degreesToRadians(2);

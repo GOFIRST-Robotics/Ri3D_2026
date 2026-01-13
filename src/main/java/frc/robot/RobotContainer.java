@@ -52,16 +52,6 @@ public class RobotContainer {
   public RobotContainer() {
     switch (Constants.currentMode) {
       case REAL:
-        // Real robot with NavX and Spark MAX mecanum modules
-        // drive =
-        //     new MecanumDrive(
-        //         new MecanumModuleIO[] {
-        //           new MecanumModuleIOSpark(0), // FL
-        //           new MecanumModuleIOSpark(1), // FR
-        //           new MecanumModuleIOSpark(2), // BL
-        //           new MecanumModuleIOSpark(3)  // BR
-        //         },
-        //         new GyroIONavX());
         drive =
             new MecanumDrive(
                 new MecanumModuleIO[] {
@@ -147,57 +137,26 @@ public class RobotContainer {
 
   private void configureButtonBindings() {
     // Default command: field-relative mecanum drive with squared inputs
-        // MecanumDriveCommands.joystickDriveFieldRelative(
-        //     drive,
-        //     () -> -controller.getLeftY(),  // Forward/back
-        //     () -> -controller.getLeftX(),  // Strafe
-        //     () -> -controller.getRightX())); // Rotation
+      drive.setDefaultCommand(
+        MecanumDriveCommands.joystickDriveFieldRelative(
+            drive,
+            () -> -controller.getLeftY(),  // Forward/back
+            () -> -controller.getLeftX(),  // Strafe
+            () -> -controller.getRightX())); // Rotation
 
-    // Robot-relative drive when A button is held
-    // controller
-    //     .a()
-    //     .whileTrue(
-    //         MecanumDriveCommands.joystickDriveRobotRelative(
-    //             drive,
-    //             () -> -controller.getLeftY(),
-    //             () -> -controller.getLeftX(),
-    //             () -> -controller.getRightX()));
-
-    // Snap to 0° when Y button is held
-    // controller
-    //     .y()
-    //     .whileTrue(
-    //         MecanumDriveCommands.snapToAngle(
-    //             drive,
-    //             () -> -controller.getLeftY(),
-    //             () -> -controller.getLeftX(),
-    //             new Rotation2d(0)));
-
-      
-      controller.button(5).onTrue(intake.setIntake(Units.degreesToRadians(19.44)));
-      controller.button(6).onTrue(intake.setIntake(Units.degreesToRadians(118)));
+      //controller.button(5).onTrue(intake.setIntake(Units.degreesToRadians(19.44)));
+      //controller.button(6).onTrue(intake.setIntake(Units.degreesToRadians(118)));
       // controller.rightBumper().onTrue(new InstantCommand(()->intake.setIntakeDoorPosition(Units.degreesToRadians(19.44)), intake));
       // controller.leftBumper().onTrue(new SetIntakeHigh(intake));
       // controller.rightTrigger().onTrue(new RunCommand(()-> intake.stopIntake(), intake));
-      controller.leftTrigger(0.1).whileTrue(new RunCommand(()-> intake.runIntake(controller.getLeftTriggerAxis()), intake)).
+      controller.leftBumper().whileTrue(new RunCommand(()-> intake.runIntake(controller.getLeftTriggerAxis()), intake)).
                                             onFalse(new InstantCommand(()-> intake.runIntake(0.0), intake));
-                                            
-    // // Stop when X button is pressed
-    // controller.x().onTrue(MecanumDriveCommands.stop(drive));
 
-    // // Reset heading when B button is pressed
-    // controller.b().onTrue(MecanumDriveCommands.resetHeading(drive));
-    // Stop when X button is pressed
-    // controller.x().onTrue(MecanumDriveCommands.stop(drive));
+    controller.rightBumper().whileTrue(indexer.runIndexerCommandDutyCycle());
 
-    // Reset heading when B button is pressed
-    // controller.b().onTrue(MecanumDriveCommands.resetHeading(drive));
-
-    controller.povLeft().whileTrue(indexer.runIndexerCommandDutyCycle());
-    controller.b().onTrue(MecanumDriveCommands.resetHeading(drive));
-
-    controller.leftTrigger().onTrue(flywheel.StopFlywheelsCommand());
-    controller.rightTrigger().onTrue(flywheel.RunFlywheelsCommand());
+    controller.leftTrigger().onTrue(flywheel.decrementRpmSetPoint());
+    controller.rightTrigger().onTrue(flywheel.incrementRpmSetPoint());
+    controller.b().onTrue(flywheel.StopFlywheelsCommand());
 
     controller.povUp().whileTrue(hood.incrementHoodAngleCommand());
     controller.povDown().whileTrue(hood.decrementHoodAngleCommand());
