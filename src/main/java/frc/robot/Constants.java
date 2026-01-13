@@ -142,8 +142,8 @@ public final class Constants {
   public static final String USB_CAMERA_NAME = "Arducam_OV9782_USB_Camera";
 
   public static final class IndexerConstants{
-    public static final int INDEXER_MOTOR_CAN_ID = 50;
-    public static final double INDEXER_MOTOR_RPM = 5;
+    public static final int INDEXER_MOTOR_CAN_ID = 30;
+    public static final double INDEXER_MOTOR_RPM = 500;
 
     public static final double INDEXER_MOTOR_kP = 0.0001;
     public static final double INDEXER_MOTOR_kV = 0.000175;
