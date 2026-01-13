@@ -1,5 +1,7 @@
 package frc.robot.subsystems.Intake;
 
+import java.util.function.BooleanSupplier;
+
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.Constants.IntakeConstants;
@@ -9,6 +11,7 @@ public class Intake extends SubsystemBase {
 
     private final IntakeIO io;
     private final IntakeIOInputs inputs; 
+    public BooleanSupplier intakeIsDown;
 
     public Intake(IntakeIO io) {
         this.io = io;
@@ -32,6 +35,9 @@ public class Intake extends SubsystemBase {
     @Override
     public void periodic() {
         io.updateInputs(inputs);
+        if (io.isDown() && io.setPointZero()) {
+            io.setkDutyZero();
+        }
     }
 
     public Command setIntake(double position) {

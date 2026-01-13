@@ -33,6 +33,11 @@ public interface IntakeIO {
     /** Reset safety trip flag to re-enable the intake */
     public default void resetSafety() {}
 
+    public default boolean isDown() { return false; }
+    public default boolean setPointZero() { return false; }
+
+    public default void setkDutyZero() {}
+
     /** Stop all outputs. */
     public default void stop(IntakeIOInputs inputs) { 
         setIntakeWheelSpeedPercentOut(0.0);

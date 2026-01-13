@@ -35,9 +35,11 @@ public class IntakeIOSpark implements IntakeIO {
         var doorConfig = new SparkMaxConfig();
         doorConfig
             .closedLoop
-            .feedbackSensor(FeedbackSensor.kDetachedAbsoluteEncoder)
+            .positionWrappingEnabled(true)
+            .positionWrappingInputRange(0, Math.PI*2)
+            .feedbackSensor(FeedbackSensor.kAbsoluteEncoder)
             .pid(IntakeConstants.INTAKE_DOOR_kP, 0.0, 0.0);
-        doorConfig.closedLoop.apply(new FeedForwardConfig().kCos(0.8) .kCosRatio(1));
+        doorConfig.closedLoop.apply(new FeedForwardConfig().kCos(0.8) .kCosRatio(2*Math.PI));
         doorConfig.absoluteEncoder.positionConversionFactor(2 * Math.PI);
         doorConfig.inverted(IntakeConstants.IS_INTAKE_DIRECTION_INVERTED);
         doorConfig.absoluteEncoder.inverted(IntakeConstants.IS_INTAKE_ENCODER_INVERTED);
@@ -80,12 +82,27 @@ public class IntakeIOSpark implements IntakeIO {
     }
 
     @Override
+    public boolean isDown() {
+        return Math.abs(0 - doorEncoder.getPosition()) < 0.1;
+    }
+
+    @Override
+    public boolean setPointZero() {
+        return (leftDoorMotor.getClosedLoopController().getSetpoint()) < 0.0175;
+    }
+
+    @Override
+    public void setkDutyZero() {
+        leftDoorMotor.getClosedLoopController().setSetpoint(0, ControlType.kDutyCycle);
+    }
+
+    @Override
     public void updateInputs(IntakeIOInputs inputs) { 
         // Read from ABSOLUTE encoder (not relative encoder)
-        inputs.currentDoorPosition = doorEncoder.getPosition();
+        // inputs.currentDoorPosition = doorEncoder.getPosition();
         
-        // Read velocities from relative encoders (these are fine)
-        inputs.rightIntakeWheelSpeedRPM = rightDoorMotor.getEncoder().getVelocity();
-        inputs.leftIntakeWheelSpeedRPM = leftDoorMotor.getEncoder().getVelocity();
+        // // Read velocities from relative encoders (these are fine)
+        // inputs.rightIntakeWheelSpeedRPM = rightDoorMotor.getEncoder().getVelocity();
+        // inputs.leftIntakeWheelSpeedRPM = leftDoorMotor.getEncoder().getVelocity();
     }
 }

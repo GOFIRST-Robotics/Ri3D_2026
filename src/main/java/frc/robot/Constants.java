@@ -142,14 +142,15 @@ public final class Constants {
       public static final int INTAKE_WHEEL_MOTOR_ID = 22;
       // public static final int INTAKE_WHEEL_MOTOR_ID = 4;
 
-      public static final double INTAKE_DOOR_kP = 0.05;
+      public static final double INTAKE_DOOR_kP = .1;
+      public static final double INTAKE_DOOR_kI = .0006;
+      public static final double INTAKE_DOOR_kD = 0;
+
 
       public static final double INTAKE_DOOR_POSITION_STORED = Units.degreesToRadians(118); //degrees -0.33
-      public static final double INTAKE_DOOR_POSITION_DEPLOYED = Units.degreesToRadians(19.44); //0.054
+      public static final double INTAKE_DOOR_POSITION_DEPLOYED = Units.degreesToRadians(0.0); //0.054
       public static final boolean IS_INTAKE_DIRECTION_INVERTED = false;
       public static final boolean IS_INTAKE_ENCODER_INVERTED = true;
-    public static final double INTAKE_DOOR_kI = 0;
-    public static final double INTAKE_DOOR_kD = 0;
     public static final double INTAKE_WHEEL_SPEED = 0;
 
   }

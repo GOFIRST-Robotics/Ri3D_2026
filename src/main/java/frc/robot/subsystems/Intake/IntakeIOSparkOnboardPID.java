@@ -40,22 +40,24 @@ public class IntakeIOSparkOnboardPID implements IntakeIO {
         var doorConfig = new SparkMaxConfig();
         doorConfig
             .closedLoop
+            .positionWrappingEnabled(true)
+            .positionWrappingInputRange(0, Math.PI*2)
             .feedbackSensor(FeedbackSensor.kAbsoluteEncoder)
             .pid(IntakeConstants.INTAKE_DOOR_kP, IntakeConstants.INTAKE_DOOR_kI, IntakeConstants.INTAKE_DOOR_kD);
-        doorConfig.closedLoop.apply(new FeedForwardConfig().kCos(0.8).kCosRatio(1));
+        // doorConfig.closedLoop.apply(new FeedForwardConfig().kCos(0.8).kCosRatio(1));
         doorConfig.absoluteEncoder.positionConversionFactor(2 * Math.PI);
         doorConfig.inverted(IntakeConstants.IS_INTAKE_DIRECTION_INVERTED);
         doorConfig.absoluteEncoder.inverted(IntakeConstants.IS_INTAKE_ENCODER_INVERTED);
         
         // Add current limit for safety
-        doorConfig.smartCurrentLimit(25);
+        doorConfig.smartCurrentLimit(50);
         
         leftDoorMotor.configure(doorConfig, ResetMode.kResetSafeParameters, PersistMode.kPersistParameters);
 
         // RIGHT door motor follows the LEFT door motor, inverted
         var followerConfig = new SparkMaxConfig();
         followerConfig.follow(leftDoorMotor, true);
-        followerConfig.smartCurrentLimit(25);
+        followerConfig.smartCurrentLimit(50);
         rightDoorMotor.configure(followerConfig, ResetMode.kResetSafeParameters, PersistMode.kPersistParameters);
 
         // Get reference to the absolute encoder on the leader

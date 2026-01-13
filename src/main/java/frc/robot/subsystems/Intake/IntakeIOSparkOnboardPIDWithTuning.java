@@ -91,6 +91,7 @@ public class IntakeIOSparkOnboardPIDWithTuning implements IntakeIO {
     @Override
     public void setIntakeWheelSpeedPercentOut(double percentOutput) {
         intakeWheel.set(VictorSPXControlMode.PercentOutput, percentOutput);
+        System.out.println("per " + percentOutput);
     }
 
     @Override

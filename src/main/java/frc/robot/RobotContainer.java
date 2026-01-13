@@ -14,6 +14,7 @@ import frc.robot.subsystems.Gyro.GyroIONavX;
 import frc.robot.subsystems.Intake.Intake;
 import frc.robot.subsystems.Intake.IntakeIO;
 import frc.robot.subsystems.Intake.IntakeIOSpark;
+import frc.robot.subsystems.Intake.IntakeIOSparkOnboardPID;
 import frc.robot.subsystems.drive.MecanumDrive.MecanumDrive;
 import frc.robot.subsystems.drive.MecanumDrive.MecanumModuleIO;
 import frc.robot.subsystems.drive.MecanumDrive.MecanumModuleIOSpark;
@@ -46,7 +47,7 @@ public class RobotContainer {
         //         },
         //         new GyroIONavX());
         
-        intake = new Intake(new IntakeIOSpark());
+        intake = new Intake(new IntakeIOSparkOnboardPID());
         break;
 
       case SIM:
