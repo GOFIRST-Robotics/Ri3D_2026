@@ -5,7 +5,7 @@ import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.Commands;
 import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
 import frc.robot.commands.MecanumDriveCommands;
-import frc.robot.commands.moveIntake;
+import frc.robot.commands.setLow;
 import frc.robot.commands.setHigh;
 import frc.robot.subsystems.Gyro.GyroIO;
 import frc.robot.subsystems.Gyro.GyroIONavX;
@@ -58,6 +58,7 @@ public class RobotContainer {
                   new MecanumModuleIO() {}
                 },
                 new GyroIO() {});
+        intake = new Intake(new IntakeIO() {});
         break;
 
       default:
@@ -71,6 +72,8 @@ public class RobotContainer {
                   new MecanumModuleIO() {}
                 },
                 new GyroIO() {});
+
+        intake = new Intake(new IntakeIO() {});
         break;
     }
 
@@ -111,7 +114,7 @@ public class RobotContainer {
                 () -> -controller.getLeftX(),
                 new Rotation2d(0)));
 
-      controller.rightBumper().whileTrue(new moveIntake(intake));
+      controller.rightBumper().whileTrue(new setLow(intake));
       controller.leftBumper().whileTrue(new setHigh(intake)); 
 
 
