@@ -100,8 +100,8 @@ public class FlywheelIOReal implements FlywheelIO {
 
     public FlywheelIOReal()
     {
-        topFlywheelMotorController = new SparkMax(Constants.TURRET_LEFT_FLYWHEEL_MOTOR_ID, MotorType.kBrushless);
-        bottomFlywheelMotorController = new SparkMax(Constants.TURRET_RIGHT_FLYWHEEL_MOTOR_ID, MotorType.kBrushless);
+        topFlywheelMotorController = new SparkMax(Constants.TURRET_TOP_FLYWHEEL_MOTOR_ID, MotorType.kBrushless);
+        bottomFlywheelMotorController = new SparkMax(Constants.TURRET_BOTTOM_FLYWHEEL_MOTOR_ID, MotorType.kBrushless);
 
         topFlyWheelEncoder = topFlywheelMotorController.getEncoder();
         bottomFlyWheelEncoder = bottomFlywheelMotorController.getEncoder();
