@@ -8,6 +8,7 @@ import org.littletonrobotics.junction.Logger;
 
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
+import frc.robot.Constants.IndexerConstants;
 
 public class Indexer extends SubsystemBase {
 
@@ -31,10 +32,10 @@ public class Indexer extends SubsystemBase {
   }
 
   public Command startIndexer() {
-    return this.run(() -> runIndexer(60)).withName("Run Indexer");
+    return this.run(() -> runIndexer(IndexerConstants.INDEXER_MOTOR_RPM)).withName("Run Indexer");
   }
   public Command startIndexerReverse() {
-    return this.run(() -> runIndexer(-60)).withName("Run Indexer");
+    return this.run(() -> runIndexer(-IndexerConstants.INDEXER_MOTOR_RPM)).withName("Run Indexer");
   }  
   public Command stopIndexer() {
     return this.run(() -> runIndexer(0)).withName("Stop Indexer");

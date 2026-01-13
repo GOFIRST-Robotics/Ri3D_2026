@@ -20,7 +20,7 @@ public class IndexerIOReal implements IndexerIO {
     private LoggedNetworkNumber changableIndexerkFF;
 
     private double indexerkP;
-    private double indexerkFF;
+    private double indexerkV;
 
     public IndexerIOReal() {
         indexerMotor = new SparkMax(IndexerConstants.INDEXER_MOTOR_CAN_ID, MotorType.kBrushless);
@@ -30,13 +30,16 @@ public class IndexerIOReal implements IndexerIO {
 
     private void setInitialMotorSettings() {
         indexerkP = IndexerConstants.INDEXER_MOTOR_kP;
-        indexerkFF = IndexerConstants.INDEXER_MOTOR_kFF;
+        indexerkV = IndexerConstants.INDEXER_MOTOR_kV;
         changableIndexerkP = new LoggedNetworkNumber("Tuning/Indexer/IndexerkP", indexerkP);
-        changableIndexerkFF = new LoggedNetworkNumber("Tuning/Indexer/IndexerkFF", indexerkFF);
+        changableIndexerkFF = new LoggedNetworkNumber("Tuning/Indexer/IndexerkFF", indexerkV);
         SparkMaxConfig indexerConfig = new SparkMaxConfig();
         indexerConfig.closedLoop.pid(indexerkP, 0.0, 0.0);
         indexerConfig.closedLoop.feedForward
-        .kV(indexerkFF);
+        .kV(indexerkV);
+        indexerConfig.closedLoop.maxMotion
+        .cruiseVelocity(IndexerConstants.INDEXER_MOTOR_MAX_VEL)
+        .maxAcceleration(IndexerConstants.INDEXER_MOTOR_MAX_ACCEL);
         indexerMotor.configure(indexerConfig, ResetMode.kResetSafeParameters, PersistMode.kPersistParameters);
     }
 
@@ -53,14 +56,14 @@ public class IndexerIOReal implements IndexerIO {
 
     @Override
     public void periodic() {
-        if (changableIndexerkP.getAsDouble() != indexerkP || changableIndexerkFF.getAsDouble() != indexerkFF) {
+        if (changableIndexerkP.getAsDouble() != indexerkP || changableIndexerkFF.getAsDouble() != indexerkV) {
             SparkMaxConfig indexerConfig = new SparkMaxConfig();
             indexerkP = changableIndexerkP.getAsDouble();
-            indexerkFF = changableIndexerkFF.getAsDouble();
+            indexerkV = changableIndexerkFF.getAsDouble();
             indexerConfig.closedLoop.pid(indexerkP, 0.0, 0.0);
             indexerConfig.closedLoop.feedForward
-            .kV(indexerkFF);
-            indexerMotor.configure(indexerConfig, ResetMode.kResetSafeParameters, PersistMode.kPersistParameters);
+            .kV(indexerkV);
+            indexerMotor.configure(indexerConfig, ResetMode.kNoResetSafeParameters, PersistMode.kPersistParameters);
         }
     }
 
