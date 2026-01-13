@@ -111,7 +111,7 @@ public final class Constants {
   // ==================== TURRET CONSTANTS ====================
 
   public static final class TurretConstants {
-    public static final double TURRET_HOOD_GEAR_RATIO = 4750.0/85.0;
+    public static final double TURRET_HOOD_GEAR_RATIO = 475.0*10.0/85.0;
     public static final double TURRET_TURNTABLE_GEAR_RATIO = 1;
 
     public static final double FLYWHEEL_DIAMETER = 1;
@@ -124,12 +124,13 @@ public final class Constants {
     public static final double TURRET_HOOD_MOTOR_MAX_ROTATIONS = 8;
     public static final double TURRET_HOOD_MIN_RADIANS = Units.degreesToRadians(30);
     public static final double TURRET_HOOD_MAX_RADIANS = Units.degreesToRadians(80);
+    public static final double TURRET_HOOD_RANGE_RADIANS = TURRET_HOOD_MAX_RADIANS - TURRET_HOOD_MIN_RADIANS;
 
     public static final double TURRET_TURNTABLE_MOTOR_MIN_ROTATIONS = 5;
     public static final double TURRET_TURNTABLE_MOTOR_MAX_ROTATIONS = 5;
     public static final double TURRET_TURNTABLE_MAX_RADIANS = Units.degreesToRadians(175);
 
-    public static final double TURRET_TURNTABLE_CHANGE_SPEED = 0.01;
+    public static final double TURRET_TURNTABLE_CHANGE_SPEED = 0.015;
     public static final double TURRET_HOOD_CHANGE_SPEED = 0.01;
 
     public static final double TURRET_FLYWHEEL_ACCEPTABLE_FLYWHEEL_RPM_ERROR = 100;
@@ -156,10 +157,14 @@ public final class Constants {
     public static final double TURNTABLE_ALLOWED_ERROR = 0.5;
 
     // Hood PIDs
-    public static final double HOOD_kP = 0.0;
+    public static final double HOOD_kP = 0.4;
     public static final double HOOD_kI = 0.0;
     public static final double HOOD_kD = 0.0;
     public static final double HOOD_kV = 0.0;
+    public static final double HOOD_kCos = 0.8075;
+    public static final double HOOD_CRUISE_VEL = (150 * Constants.TurretConstants.TURRET_HOOD_GEAR_RATIO / 360) * 60;
+    public static final double HOOD_MAX_ACCEL = 10000000; // it actually needs to be this...
+    public static final double HOOD_ALLOWED_PROFILE_ERROR = 0.025;
 
     // Flywheel PIDs
     public static final double TOP_FLYWHEEL_KP = 0.0001;
