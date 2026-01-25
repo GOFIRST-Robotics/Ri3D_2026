@@ -142,21 +142,23 @@ public class RobotContainer {
             drive,
             () -> -controller.getLeftY(),  // Forward/back
             () -> -controller.getLeftX(),  // Strafe
-            () -> -controller.getRightX())); // Rotation
+            () -> controller.getRightX())); // Rotation
 
-      //controller.button(5).onTrue(intake.setIntake(Units.degreesToRadians(19.44)));
-      //controller.button(6).onTrue(intake.setIntake(Units.degreesToRadians(118)));
+      controller.povRight().onTrue(intake.setIntake(Constants.IntakeConstants.INTAKE_DOOR_POSITION_DEPLOYED));
+      controller.povLeft().onTrue(intake.setIntake(Constants.IntakeConstants.INTAKE_DOOR_POSITION_STORED));
       // controller.rightBumper().onTrue(new InstantCommand(()->intake.setIntakeDoorPosition(Units.degreesToRadians(19.44)), intake));
       // controller.leftBumper().onTrue(new SetIntakeHigh(intake));
       // controller.rightTrigger().onTrue(new RunCommand(()-> intake.stopIntake(), intake));
-      controller.leftBumper().whileTrue(new RunCommand(()-> intake.runIntake(controller.getLeftTriggerAxis()), intake)).
+    controller.leftBumper().whileTrue(new RunCommand(()-> intake.runIntake(1), intake)).
                                             onFalse(new InstantCommand(()-> intake.runIntake(0.0), intake));
+
+    controller.button(3).onTrue(MecanumDriveCommands.resetHeading(drive));
 
     controller.rightBumper().whileTrue(indexer.runIndexerCommandDutyCycle());
 
     controller.leftTrigger().whileTrue(flywheel.decrementRpmSetPoint());
     controller.rightTrigger().whileTrue(flywheel.incrementRpmSetPoint());
-    controller.b().onTrue(flywheel.StopFlywheelsCommand());
+    controller.button(1).onTrue(flywheel.StopFlywheelsCommand());
 
     controller.povUp().whileTrue(hood.incrementHoodAngleCommand());
     controller.povDown().whileTrue(hood.decrementHoodAngleCommand());

@@ -235,6 +235,19 @@ public class MecanumDriveCommands {
     return Commands.runOnce(() -> drive.resetPose(pose), drive).ignoringDisable(true);
   }
 
+  // /**
+  //  * Reset the robot's heading to zero (keeps position).
+  //  *
+  //  * @param drive The MecanumDrive subsystem
+  //  * @return The reset heading command
+  //  */
+  // public static Command resetHeading(MecanumDrive drive) {
+  //   return Commands.runOnce(
+  //           () -> drive.resetPose(new Pose2d(drive.getPose().getTranslation(), new Rotation2d())),
+  //           drive)
+  //       .ignoringDisable(true);
+  // }
+
   /**
    * Reset the robot's heading to zero (keeps position).
    *
@@ -243,8 +256,7 @@ public class MecanumDriveCommands {
    */
   public static Command resetHeading(MecanumDrive drive) {
     return Commands.runOnce(
-            () -> drive.resetPose(new Pose2d(drive.getPose().getTranslation(), new Rotation2d())),
-            drive)
-        .ignoringDisable(true);
+            () -> {drive.resetGyroHeading();});
   }
+
 }

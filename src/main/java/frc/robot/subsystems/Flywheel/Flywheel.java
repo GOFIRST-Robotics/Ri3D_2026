@@ -28,8 +28,12 @@ public class Flywheel extends SubsystemBase {
         topTargetRPM = topRPM;
         bottomTargetRPM = bottomRPM;
 
-        io.setTopFlywheelRPM(topRPM);
-        io.setBottomFlywheelRPM(bottomRPM);
+        if(topRPM+bottomRPM<1){
+            io.setkDutyZero();
+        } else {
+            io.setTopFlywheelRPM(topRPM);
+            io.setBottomFlywheelRPM(bottomRPM);
+        }
     }
 
     public void setLaunchSpeed(double launchSpeed)
@@ -40,7 +44,7 @@ public class Flywheel extends SubsystemBase {
         runFlywheels(rpm, rpm);
     }
 
-    double setRPM = 0;
+    double setRPM = 3000;
     public void IncrementSetRPM(double change)
     {
         setRPM += change;
@@ -51,7 +55,7 @@ public class Flywheel extends SubsystemBase {
             setRPM = Constants.TurretConstants.TURRET_FLYWHEEL_MAX_RPM;
         }
 
-        runFlywheels(setRPM, setRPM - 1500);
+        runFlywheels((setRPM-1000.0)*3.0, setRPM);
     }
 
     public Command StopFlywheelsCommand() { return this.runOnce(() -> runFlywheels(0, 0)); }

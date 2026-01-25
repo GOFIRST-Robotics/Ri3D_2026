@@ -71,10 +71,10 @@ public final class Constants {
     public static final int backRightCanId = 14;
 
     // Motor inversions
-    public static final boolean frontLeftInverted = false;
-    public static final boolean frontRightInverted = true;
-    public static final boolean backLeftInverted = false;
-    public static final boolean backRightInverted = true;
+    public static final boolean frontLeftInverted = true ;
+    public static final boolean frontRightInverted = false;
+    public static final boolean backLeftInverted = true;
+    public static final boolean backRightInverted = false;
 
     // Current limit
     public static final int driveMotorCurrentLimit = 60;
@@ -84,7 +84,7 @@ public final class Constants {
     public static final double encoderVelocityFactorRadPerSec = (2.0 * Math.PI) / 60.0 / DRIVE_GEAR_RATIO;
 
     // Closed-loop PID gains
-    public static final double kP = 0.01;
+    public static final double kP = 0.015;
     public static final double kD = 0.0;
 
     // Feedforward gains (V = kS*sign(ω) + kV*ω)
@@ -122,10 +122,10 @@ public final class Constants {
 
     public static final double TURRET_TURNTABLE_CHANGE_SPEED = 0.015;
     public static final double TURRET_HOOD_CHANGE_SPEED = 0.01;
-    public static final double TURRET_FLYWHEEL_CHANGE_SPEED = 1;
+    public static final double TURRET_FLYWHEEL_CHANGE_SPEED = 0;//5;
 
     public static final double TURRET_FLYWHEEL_MIN_RPM = 2000;
-    public static final double TURRET_FLYWHEEL_MAX_RPM = 4000;
+    public static final double TURRET_FLYWHEEL_MAX_RPM = 4500;
 
     public static final double TURRET_FLYWHEEL_ACCEPTABLE_RPM_ERROR = 100;
     public static final double TURRET_HOOD_ACCEPTABLE_RADIAN_ERROR = Units.degreesToRadians(2);
@@ -164,14 +164,14 @@ public final class Constants {
     public static final double TOP_FLYWHEEL_KP = 0.0001;
     public static final double TOP_FLYWHEEL_KI = 0.0;
     public static final double TOP_FLYWHEEL_KD = 0.0;
-    public static final double TOP_FLYWHEEL_KV = 0.002275;
-    public static final double TOP_FLYWHEEL_ACCEL = 4000.0;
+    public static final double TOP_FLYWHEEL_KV = 0.0011;
+    public static final double TOP_FLYWHEEL_ACCEL = 12000.0;
 
-    public static final double BOTTOM_FLYWHEEL_KP = 0.0001;
+    public static final double BOTTOM_FLYWHEEL_KP = 0.0002;
     public static final double BOTTOM_FLYWHEEL_KI = 0.0;
     public static final double BOTTOM_FLYWHEEL_KD = 0.0;
     public static final double BOTTOM_FLYWHEEL_KV = 0.002275;
-    public static final double BOTTOM_FLYWHEEL_ACCEL = 12000.0;
+    public static final double BOTTOM_FLYWHEEL_ACCEL = 4000.0;
 
   }
 
@@ -182,8 +182,8 @@ public final class Constants {
       public static final int INTAKE_WHEEL_MOTOR_ID = 22;
       // public static final int INTAKE_WHEEL_MOTOR_ID = 4;
 
-      public static final double INTAKE_DOOR_kP = .1;
-      public static final double INTAKE_DOOR_kI = .0006;
+      public static final double INTAKE_DOOR_kP = .5;
+      public static final double INTAKE_DOOR_kI = 0.00005;
       public static final double INTAKE_DOOR_kD = 0;
 
 

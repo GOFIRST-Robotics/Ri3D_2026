@@ -35,12 +35,14 @@ public class Intake extends SubsystemBase {
     @Override
     public void periodic() {
         io.updateInputs(inputs);
-        if (io.isDown() && io.setPointZero()) {
+        if (io.isDown()) {
             io.setkDutyZero();
+            System.out.println("out");
         }
     }
 
     public Command setIntake(double position) {
+        System.out.println("cmd called: " + position);
         return this.runOnce(()->MoveIntakeToPosition(position));
     }
 

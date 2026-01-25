@@ -39,7 +39,7 @@ public class IntakeIOSpark implements IntakeIO {
             .positionWrappingInputRange(0, Math.PI*2)
             .feedbackSensor(FeedbackSensor.kAbsoluteEncoder)
             .pid(IntakeConstants.INTAKE_DOOR_kP, 0.0, 0.0);
-        doorConfig.closedLoop.apply(new FeedForwardConfig().kCos(0.8) .kCosRatio(2*Math.PI));
+        // doorConfig.closedLoop.apply(new FeedForwardConfig().kCos(0.8) .kCosRatio(2*Math.PI));
         doorConfig.absoluteEncoder.positionConversionFactor(2 * Math.PI);
         doorConfig.inverted(IntakeConstants.IS_INTAKE_DIRECTION_INVERTED);
         doorConfig.absoluteEncoder.inverted(IntakeConstants.IS_INTAKE_ENCODER_INVERTED);

@@ -125,6 +125,12 @@ public class FlywheelIOReal implements FlywheelIO {
     public void setBottomFlywheelRPM(double rpm) { bottomFlywheelClosedLoop.setSetpoint(rpm, ControlType.kMAXMotionVelocityControl); }
 
     @Override
+    public void setkDutyZero() {
+        topFlywheelMotorController.getClosedLoopController().setSetpoint(0, ControlType.kDutyCycle);
+        bottomFlywheelMotorController.getClosedLoopController().setSetpoint(0, ControlType.kDutyCycle);
+    }
+
+    @Override
     public void periodic() {
         boolean topHasChanged = false;
         SparkMaxConfig topConfig = new SparkMaxConfig();

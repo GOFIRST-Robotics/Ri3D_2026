@@ -106,6 +106,10 @@ public class MecanumDrive extends SubsystemBase {
     odometry.resetPosition(gyroInputs.yawPosition, getWheelPositions(), pose);
   }
 
+  public void resetGyroHeading() {
+    gyroIO.resetGyroHeading();
+  }
+
   /** Wheel distances (meters) used by WPILib odometry. */
   public MecanumDriveWheelPositions getWheelPositions() {
     return new MecanumDriveWheelPositions(

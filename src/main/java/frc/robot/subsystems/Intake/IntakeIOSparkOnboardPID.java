@@ -22,6 +22,8 @@ public class IntakeIOSparkOnboardPID implements IntakeIO {
     
     private final SparkAbsoluteEncoder doorEncoder; // Reference to absolute encoder
 
+    private boolean DOWN = true;
+
     // Safety constants
     private static final double MIN_DOOR_POSITION = 0.0; // radians
     private static final double MAX_DOOR_POSITION = Math.toRadians(130); // radians
@@ -86,12 +88,33 @@ public class IntakeIOSparkOnboardPID implements IntakeIO {
         }
 
         // Control the LEADER motor (leftDoorMotor) using standard position PID
-        leftDoorMotor.getClosedLoopController().setReference(safePosition, ControlType.kPosition); 
+        if(Math.abs(position-IntakeConstants.INTAKE_DOOR_POSITION_DEPLOYED)<.01){
+            DOWN=true;
+        } else {
+            DOWN=false;
+        }
+        leftDoorMotor.getClosedLoopController().setSetpoint(safePosition, ControlType.kPosition); 
+        System.out.println("motor set to: " +safePosition);
     }
 
     public void stop(IntakeIOInputs inputs) { 
         leftDoorMotor.stopMotor();
         intakeWheel.set(VictorSPXControlMode.PercentOutput, 0);
+    }
+
+        @Override
+    public boolean isDown() {
+        return (Math.abs(0 - doorEncoder.getPosition()) < 0.1) && DOWN;
+    }
+
+    @Override
+    public boolean setPointZero() {
+        return (leftDoorMotor.getClosedLoopController().getSetpoint()) < 0.0175;
+    }
+
+    @Override
+    public void setkDutyZero() {
+        leftDoorMotor.getClosedLoopController().setSetpoint(0, ControlType.kDutyCycle);
     }
 
     /** Call this to reset safety trip and re-enable the intake */
@@ -113,10 +136,10 @@ public class IntakeIOSparkOnboardPID implements IntakeIO {
         double current = leftDoorMotor.getOutputCurrent();
         double velocity = Math.abs(leftDoorMotor.getEncoder().getVelocity());
         
-        if (current > MAX_CURRENT_AMPS && velocity < STALL_VELOCITY_THRESHOLD) {
-            safetyTripped = true;
-            leftDoorMotor.stopMotor();
-            System.out.println("SAFETY: Intake stall detected! Current: " + current + "A, Velocity: " + velocity);
-        }
+        // if (current > MAX_CURRENT_AMPS && velocity < STALL_VELOCITY_THRESHOLD) {
+        //     safetyTripped = true;
+        //     leftDoorMotor.stopMotor();
+        //     System.out.println("SAFETY: Intake stall detected! Current: " + current + "A, Velocity: " + velocity);
+        // }
     }
 }

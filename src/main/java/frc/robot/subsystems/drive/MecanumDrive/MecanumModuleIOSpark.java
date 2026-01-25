@@ -54,6 +54,7 @@ public class MecanumModuleIOSpark implements MecanumModuleIO {
     controller = spark.getClosedLoopController();
 
     var config = new SparkMaxConfig();
+    System.out.println("motor" + canId + "invert" + inverted);
     config
         .inverted(inverted)
         .idleMode(IdleMode.kBrake)
