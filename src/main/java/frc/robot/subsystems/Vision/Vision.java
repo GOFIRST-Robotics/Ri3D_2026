@@ -5,6 +5,7 @@ import org.littletonrobotics.junction.Logger;
 import edu.wpi.first.math.Matrix;
 import edu.wpi.first.math.VecBuilder;
 import edu.wpi.first.math.geometry.Pose2d;
+import edu.wpi.first.math.geometry.Pose3d;
 import edu.wpi.first.math.numbers.N1;
 import edu.wpi.first.math.numbers.N3;
 import edu.wpi.first.wpilibj.Alert;
@@ -77,5 +78,10 @@ public class Vision extends SubsystemBase {
 
   public Pose2d getEstimatedPose() {
     return inputs.estimatedPose.toPose2d();
+  }
+
+  public Pose3d getEstimatedPose3d()
+  {
+    return inputs.estimatedPose;
   }
 }

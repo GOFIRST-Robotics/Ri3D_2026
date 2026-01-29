@@ -1,5 +1,6 @@
 package frc.robot;
 
+import edu.wpi.first.math.geometry.Pose3d;
 import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.math.util.Units;
 import edu.wpi.first.wpilibj2.command.Command;
@@ -26,6 +27,8 @@ import frc.robot.subsystems.Hood.HoodIOReal;
 import frc.robot.subsystems.Turntable.Turntable;
 import frc.robot.subsystems.Turntable.TurntableIOReal;
 import frc.robot.subsystems.Turret.Turret;
+import frc.robot.subsystems.Vision.Vision;
+import frc.robot.subsystems.Vision.VisionIOPhoton;
 import frc.robot.subsystems.drive.MecanumDrive.MecanumDrive;
 import frc.robot.subsystems.drive.MecanumDrive.MecanumModuleIO;
 import frc.robot.subsystems.drive.MecanumDrive.MecanumModuleIOSpark;
@@ -40,7 +43,8 @@ public class RobotContainer {
   // private final Turret turret;
   private final Flywheel flywheel;
   private final Hood hood;
-  // private final Turntable turntable;
+  private final Turntable turntable;
+  private final Vision vision;
 
   // Controller
   private final CommandXboxController controller = new CommandXboxController(0);
@@ -64,8 +68,10 @@ public class RobotContainer {
 
         flywheel = new Flywheel(new FlywheelIOReal());
         hood = new Hood(new HoodIOReal());
-        // turntable = new Turntable(new TurntableIOReal());
+        turntable = new Turntable(new TurntableIOReal());
         // turret = new Turret(flywheel, hood, turntable);
+
+        vision = new Vision(new VisionIOPhoton("Arducam_OV9782_USB_Camera", Pose3d.kZero, () -> 0), drive);
 
         break;
 
@@ -119,7 +125,7 @@ public class RobotContainer {
 
         flywheel = null;
         hood = null;
-        // turntable = null;
+        turntable = null;
         // turret = null;
         break;
     }
@@ -162,6 +168,8 @@ public class RobotContainer {
 
     controller.povUp().whileTrue(hood.incrementHoodAngleCommand());
     controller.povDown().whileTrue(hood.decrementHoodAngleCommand());
+
+    controller.button(4).onTrue(turntable.faceAprilTagCommand(vis));
   }
 
   public Command getAutonomousCommand() {

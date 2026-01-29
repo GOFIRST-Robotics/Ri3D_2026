@@ -1,8 +1,12 @@
 package frc.robot.subsystems.Turntable;
 
+import edu.wpi.first.math.geometry.Pose3d;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.Constants;
+import frc.robot.subsystems.Vision.Vision;
+import frc.robot.subsystems.Vision.VisionIO;
+import frc.robot.subsystems.Vision.VisionIOPhoton;
 
 import org.littletonrobotics.junction.Logger;
 
@@ -43,8 +47,21 @@ public class Turntable extends SubsystemBase {
         return Math.abs(inputs.turntableRadians - currentTargetRadians) <= Constants.TurretConstants.TURRET_TURNTABLE_ACCEPTABLE_RADIAN_ERROR;
     }
 
-    public double getyawOffsetRadiants()
+    public double getYawOffsetRadiants()
     {
         return inputs.turntableRadians;
     }
+
+    public void faceAprilTag(Vision vision)
+    {
+        int aprilTag = 3;
+        Pose3d aprilTagPose = Constants.AprilTagFieldConstants.TAGS.get(aprilTag).pose;
+
+        Pose3d robotPose = VisionIOPhoton.CameraToRobotPose(vision.getEstimatedPose3d(), getYawOffsetRadiants());
+
+        double facingTargetRadians = Math.atan2(aprilTagPose.getY() - robotPose.getY(), aprilTagPose.getX() - robotPose.getX());
+        setTargetRadians(facingTargetRadians);
+    }
+
+    public Command faceAprilTagCommand(Vision vision) { return this.run(() -> faceAprilTag(vision)); }
 }

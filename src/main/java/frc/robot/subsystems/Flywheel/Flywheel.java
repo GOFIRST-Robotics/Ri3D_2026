@@ -55,7 +55,7 @@ public class Flywheel extends SubsystemBase {
             setRPM = Constants.TurretConstants.TURRET_FLYWHEEL_MAX_RPM;
         }
 
-        runFlywheels((setRPM-1000.0)*3.0, setRPM);
+        runFlywheels((setRPM-1000.0), setRPM);
     }
 
     public Command StopFlywheelsCommand() { return this.runOnce(() -> runFlywheels(0, 0)); }
