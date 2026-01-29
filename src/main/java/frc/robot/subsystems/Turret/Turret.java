@@ -59,6 +59,58 @@ public class Turret extends SubsystemBase {
         flywheel.setLaunchSpeed(launch_velocity);
     }
 
+    // ...existing code...
+    public void autoAimTurret2(double robotFieldX, double robotFieldY, double robotFieldRadians)
+    {
+        double[] turretWorldRelativeToRobot =
+        GeometryHelper.Rotate(TurretConstants.TURRET_LOCAL_POS_X, TurretConstants.TURRET_LOCAL_POS_Y, robotFieldRadians);
+
+        double turretWorldX = turretWorldRelativeToRobot[0] + robotFieldX;
+        double turretWorldY = turretWorldRelativeToRobot[1] + robotFieldY;
+
+        double dx = TurretConstants.GOAL_FIELD_SPACE_X_POSITION - turretWorldX;
+        double dy = TurretConstants.GOAL_FIELD_SPACE_Y_POSITION - turretWorldY;
+
+        double angleToFaceGoalField = Math.atan2(dy, dx);
+
+        double angleToFaceGoalLocal = angleToFaceGoalField - robotFieldRadians;
+
+        // 1. Wrap angle to [-PI, PI]. This handles the "no slip ring" logic physically
+        // by forcing the turret to unwind if the robot spins 360 degrees.
+        angleToFaceGoalLocal = Math.atan2(Math.sin(angleToFaceGoalLocal), Math.cos(angleToFaceGoalLocal));
+
+        // 2. Clamp to physical limits (e.g. +/- 175 degrees).
+        // If the target is in the "dead zone" (back of robot), aiming at the limit
+        // is the safest option. The TurretReadyToShoot check will prevent firing
+        // because the error will be too high.
+        if (angleToFaceGoalLocal > TurretConstants.TURRET_TURNTABLE_MAX_RADIANS) {
+            angleToFaceGoalLocal = TurretConstants.TURRET_TURNTABLE_MAX_RADIANS;
+        } else if (angleToFaceGoalLocal < -TurretConstants.TURRET_TURNTABLE_MAX_RADIANS) {
+            angleToFaceGoalLocal = -TurretConstants.TURRET_TURNTABLE_MAX_RADIANS;
+        }
+
+        turntable.setTargetRadians(angleToFaceGoalLocal);
+
+        // Physics Calculation (using positive gravity magnitude for clarity)
+        double g = Math.abs(TurretConstants.GRAVITY_CONSTANT);
+        
+        double velocity_initial_y = Math.sqrt(2 * g * (TurretConstants.TURRET_VERTICAL_DISTANCE_TO_GOAL + TurretConstants.TURRET_VERTICAL_DISTANCE_APEX_OFFSET));
+        double time_until_apex = velocity_initial_y / g;
+        double delta_x = Math.sqrt(dx * dx + dy * dy);
+        
+        double total_time = time_until_apex + TurretConstants.TURRET_TIME_INTO_GOAL_AFTER_APEX;
+
+        double velocity_inital_x = delta_x / total_time;
+
+        double launch_angle = Math.atan2(velocity_initial_y, velocity_inital_x);
+        double launch_velocity = Math.sqrt(velocity_inital_x * velocity_inital_x + velocity_initial_y * velocity_initial_y);
+
+        hood.setDesiredLaunchAngle(launch_angle);
+        flywheel.setLaunchSpeed(launch_velocity);
+    }
+
+    // ...existing code...
+
     public boolean TurretReadyToShoot()
     {
         return flywheel.FlywheelSpeedWithinError() 

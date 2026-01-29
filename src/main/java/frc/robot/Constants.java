@@ -16,9 +16,13 @@ package frc.robot;
 import java.util.List;
 
 import edu.wpi.first.apriltag.AprilTag;
+import edu.wpi.first.math.Matrix;
+import edu.wpi.first.math.VecBuilder;
 import edu.wpi.first.math.geometry.Pose3d;
 import edu.wpi.first.math.geometry.Rotation3d;
 import edu.wpi.first.math.geometry.Translation3d;
+import edu.wpi.first.math.numbers.N1;
+import edu.wpi.first.math.numbers.N3;
 import edu.wpi.first.math.util.Units;
 import edu.wpi.first.units.Unit;
 import edu.wpi.first.wpilibj.RobotBase;
@@ -112,8 +116,8 @@ public final class Constants {
     public static final double FLYWHEEL_DIAMETER = 1;
     public static final double FLYWHEEL_BALL_COMPRESSION = 0.25;
     
-    public static final double TURRET_LOCAL_POS_X = 0; // meters, right hand rule!!
-    public static final double TURRET_LOCAL_POS_Y = 0; // meters, right hand rule!! 
+    public static final double TURRET_LOCAL_POS_X = -0.142; // meters, right hand rule!!
+    public static final double TURRET_LOCAL_POS_Y = 0.129; // meters, right hand rule!! 
 
     public static final double TURRET_HOOD_MOTOR_MIN_ROTATIONS = 0;
     public static final double TURRET_HOOD_MOTOR_MAX_ROTATIONS = 6.7;
@@ -141,13 +145,14 @@ public final class Constants {
     public static final double TURRET_VERTICAL_DISTANCE_TO_GOAL = 1.8288;
     public static final double TURRET_VERTICAL_DISTANCE_APEX_OFFSET = 0.254;
     public static final double TURRET_TIME_INTO_GOAL_AFTER_APEX = Math.sqrt(-TURRET_VERTICAL_DISTANCE_APEX_OFFSET / GRAVITY_CONSTANT);
-    public static final double GOAL_FIELD_SPACE_X_POSITION = 11.915521;
-    public static final double GOAL_FIELD_SPACE_Y_POSITION = 4.034536;
+    public static final double GOAL_FIELD_SPACE_X_POSITION = 4.46; //10
+    public static final double GOAL_FIELD_SPACE_Y_POSITION = 4.01; //-10
 
     //Isaac's maybe unnessary constants for turret positinoing
     public static final double TURRET_LOCAL_POS_Z = 0; //we arbitratilly define its height as 0 meters off the ground and measure direct camera height from ground
-    public static final double CAMERA_RADIUS = 0; //radius from center of turret to lens of camera
-    public static final double CAMERA_HEIGHT = 0; 
+    public static final double CAMERA_RADIUS = 0.148; //radius from center of turret to lens of camera
+    public static final double CAMERA_HEIGHT = 0.504; //meters from ground to camera lens
+    public static final double CAMERA_PITCH_ANGLE = Units.degreesToRadians(18); //NEEDS TO BE UPDATED: degrees up from horizontal the camera is mounted 
 
     // Turntable PIDs
     public static final double TURNTABLE_kP = 0.0;
@@ -212,6 +217,12 @@ public final class Constants {
   public static final double CAMERA_PITCH_RADIANS = Units.degreesToRadians(18);
   public static final String USB_CAMERA_NAME = "Arducam_OV9782_USB_Camera";
 
+  public static final Matrix<N3, N1> SINGLE_TAG_STD_DEVS = VecBuilder.fill(0.1, 0.1, 0.1);
+  public static final Matrix<N3, N1> MULTI_TAG_STD_DEVS = VecBuilder.fill(0.05, 0.05, 0.05);
+
+  public static final Matrix<N3, N1> DRIVE_STANDARD_DEVIATIONS = VecBuilder.fill(0.05, 0.05, 0.1);
+  public static final Matrix<N3, N1> DRIVE_VISION_MEASUREMENT_STD_DEVS = VecBuilder.fill(0.1, 0.1, 0.2);
+  
   public class AprilTagFieldConstants {
 
         public static final double FIELD_LENGTH = 16.513048;
