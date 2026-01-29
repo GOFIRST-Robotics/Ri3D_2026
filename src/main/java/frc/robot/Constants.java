@@ -107,6 +107,9 @@ public final class Constants {
 
   public static final Matrix<N3, N1> SINGLE_TAG_STD_DEVS = VecBuilder.fill(0.1, 0.1, 0.1);
   public static final Matrix<N3, N1> MULTI_TAG_STD_DEVS = VecBuilder.fill(0.05, 0.05, 0.05);
+
+  public static final Matrix<N3, N1> DRIVE_STANDARD_DEVIATIONS = VecBuilder.fill(0.05, 0.05, 0.1);
+  public static final Matrix<N3, N1> DRIVE_VISION_MEASUREMENT_STD_DEVS = VecBuilder.fill(0.1, 0.1, 0.2);
   
   public class AprilTagFieldConstants {
 
