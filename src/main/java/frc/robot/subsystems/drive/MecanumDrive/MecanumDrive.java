@@ -73,6 +73,8 @@ public class MecanumDrive extends SubsystemBase {
             gyroInputs.yawPosition,
             getWheelPositions(),
             new Pose2d());
+
+    odometryEstimator = new MecanumDrivePoseEstimator(kinematics, getGyroYaw(), getWheelPositions(), getPose());
   }
 
   @Override
