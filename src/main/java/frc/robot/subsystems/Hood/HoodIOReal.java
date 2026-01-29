@@ -66,7 +66,6 @@ public class HoodIOReal implements HoodIO {
         config.closedLoop.maxMotion
             .cruiseVelocity(Constants.TurretConstants.HOOD_CRUISE_VEL)
             .maxAcceleration(Constants.TurretConstants.HOOD_MAX_ACCEL)
-            //.cruiseVelocity(10000)
             .allowedProfileError(Constants.TurretConstants.HOOD_ALLOWED_PROFILE_ERROR);
         config.inverted(true);
         hoodMotorController.configure(config, ResetMode.kResetSafeParameters, PersistMode.kPersistParameters);
@@ -128,6 +127,7 @@ public class HoodIOReal implements HoodIO {
         if (hasChanged) {
             config.inverted(true);
             hoodMotorController.configure(config, ResetMode.kResetSafeParameters, PersistMode.kPersistParameters);
+            System.out.println("Changed Hood mc config");
         }
     }
 }

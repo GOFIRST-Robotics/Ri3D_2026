@@ -40,7 +40,7 @@ public class RobotContainer {
   // private final Turret turret;
   private final Flywheel flywheel;
   private final Hood hood;
-  // private final Turntable turntable;
+  private final Turntable turntable;
 
   // Controller
   private final CommandXboxController controller = new CommandXboxController(0);
@@ -64,7 +64,7 @@ public class RobotContainer {
 
         flywheel = new Flywheel(new FlywheelIOReal());
         hood = new Hood(new HoodIOReal());
-        // turntable = new Turntable(new TurntableIOReal());
+        turntable = new Turntable(new TurntableIOReal());
         // turret = new Turret(flywheel, hood, turntable);
 
         break;
@@ -92,7 +92,7 @@ public class RobotContainer {
 
         flywheel = null;
         hood = null;
-        // turntable = null;
+        turntable = null;
         // turret = null;
         break;
 
@@ -119,7 +119,7 @@ public class RobotContainer {
 
         flywheel = null;
         hood = null;
-        // turntable = null;
+        turntable = null;
         // turret = null;
         break;
     }
@@ -152,7 +152,7 @@ public class RobotContainer {
     controller.leftBumper().whileTrue(new RunCommand(()-> intake.runIntake(1), intake)).
                                             onFalse(new InstantCommand(()-> intake.runIntake(0.0), intake));
 
-    controller.button(3).onTrue(MecanumDriveCommands.resetHeading(drive));
+    controller.button(10).onTrue(MecanumDriveCommands.resetHeading(drive));
 
     controller.rightBumper().whileTrue(indexer.runIndexerCommandDutyCycle());
 
@@ -162,6 +162,10 @@ public class RobotContainer {
 
     controller.povUp().whileTrue(hood.incrementHoodAngleCommand());
     controller.povDown().whileTrue(hood.decrementHoodAngleCommand());
+
+    controller.button(2).whileTrue(turntable.incrementTurntableAngleCommand());
+    controller.button(3).whileTrue(turntable.decrementTurntableAngleCommand());
+
   }
 
   public Command getAutonomousCommand() {

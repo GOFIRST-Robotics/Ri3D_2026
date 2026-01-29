@@ -6,6 +6,7 @@ import com.revrobotics.ResetMode;
 import com.revrobotics.spark.SparkClosedLoopController;
 import com.revrobotics.spark.SparkMax;
 import com.revrobotics.spark.config.SparkMaxConfig;
+import com.revrobotics.spark.config.SparkBaseConfig.IdleMode;
 
 import static frc.robot.util.SparkUtil.ifOk;
 
@@ -60,17 +61,22 @@ public class TurntableIOReal implements TurntableIO {
         changeableMaxAccel = new LoggedNetworkNumber("Tuning/Turntable/maxAccel", maxAccel);
 
         SparkMaxConfig config = new SparkMaxConfig();
+        config.idleMode(IdleMode.kCoast);
         config.closedLoop
             .pid(kP, kI, kD);
         config.closedLoop.feedForward
                 .kS(kS)
                 .kV(kV)
-                .kA(kA)
-                .kG(0.0);
-        config.closedLoop.maxMotion
-            .cruiseVelocity(cruiseVel)
-            .maxAcceleration(maxAccel)
-            .allowedProfileError(TurretConstants.TURNTABLE_ALLOWED_ERROR);
+                .kA(kA);
+        config.softLimit
+            .forwardSoftLimit(TurretConstants.TURRET_TURNTABLE_MOTOR_MAX_ROTATIONS)
+            .forwardSoftLimitEnabled(true)
+            .reverseSoftLimit(TurretConstants.TURRET_TURNTABLE_MOTOR_MIN_ROTATIONS)
+            .reverseSoftLimitEnabled(true);
+        // config.closedLoop.maxMotion
+        //     .cruiseVelocity(cruiseVel)
+        //     .maxAcceleration(maxAccel)
+        //     .allowedProfileError(TurretConstants.TURNTABLE_ALLOWED_ERROR);
         turntableMotorController.configure(config, ResetMode.kResetSafeParameters, PersistMode.kPersistParameters);
     }
 
@@ -100,7 +106,7 @@ public class TurntableIOReal implements TurntableIO {
         else if (clampedRadians > TurretConstants.TURRET_TURNTABLE_MAX_RADIANS) {clampedRadians = TurretConstants.TURRET_TURNTABLE_MAX_RADIANS; }
 
         double motorRotations = (clampedRadians / Constants.TWO_PI) * TurretConstants.TURRET_TURNTABLE_GEAR_RATIO;
-        turntableClosedLoop.setSetpoint(motorRotations, ControlType.kMAXMotionPositionControl); 
+        turntableClosedLoop.setSetpoint(motorRotations, ControlType.kPosition); 
     }
 
     @Override
@@ -143,6 +149,7 @@ public class TurntableIOReal implements TurntableIO {
 
         if (hasChanged) {
             turntableMotorController.configure(config, ResetMode.kNoResetSafeParameters, PersistMode.kNoPersistParameters);
+            System.out.println("Changed Turntable mc config");
         }
     }
 }
