@@ -26,4 +26,9 @@ public class GyroIONavX implements GyroIO {
     inputs.yawVelocityRadPerSec = Units.degreesToRadians(-navX.getRawGyroZ());
     // REMOVED: odometry queue processing
   }
+
+  @Override
+  public void resetGyroHeading() {
+    navX.reset();
+  }
 }

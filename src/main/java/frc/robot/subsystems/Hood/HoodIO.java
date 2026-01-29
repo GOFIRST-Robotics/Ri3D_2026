@@ -8,6 +8,9 @@ public interface HoodIO {
     class HoodIOInputs {
         public double hoodRadians;
         public double motorPosition;
+
+        public double targetRadians;
+        public double targetPosition;
     }
 
     default void updateInputs(HoodIOInputs inputs) {}

@@ -76,10 +76,10 @@ public final class Constants {
     public static final int backRightCanId = 14;
 
     // Motor inversions
-    public static final boolean frontLeftInverted = false;
-    public static final boolean frontRightInverted = true;
-    public static final boolean backLeftInverted = false;
-    public static final boolean backRightInverted = true;
+    public static final boolean frontLeftInverted = true ;
+    public static final boolean frontRightInverted = false;
+    public static final boolean backLeftInverted = true;
+    public static final boolean backRightInverted = false;
 
     // Current limit
     public static final int driveMotorCurrentLimit = 60;
@@ -89,7 +89,7 @@ public final class Constants {
     public static final double encoderVelocityFactorRadPerSec = (2.0 * Math.PI) / 60.0 / DRIVE_GEAR_RATIO;
 
     // Closed-loop PID gains
-    public static final double kP = 0.01;
+    public static final double kP = 0.015;
     public static final double kD = 0.0;
 
     // Feedforward gains (V = kS*sign(ω) + kV*ω)
@@ -98,15 +98,16 @@ public final class Constants {
   }
 
 
-  public static final int TURRET_LEFT_FLYWHEEL_MOTOR_ID = 6;
-  public static final int TURRET_RIGHT_FLYWHEEL_MOTOR_ID = 10;
-  public static final int TURRET_HOOD_MOTOR_ID = 20;
+  public static final int TURRET_TOP_FLYWHEEL_MOTOR_ID = 40;
+  public static final int TURRET_BOTTOM_FLYWHEEL_MOTOR_ID = 41;
+  public static final int TURRET_HOOD_MOTOR_ID = 42;
+  public static final int TURRET_TURNTABLE_MOTOR_ID = 43;
 
   // ==================== TURRET CONSTANTS ====================
 
   public static final class TurretConstants {
-    public static final double TURRET_HOOD_GEAR_RATIO = 4750.0/85.0;
-    public static final double TURRET_TURNTABLE_GEAR_RATIO = 1;
+    public static final double TURRET_HOOD_GEAR_RATIO = 475.0*10.0/85.0;
+    public static final double TURRET_TURNTABLE_GEAR_RATIO = (130.0 / 50.0) * 10.0;
 
     public static final double FLYWHEEL_DIAMETER = 1;
     public static final double FLYWHEEL_BALL_COMPRESSION = 0.25;
@@ -115,18 +116,23 @@ public final class Constants {
     public static final double TURRET_LOCAL_POS_Y = 0; // meters, right hand rule!! 
 
     public static final double TURRET_HOOD_MOTOR_MIN_ROTATIONS = 0;
-    public static final double TURRET_HOOD_MOTOR_MAX_ROTATIONS = 8;
+    public static final double TURRET_HOOD_MOTOR_MAX_ROTATIONS = 6.7;
     public static final double TURRET_HOOD_MIN_RADIANS = Units.degreesToRadians(30);
-    public static final double TURRET_HOOD_MAX_RADIANS = Units.degreesToRadians(80);
+    public static final double TURRET_HOOD_MAX_RADIANS = Units.degreesToRadians(65);
+    public static final double TURRET_HOOD_RANGE_RADIANS = TURRET_HOOD_MAX_RADIANS - TURRET_HOOD_MIN_RADIANS;
 
     public static final double TURRET_TURNTABLE_MOTOR_MIN_ROTATIONS = 5;
     public static final double TURRET_TURNTABLE_MOTOR_MAX_ROTATIONS = 5;
     public static final double TURRET_TURNTABLE_MAX_RADIANS = Units.degreesToRadians(175);
 
-    public static final double TURRET_TURNTABLE_CHANGE_SPEED = 0.01;
+    public static final double TURRET_TURNTABLE_CHANGE_SPEED = 0.015;
     public static final double TURRET_HOOD_CHANGE_SPEED = 0.01;
+    public static final double TURRET_FLYWHEEL_CHANGE_SPEED = 0;//5;
 
-    public static final double TURRET_FLYWHEEL_ACCEPTABLE_FLYWHEEL_RPM_ERROR = 100;
+    public static final double TURRET_FLYWHEEL_MIN_RPM = 2000;
+    public static final double TURRET_FLYWHEEL_MAX_RPM = 4500;
+
+    public static final double TURRET_FLYWHEEL_ACCEPTABLE_RPM_ERROR = 100;
     public static final double TURRET_HOOD_ACCEPTABLE_RADIAN_ERROR = Units.degreesToRadians(2);
     public static final double TURRET_TURNTABLE_ACCEPTABLE_RADIAN_ERROR = Units.degreesToRadians(2);
 
@@ -135,8 +141,8 @@ public final class Constants {
     public static final double TURRET_VERTICAL_DISTANCE_TO_GOAL = 1.8288;
     public static final double TURRET_VERTICAL_DISTANCE_APEX_OFFSET = 0.254;
     public static final double TURRET_TIME_INTO_GOAL_AFTER_APEX = Math.sqrt(-TURRET_VERTICAL_DISTANCE_APEX_OFFSET / GRAVITY_CONSTANT);
-    public static final double GOAL_FIELD_SPACE_X_POSITION = 10;
-    public static final double GOAL_FIELD_SPACE_Y_POSITION = -10;
+    public static final double GOAL_FIELD_SPACE_X_POSITION = 11.915521;
+    public static final double GOAL_FIELD_SPACE_Y_POSITION = 4.034536;
 
     //Isaac's maybe unnessary constants for turret positinoing
     public static final double TURRET_LOCAL_POS_Z = 0; //we arbitratilly define its height as 0 meters off the ground and measure direct camera height from ground
@@ -150,28 +156,52 @@ public final class Constants {
     public static final double TURNTABLE_kS = 0.0;
     public static final double TURNTABLE_kV = 0.0;
     public static final double TURNTABLE_kA = 0.0;
-    public static final double TURNTABLE_CRUISE_VEL = 0.0;
+    public static final double TURNTABLE_CRUISE_VEL = (0 * Constants.TurretConstants.TURRET_TURNTABLE_GEAR_RATIO / 360) * 60;;
     public static final double TURNTABLE_MAX_ACCEL = 0.0;
     public static final double TURNTABLE_ALLOWED_ERROR = 0.5;
 
     // Hood PIDs
-    public static final double HOOD_kP = 0.0;
+    public static final double HOOD_kP = 0.4;
     public static final double HOOD_kI = 0.0;
     public static final double HOOD_kD = 0.0;
     public static final double HOOD_kV = 0.0;
+    public static final double HOOD_kCos = 0.8075;
+    public static final double HOOD_CRUISE_VEL = (150 * Constants.TurretConstants.TURRET_HOOD_GEAR_RATIO / 360) * 60;
+    public static final double HOOD_MAX_ACCEL = 10000000; // it actually needs to be this...
+    public static final double HOOD_ALLOWED_PROFILE_ERROR = 0.025;
 
     // Flywheel PIDs
     public static final double TOP_FLYWHEEL_KP = 0.0001;
     public static final double TOP_FLYWHEEL_KI = 0.0;
     public static final double TOP_FLYWHEEL_KD = 0.0;
-    public static final double TOP_FLYWHEEL_KV = 0.002275;
-    public static final double TOP_FLYWHEEL_ACCEL = 4000.0;
+    public static final double TOP_FLYWHEEL_KV = 0.0011;
+    public static final double TOP_FLYWHEEL_ACCEL = 12000.0;
 
-    public static final double BOTTOM_FLYWHEEL_KP = 0.0001;
+    public static final double BOTTOM_FLYWHEEL_KP = 0.0002;
     public static final double BOTTOM_FLYWHEEL_KI = 0.0;
     public static final double BOTTOM_FLYWHEEL_KD = 0.0;
     public static final double BOTTOM_FLYWHEEL_KV = 0.002275;
-    public static final double BOTTOM_FLYWHEEL_ACCEL = 12000.0;
+    public static final double BOTTOM_FLYWHEEL_ACCEL = 4000.0;
+
+  }
+
+    public static final class IntakeConstants {
+  
+      public static final int INTAKE_RIGHT_DOOR_MOTOR_ID = 20; 
+      public static final int INTAKE_LEFT_DOOR_MOTOR_ID = 21;
+      public static final int INTAKE_WHEEL_MOTOR_ID = 22;
+      // public static final int INTAKE_WHEEL_MOTOR_ID = 4;
+
+      public static final double INTAKE_DOOR_kP = .5;
+      public static final double INTAKE_DOOR_kI = 0.00005;
+      public static final double INTAKE_DOOR_kD = 0;
+
+
+      public static final double INTAKE_DOOR_POSITION_STORED = Units.degreesToRadians(118); //degrees -0.33
+      public static final double INTAKE_DOOR_POSITION_DEPLOYED = Units.degreesToRadians(0.0); //0.054
+      public static final boolean IS_INTAKE_DIRECTION_INVERTED = false;
+      public static final boolean IS_INTAKE_ENCODER_INVERTED = true;
+    public static final double INTAKE_WHEEL_SPEED = 0;
 
   }
 
@@ -318,4 +348,13 @@ public final class Constants {
         );
 
 }
+  public static final class IndexerConstants{
+    public static final int INDEXER_MOTOR_CAN_ID = 30;
+    public static final double INDEXER_MOTOR_RPM = 500;
+
+    public static final double INDEXER_MOTOR_kP = 0.0001;
+    public static final double INDEXER_MOTOR_kV = 0.0024;
+    public static final double INDEXER_MOTOR_MAX_VEL = 1500.0;
+    public static final double INDEXER_MOTOR_MAX_ACCEL = 4500.0;
+  }
 }

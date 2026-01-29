@@ -100,8 +100,8 @@ public class FlywheelIOReal implements FlywheelIO {
 
     public FlywheelIOReal()
     {
-        topFlywheelMotorController = new SparkMax(Constants.TURRET_LEFT_FLYWHEEL_MOTOR_ID, MotorType.kBrushless);
-        bottomFlywheelMotorController = new SparkMax(Constants.TURRET_RIGHT_FLYWHEEL_MOTOR_ID, MotorType.kBrushless);
+        topFlywheelMotorController = new SparkMax(Constants.TURRET_TOP_FLYWHEEL_MOTOR_ID, MotorType.kBrushless);
+        bottomFlywheelMotorController = new SparkMax(Constants.TURRET_BOTTOM_FLYWHEEL_MOTOR_ID, MotorType.kBrushless);
 
         topFlyWheelEncoder = topFlywheelMotorController.getEncoder();
         bottomFlyWheelEncoder = bottomFlywheelMotorController.getEncoder();
@@ -123,6 +123,12 @@ public class FlywheelIOReal implements FlywheelIO {
 
     @Override
     public void setBottomFlywheelRPM(double rpm) { bottomFlywheelClosedLoop.setSetpoint(rpm, ControlType.kMAXMotionVelocityControl); }
+
+    @Override
+    public void setkDutyZero() {
+        topFlywheelMotorController.getClosedLoopController().setSetpoint(0, ControlType.kDutyCycle);
+        bottomFlywheelMotorController.getClosedLoopController().setSetpoint(0, ControlType.kDutyCycle);
+    }
 
     @Override
     public void periodic() {

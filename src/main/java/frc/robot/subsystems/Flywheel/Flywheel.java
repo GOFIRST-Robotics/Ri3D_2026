@@ -10,10 +10,6 @@ public class Flywheel extends SubsystemBase {
     private final FlywheelIO io;
     private final FlywheelIOInputsAutoLogged inputs = new FlywheelIOInputsAutoLogged();
 
-    /////////////////////////////////////////////////////
-    // TODO: MAKE METHOD TO DETERMINE WHEN AT SPEED!!! //
-    /////////////////////////////////////////////////////
-
     public Flywheel(FlywheelIO io) {
         this.io = io;
     }
@@ -32,8 +28,12 @@ public class Flywheel extends SubsystemBase {
         topTargetRPM = topRPM;
         bottomTargetRPM = bottomRPM;
 
-        io.setTopFlywheelRPM(topRPM);
-        io.setBottomFlywheelRPM(bottomRPM);
+        if(topRPM+bottomRPM<1){
+            io.setkDutyZero();
+        } else {
+            io.setTopFlywheelRPM(topRPM);
+            io.setBottomFlywheelRPM(bottomRPM);
+        }
     }
 
     public void setLaunchSpeed(double launchSpeed)
@@ -44,12 +44,26 @@ public class Flywheel extends SubsystemBase {
         runFlywheels(rpm, rpm);
     }
 
-    public Command RunFlywheelsCommand() { return this.runOnce(() -> runFlywheels(1200, 1200)); }
-    public Command RunTuneableFlywheelsCommand() { return this.runOnce(() -> setTuneFlywheelRPM());}
+    double setRPM = 3000;
+    public void IncrementSetRPM(double change)
+    {
+        setRPM += change;
+        if (setRPM < Constants.TurretConstants.TURRET_FLYWHEEL_MIN_RPM) {
+            setRPM = Constants.TurretConstants.TURRET_FLYWHEEL_MIN_RPM;
+        }
+        if (setRPM > Constants.TurretConstants.TURRET_FLYWHEEL_MAX_RPM) {
+            setRPM = Constants.TurretConstants.TURRET_FLYWHEEL_MAX_RPM;
+        }
+
+        runFlywheels((setRPM-1000.0)*3.0, setRPM);
+    }
+
     public Command StopFlywheelsCommand() { return this.runOnce(() -> runFlywheels(0, 0)); }
+    public Command decrementRpmSetPoint() { return this.run(() -> IncrementSetRPM(-Constants.TurretConstants.TURRET_FLYWHEEL_CHANGE_SPEED)); }
+    public Command incrementRpmSetPoint() { return this.run(() -> IncrementSetRPM(Constants.TurretConstants.TURRET_FLYWHEEL_CHANGE_SPEED)); }
 
     public boolean FlywheelSpeedWithinError()
     {
-        return Math.abs(inputs.bottomFlywheelRPM - bottomTargetRPM) <= Constants.TurretConstants.TURRET_FLYWHEEL_ACCEPTABLE_FLYWHEEL_RPM_ERROR && Math.abs(inputs.topFlywheelRPM - topTargetRPM) <= Constants.TurretConstants.TURRET_FLYWHEEL_ACCEPTABLE_FLYWHEEL_RPM_ERROR;
+        return Math.abs(inputs.bottomFlywheelRPM - bottomTargetRPM) <= Constants.TurretConstants.TURRET_FLYWHEEL_ACCEPTABLE_RPM_ERROR && Math.abs(inputs.topFlywheelRPM - topTargetRPM) <= Constants.TurretConstants.TURRET_FLYWHEEL_ACCEPTABLE_RPM_ERROR;
     }
 }
