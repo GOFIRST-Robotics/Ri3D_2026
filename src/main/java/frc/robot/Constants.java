@@ -173,8 +173,11 @@ public final class Constants {
     public static final double TURRET_VERTICAL_DISTANCE_TO_GOAL = 1.8288;
     public static final double TURRET_VERTICAL_DISTANCE_APEX_OFFSET = 0.254;
     public static final double TURRET_TIME_INTO_GOAL_AFTER_APEX = Math.sqrt(-TURRET_VERTICAL_DISTANCE_APEX_OFFSET / GRAVITY_CONSTANT);
-    public static final double GOAL_FIELD_SPACE_X_POSITION = 4.46; //10
-    public static final double GOAL_FIELD_SPACE_Y_POSITION = 4.01; //-10
+    public static final double RED_GOAL_FIELD_SPACE_X_POSITION = 11.915;
+    public static final double RED_GOAL_FIELD_SPACE_Y_POSITION = 4.035;
+    public static final double BLUE_GOAL_FIELD_SPACE_X_POSITION = 4.626; 
+    public static final double BLUE_GOAL_FIELD_SPACE_Y_POSITION = 4.035; 
+
 
     //Isaac's maybe unnessary constants for turret positinoing
 //     public static final double TURRET_LOCAL_POS_Z = 0; //we arbitratilly define its height as 0 meters off the ground and measure direct camera height from ground
@@ -185,7 +188,7 @@ public final class Constants {
     // Turntable PIDs
     public static final double TURNTABLE_kP = 0.08;
     public static final double TURNTABLE_kI = 0.0;
-    public static final double TURNTABLE_kD = 0.008;
+    public static final double TURNTABLE_kD = 0.0;
     public static final double TURNTABLE_kS = 0.0;
     public static final double TURNTABLE_kV = 0.0;
     public static final double TURNTABLE_kA = 0.0;
@@ -225,13 +228,13 @@ public final class Constants {
       public static final int INTAKE_WHEEL_MOTOR_ID = 22;
       // public static final int INTAKE_WHEEL_MOTOR_ID = 4;
 
-      public static final double INTAKE_DOOR_kP = .5;
-      public static final double INTAKE_DOOR_kI = 0.00005;
+      public static final double INTAKE_DOOR_kP = .6;
+      public static final double INTAKE_DOOR_kI = 0;
       public static final double INTAKE_DOOR_kD = 0;
 
 
-      public static final double INTAKE_DOOR_POSITION_STORED = Units.degreesToRadians(118); //degrees -0.33
-      public static final double INTAKE_DOOR_POSITION_DEPLOYED = Units.degreesToRadians(0.0); //0.054
+      public static final double INTAKE_DOOR_POSITION_STORED = Units.degreesToRadians(120); //degrees -0.33
+      public static final double INTAKE_DOOR_POSITION_DEPLOYED = Units.degreesToRadians(-1.0); //0.054
       public static final boolean IS_INTAKE_DIRECTION_INVERTED = false;
       public static final boolean IS_INTAKE_ENCODER_INVERTED = true;
     public static final double INTAKE_WHEEL_SPEED = 0;

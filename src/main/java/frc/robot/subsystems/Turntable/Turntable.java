@@ -37,8 +37,8 @@ public class Turntable extends SubsystemBase {
     private double currentTargetRadians;
     public void setTargetRadians(double radians) 
     { 
-        if(Math.abs(currentTargetRadians-radians)>.02){
-            currentTargetRadians += Math.signum(radians-currentTargetRadians) * .02;
+        if(Math.abs(currentTargetRadians-radians)>.1){
+            currentTargetRadians += Math.signum(radians-currentTargetRadians) * .1;
         } else {
             currentTargetRadians = radians;
         }
@@ -76,8 +76,8 @@ public class Turntable extends SubsystemBase {
             Pose3d turretPose = robotPose.transformBy(robotToTurret);
             // System.out.println("Camera Pose: " + cameraPose);
             System.out.println("camera angle" + cameraPose.getRotation().getZ());
-            double dx = aprilTagPose.getX() - turretPose.getX();
-            double dy = aprilTagPose.getY() - turretPose.getY();
+            double dx = Constants.TurretConstants.RED_GOAL_FIELD_SPACE_X_POSITION - turretPose.getX();
+            double dy = Constants.TurretConstants.RED_GOAL_FIELD_SPACE_Y_POSITION - turretPose.getY();
 
             double angleToTag = Math.atan2(dy, dx);
             System.out.println("angletotag: " + angleToTag);
@@ -85,11 +85,11 @@ public class Turntable extends SubsystemBase {
             // double robotYaw = robotPose.getRotation().toRotation2d().getRadians();
             // System.out.println("robotyaw: "+robotYaw);
 
-            double angleToTagRobot = angleToTag - cameraPose.getRotation().getZ();
+            double angleToTagRobot = MathUtil.angleModulus(angleToTag - (robotPose.getRotation().getZ()+Math.PI));
 
             // double facingTargetRadians = Math.atan2(aprilTagPose.getY() - cameraPose.getY(), aprilTagPose.getX() - cameraPose.getX());
 
-            angleToTagRobot = MathUtil.angleModulus(angleToTagRobot);
+            // angleToTagRobot = MathUtil.angleModulus(angleToTagRobot);
 
             // double facingTargetRadians = -Math.atan2(aprilTagPose.getY() - robotPose.getY(), aprilTagPose.getX() - robotPose.getX());
             System.out.println("robot x: " + robotPose.getX() + "robot y: " + robotPose.getY() + "tag x: " + aprilTagPose.getX() + "tag y: " + aprilTagPose.getY() + "target rads" + angleToTagRobot);
@@ -102,7 +102,7 @@ public class Turntable extends SubsystemBase {
     public Transform3d getDynamicCameraTransform() {
         Transform3d turretRotation = new Transform3d(
             new Translation3d(),
-            new Rotation3d(0, 0, currentTargetRadians)
+            new Rotation3d(0, 0, -inputs.turntableRadians)
         );
 
         return Constants.TurretConstants.ROBOT_TO_TURRET.plus(turretRotation).plus(Constants.TurretConstants.TURRET_TO_CAMERA);

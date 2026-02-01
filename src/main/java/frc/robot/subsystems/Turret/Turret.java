@@ -35,8 +35,8 @@ public class Turret extends SubsystemBase {
         double turretWorldX = turretWorldRelativeToRobot[0] + robotFieldX;
         double turretWorldY = turretWorldRelativeToRobot[1] + robotFieldY;
 
-        double dx = TurretConstants.GOAL_FIELD_SPACE_X_POSITION - turretWorldX;
-        double dy = TurretConstants.GOAL_FIELD_SPACE_Y_POSITION - turretWorldY;
+        double dx = TurretConstants.RED_GOAL_FIELD_SPACE_X_POSITION - turretWorldX;
+        double dy = TurretConstants.RED_GOAL_FIELD_SPACE_Y_POSITION - turretWorldY;
 
         double angleToFaceGoalField = Math.atan2(dy, dx);
 
@@ -68,8 +68,8 @@ public class Turret extends SubsystemBase {
         double turretWorldX = turretWorldRelativeToRobot[0] + robotFieldX;
         double turretWorldY = turretWorldRelativeToRobot[1] + robotFieldY;
 
-        double dx = TurretConstants.GOAL_FIELD_SPACE_X_POSITION - turretWorldX;
-        double dy = TurretConstants.GOAL_FIELD_SPACE_Y_POSITION - turretWorldY;
+        double dx = TurretConstants.RED_GOAL_FIELD_SPACE_X_POSITION - turretWorldX;
+        double dy = TurretConstants.RED_GOAL_FIELD_SPACE_Y_POSITION - turretWorldY;
 
         double angleToFaceGoalField = Math.atan2(dy, dx);
 
