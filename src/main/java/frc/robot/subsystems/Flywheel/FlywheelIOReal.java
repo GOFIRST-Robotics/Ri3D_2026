@@ -114,15 +114,15 @@ public class FlywheelIOReal implements FlywheelIO {
 
     @Override
     public void updateInputs(FlywheelIOInputs inputs) {
-        ifOk(topFlywheelMotorController, topFlyWheelEncoder::getVelocity, (value) -> inputs.topFlywheelRPM = value / Constants.TurretConstants.TURRET_FLYWHEEL_GEAR_RATIO);
-        ifOk(bottomFlywheelMotorController, bottomFlyWheelEncoder::getVelocity, (value) -> inputs.bottomFlywheelRPM = value / Constants.TurretConstants.TURRET_FLYWHEEL_GEAR_RATIO);
+        ifOk(topFlywheelMotorController, topFlyWheelEncoder::getVelocity, (value) -> inputs.topFlywheelRPM = value / Constants.TurretConstants.TURRET_TOP_FLYWHEEL_GEAR_RATIO);
+        ifOk(bottomFlywheelMotorController, bottomFlyWheelEncoder::getVelocity, (value) -> inputs.bottomFlywheelRPM = value / Constants.TurretConstants.TURRET_BOTTOM_FLYWHEEL_GEAR_RATIO);
     }
 
     @Override
-    public void setTopFlywheelRPM(double rpm) {  topFlywheelClosedLoop.setSetpoint(rpm * Constants.TurretConstants.TURRET_FLYWHEEL_GEAR_RATIO, ControlType.kMAXMotionVelocityControl); }
+    public void setTopFlywheelRPM(double rpm) {  topFlywheelClosedLoop.setSetpoint(rpm * Constants.TurretConstants.TURRET_TOP_FLYWHEEL_GEAR_RATIO, ControlType.kMAXMotionVelocityControl); }
 
     @Override
-    public void setBottomFlywheelRPM(double rpm) { bottomFlywheelClosedLoop.setSetpoint(rpm * Constants.TurretConstants.TURRET_FLYWHEEL_GEAR_RATIO, ControlType.kMAXMotionVelocityControl); }
+    public void setBottomFlywheelRPM(double rpm) { bottomFlywheelClosedLoop.setSetpoint(rpm * Constants.TurretConstants.TURRET_BOTTOM_FLYWHEEL_GEAR_RATIO, ControlType.kMAXMotionVelocityControl); }
 
     @Override
     public void setkDutyZero() {

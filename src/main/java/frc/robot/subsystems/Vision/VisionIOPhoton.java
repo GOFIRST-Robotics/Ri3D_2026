@@ -23,10 +23,12 @@ public class VisionIOPhoton implements VisionIO {
   private final PhotonPoseEstimator poseEstimator;
   private final AprilTagFieldLayout aprilTagFieldLayout;
   private final Supplier<Rotation2d> gyroHeadingSupplier;
+  private final Supplier<Transform3d> robotToCameraSupplier;
 
   public VisionIOPhoton(String cameraName, Transform3d robotToCamera, Supplier<Rotation2d> gyroHeadingSupplier) {
     camera = new PhotonCamera(cameraName);
     this.gyroHeadingSupplier = gyroHeadingSupplier;
+    this.robotToCameraSupplier = null;
     
     aprilTagFieldLayout = new AprilTagFieldLayout(
         Constants.AprilTagFieldConstants.TAGS,
@@ -39,10 +41,29 @@ public class VisionIOPhoton implements VisionIO {
         robotToCamera);
   }
 
+  public VisionIOPhoton(String cameraName, Supplier<Transform3d> robotToCameraSupplier, Supplier<Rotation2d> gyroHeadingSupplier) {
+    camera = new PhotonCamera(cameraName);
+    this.gyroHeadingSupplier = gyroHeadingSupplier;
+    this.robotToCameraSupplier = robotToCameraSupplier;
+    
+    aprilTagFieldLayout = new AprilTagFieldLayout(
+        Constants.AprilTagFieldConstants.TAGS,
+        Constants.AprilTagFieldConstants.FIELD_LENGTH,
+        Constants.AprilTagFieldConstants.FIELD_WIDTH);
+    
+    poseEstimator = new PhotonPoseEstimator(
+        aprilTagFieldLayout,
+        PoseStrategy.PNP_DISTANCE_TRIG_SOLVE,
+        robotToCameraSupplier.get());
+  }
+
   @Override
   public void updateInputs(VisionIOInputs inputs) {
     inputs.connected = camera.isConnected();
 
+    if (robotToCameraSupplier != null) {
+      poseEstimator.setRobotToCameraTransform(robotToCameraSupplier.get());
+    }
     Rotation2d heading2d = gyroHeadingSupplier.get();
     Rotation3d heading3d = new Rotation3d(0, 0, heading2d.getRadians());
     poseEstimator.addHeadingData(Timer.getFPGATimestamp(), heading3d);

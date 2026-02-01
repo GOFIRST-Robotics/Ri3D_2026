@@ -2,6 +2,9 @@ package frc.robot;
 
 import edu.wpi.first.math.geometry.Pose3d;
 import edu.wpi.first.math.geometry.Rotation2d;
+import edu.wpi.first.math.geometry.Rotation3d;
+import edu.wpi.first.math.geometry.Transform2d;
+import edu.wpi.first.math.geometry.Transform3d;
 import edu.wpi.first.math.util.Units;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.CommandScheduler;
@@ -32,6 +35,9 @@ import frc.robot.subsystems.Vision.VisionIOPhoton;
 import frc.robot.subsystems.drive.MecanumDrive.MecanumDrive;
 import frc.robot.subsystems.drive.MecanumDrive.MecanumModuleIO;
 import frc.robot.subsystems.drive.MecanumDrive.MecanumModuleIOSpark;
+
+import java.util.function.Supplier;
+
 import org.littletonrobotics.junction.networktables.LoggedDashboardChooser;
 
 public class RobotContainer {
@@ -68,10 +74,10 @@ public class RobotContainer {
 
         flywheel = new Flywheel(new FlywheelIOReal());
         hood = new Hood(new HoodIOReal());
-        turntable = new Turntable(new TurntableIOReal());
+        turntable = new Turntable(new TurntableIOReal(), drive);
         // turret = new Turret(flywheel, hood, turntable);
 
-        vision = new Vision(new VisionIOPhoton("Arducam_OV9782_USB_Camera", Pose3d.kZero, () -> 0), drive);
+        vision = new Vision(new VisionIOPhoton("Arducam_OV9782_USB_Camera", turntable::getDynamicCameraTransform, drive::getGyroYaw),drive);
 
         break;
 
@@ -98,8 +104,10 @@ public class RobotContainer {
 
         flywheel = null;
         hood = null;
-        // turntable = null;
+        turntable = null;
         // turret = null;
+
+        vision = null;
         break;
 
       default:
@@ -127,6 +135,8 @@ public class RobotContainer {
         hood = null;
         turntable = null;
         // turret = null;
+
+        vision = null;
         break;
     }
 
@@ -143,22 +153,20 @@ public class RobotContainer {
 
   private void configureButtonBindings() {
     // Default command: field-relative mecanum drive with squared inputs
-      drive.setDefaultCommand(
-        MecanumDriveCommands.joystickDriveFieldRelative(
-            drive,
-            () -> -controller.getLeftY(),  // Forward/back
-            () -> -controller.getLeftX(),  // Strafe
-            () -> controller.getRightX())); // Rotation
+    drive.setDefaultCommand(
+      MecanumDriveCommands.joystickDriveFieldRelative(
+          drive,
+          () -> -controller.getLeftY(),  // Forward/back
+          () -> -controller.getLeftX(),  // Strafe
+          () -> controller.getRightX())); // Rotation
 
-      controller.povRight().onTrue(intake.setIntake(Constants.IntakeConstants.INTAKE_DOOR_POSITION_DEPLOYED));
-      controller.povLeft().onTrue(intake.setIntake(Constants.IntakeConstants.INTAKE_DOOR_POSITION_STORED));
-      // controller.rightBumper().onTrue(new InstantCommand(()->intake.setIntakeDoorPosition(Units.degreesToRadians(19.44)), intake));
-      // controller.leftBumper().onTrue(new SetIntakeHigh(intake));
-      // controller.rightTrigger().onTrue(new RunCommand(()-> intake.stopIntake(), intake));
+    controller.povRight().onTrue(intake.setIntake(Constants.IntakeConstants.INTAKE_DOOR_POSITION_DEPLOYED));
+    controller.povLeft().onTrue(intake.setIntake(Constants.IntakeConstants.INTAKE_DOOR_POSITION_STORED));
+
     controller.leftBumper().whileTrue(new RunCommand(()-> intake.runIntake(1), intake)).
-                                            onFalse(new InstantCommand(()-> intake.runIntake(0.0), intake));
+                                          onFalse(new InstantCommand(()-> intake.runIntake(0.0), intake));
 
-    controller.button(3).onTrue(MecanumDriveCommands.resetHeading(drive));
+    controller.button(10).onTrue(MecanumDriveCommands.resetHeading(drive));
 
     controller.rightBumper().whileTrue(indexer.runIndexerCommandDutyCycle());
 
@@ -169,7 +177,11 @@ public class RobotContainer {
     controller.povUp().whileTrue(hood.incrementHoodAngleCommand());
     controller.povDown().whileTrue(hood.decrementHoodAngleCommand());
 
-    controller.button(4).onTrue(turntable.faceAprilTagCommand(vis));
+    controller.button(2).whileTrue(turntable.incrementTurntableAngleCommand());
+    controller.button(3).whileTrue(turntable.decrementTurntableAngleCommand());
+
+
+    controller.button(4).toggleOnTrue(turntable.faceAprilTagCommand(vision));
   }
 
   public Command getAutonomousCommand() {
