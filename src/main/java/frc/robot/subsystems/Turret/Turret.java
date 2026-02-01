@@ -27,22 +27,24 @@ public class Turret extends SubsystemBase {
 
     }
 
-    public void autoAimTurret(double robotFieldX, double robotFieldY, double robotFieldRadians)
+    public void autoAimTurret(Translation3d point, Vision vision)
     {
-        double[] turretWorldRelativeToRobot =
-        GeometryHelper.Rotate(TurretConstants.TURRET_LOCAL_POS_X, TurretConstants.TURRET_LOCAL_POS_Y, robotFieldRadians);
+        Pose3d robotPose = vision.getEstimatedPose3d();
+        System.out.println("robot angle" + robotPose.getRotation().getZ());
 
-        double turretWorldX = turretWorldRelativeToRobot[0] + robotFieldX;
-        double turretWorldY = turretWorldRelativeToRobot[1] + robotFieldY;
+        Transform3d robotToTurret = Constants.TurretConstants.ROBOT_TO_TURRET;
+        Pose3d turretPose = robotPose.transformBy(robotToTurret);
 
-        double dx = TurretConstants.RED_GOAL_FIELD_SPACE_X_POSITION - turretWorldX;
-        double dy = TurretConstants.RED_GOAL_FIELD_SPACE_Y_POSITION - turretWorldY;
+        double dx = point.getX() - turretPose.getX();
+        double dy = point.getY() - turretPose.getY();
 
-        double angleToFaceGoalField = Math.atan2(dy, dx);
+        double angleToTag = Math.atan2(dy, dx);
+        System.out.println("angletotag: " + angleToTag);
 
-        double angleToFaceGoalLocal = angleToFaceGoalField - robotFieldRadians;
+        double angleToTagRobot = MathUtil.angleModulus(angleToTag - (robotPose.getRotation().getZ()+Math.PI));
 
-        turntable.setTargetRadians(angleToFaceGoalLocal);
+        // System.out.println("robot x: " + robotPose.getX() + "robot y: " + robotPose.getY() + "tag x: " + point.getX() + "tag y: " + point.getY() + "target rads" + angleToTagRobot);
+        turntable.setTargetRadians(angleToTagRobot);
 
         double velocity_initial_y = Math.sqrt(-2 * TurretConstants.GRAVITY_CONSTANT * (TurretConstants.TURRET_VERTICAL_DISTANCE_TO_GOAL + TurretConstants.TURRET_VERTICAL_DISTANCE_APEX_OFFSET));
         double time_until_apex = -velocity_initial_y / TurretConstants.GRAVITY_CONSTANT;
@@ -119,4 +121,16 @@ public class Turret extends SubsystemBase {
     }
 
     public BooleanSupplier SubsystemsWithinError = () -> TurretReadyToShoot();
+
+    public Command aimAndShoot(Translation3d targetPoint, Vision vision, Indexer indexer) {
+        return new RunCommand(() -> {
+            this.autoAimTurret(targetPoint, vision);
+
+            if (this.TurretReadyToShoot()) {
+                indexer.setIndexerKDutyCycle(0.25);
+            } else {
+                indexer.setIndexerKDutyCycle(0);
+            }
+        }, this, flywheel, hood, turntable, indexer);
+    }
 }

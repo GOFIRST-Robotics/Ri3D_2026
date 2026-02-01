@@ -42,11 +42,10 @@ import org.littletonrobotics.junction.networktables.LoggedDashboardChooser;
 
 public class RobotContainer {
   // Subsystems
-  // private final MecanumDrive drive;
   private final Indexer indexer;
   private final Intake intake;
   private final MecanumDrive drive;
-  // private final Turret turret;
+  private final Turret turret;
   private final Flywheel flywheel;
   private final Hood hood;
   private final Turntable turntable;
@@ -75,7 +74,7 @@ public class RobotContainer {
         flywheel = new Flywheel(new FlywheelIOReal());
         hood = new Hood(new HoodIOReal());
         turntable = new Turntable(new TurntableIOReal(), drive);
-        // turret = new Turret(flywheel, hood, turntable);
+        turret = new Turret(flywheel, hood, turntable);
 
         vision = new Vision(new VisionIOPhoton("Arducam_OV9782_USB_Camera", turntable::getDynamicCameraTransform, drive::getGyroYaw),drive);
 
@@ -83,15 +82,6 @@ public class RobotContainer {
 
       case SIM:
         // Sim robot - use empty IO implementations
-        // drive =
-        //     new MecanumDrive(
-        //         new MecanumModuleIO[] {
-        //           new MecanumModuleIO() {},
-        //           new MecanumModuleIO() {},
-        //           new MecanumModuleIO() {},
-        //           new MecanumModuleIO() {}
-        //         },
-        //         new GyroIO() {});
         drive =
             new MecanumDrive(
                 new MecanumModuleIO[] {
@@ -112,15 +102,6 @@ public class RobotContainer {
 
       default:
         // Replayed robot, disable IO implementations
-        // drive =
-        //     new MecanumDrive(
-        //         new MecanumModuleIO[] {
-        //           new MecanumModuleIO() {},
-        //           new MecanumModuleIO() {},
-        //           new MecanumModuleIO() {},
-        //           new MecanumModuleIO() {}
-        //         },
-        //         new GyroIO() {});
         drive =
             new MecanumDrive(
                 new MecanumModuleIO[] {
@@ -134,7 +115,7 @@ public class RobotContainer {
         flywheel = null;
         hood = null;
         turntable = null;
-        // turret = null;
+        turret = null;
 
         vision = null;
         break;
@@ -180,8 +161,9 @@ public class RobotContainer {
     controller.button(2).whileTrue(turntable.incrementTurntableAngleCommand());
     controller.button(3).whileTrue(turntable.decrementTurntableAngleCommand());
 
+    controller.button(4).toggleOnTrue(turntable.facePointCommand(new Translation2d(Constants.TurretConstants.RED_GOAL_FIELD_SPACE_X_POSITION, Constants.TurretConstants.RED_GOAL_FIELD_SPACE_Y_POSITION, vision));
 
-    controller.button(4).toggleOnTrue(turntable.faceAprilTagCommand(vision));
+    controller.button(9).toggleOnTrue(turret.aimAndShoot(speakerTarget, vision, indexer));
   }
 
   public Command getAutonomousCommand() {

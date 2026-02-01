@@ -61,43 +61,30 @@ public class Turntable extends SubsystemBase {
         return inputs.turntableRadians;
     }
 
-    public void faceAprilTag(Vision vision)
+    public void facePoint(Translation2d point, Vision vision)
     {
-        int aprilTag = 3;
-        if(vision.hasTarget()){
-            Pose3d aprilTagPose = Constants.AprilTagFieldConstants.TAGS.get(aprilTag-1).pose;
+        Pose3d robotPose = vision.getEstimatedPose3d();
+        System.out.println("robot angle" + robotPose.getRotation().getZ());
 
-            Pose3d robotPose = vision.getEstimatedPose3d();
-            System.out.println("robot angle" + robotPose.getRotation().getZ());
+        Transform3d robotToCamera = getDynamicCameraTransform();
+        Transform3d robotToTurret = Constants.TurretConstants.ROBOT_TO_TURRET;
+        Pose3d cameraPose = robotPose.transformBy(robotToCamera);
+        Pose3d turretPose = robotPose.transformBy(robotToTurret);
+        // System.out.println("Camera Pose: " + cameraPose);
+        System.out.println("camera angle" + cameraPose.getRotation().getZ());
+        double dx = point.getX() - turretPose.getX();
+        double dy = point.getY() - turretPose.getY();
 
-            Transform3d robotToCamera = getDynamicCameraTransform();
-            Transform3d robotToTurret = Constants.TurretConstants.ROBOT_TO_TURRET;
-            Pose3d cameraPose = robotPose.transformBy(robotToCamera);
-            Pose3d turretPose = robotPose.transformBy(robotToTurret);
-            // System.out.println("Camera Pose: " + cameraPose);
-            System.out.println("camera angle" + cameraPose.getRotation().getZ());
-            double dx = Constants.TurretConstants.RED_GOAL_FIELD_SPACE_X_POSITION - turretPose.getX();
-            double dy = Constants.TurretConstants.RED_GOAL_FIELD_SPACE_Y_POSITION - turretPose.getY();
+        double angleToTag = Math.atan2(dy, dx);
+        System.out.println("angletotag: " + angleToTag);
 
-            double angleToTag = Math.atan2(dy, dx);
-            System.out.println("angletotag: " + angleToTag);
+        double angleToTagRobot = MathUtil.angleModulus(angleToTag - (robotPose.getRotation().getZ()+Math.PI));
 
-            // double robotYaw = robotPose.getRotation().toRotation2d().getRadians();
-            // System.out.println("robotyaw: "+robotYaw);
-
-            double angleToTagRobot = MathUtil.angleModulus(angleToTag - (robotPose.getRotation().getZ()+Math.PI));
-
-            // double facingTargetRadians = Math.atan2(aprilTagPose.getY() - cameraPose.getY(), aprilTagPose.getX() - cameraPose.getX());
-
-            // angleToTagRobot = MathUtil.angleModulus(angleToTagRobot);
-
-            // double facingTargetRadians = -Math.atan2(aprilTagPose.getY() - robotPose.getY(), aprilTagPose.getX() - robotPose.getX());
-            System.out.println("robot x: " + robotPose.getX() + "robot y: " + robotPose.getY() + "tag x: " + aprilTagPose.getX() + "tag y: " + aprilTagPose.getY() + "target rads" + angleToTagRobot);
-            setTargetRadians(angleToTagRobot);
-        }
+        // System.out.println("robot x: " + robotPose.getX() + "robot y: " + robotPose.getY() + "tag x: " + point.getX() + "tag y: " + point.getY() + "target rads" + angleToTagRobot);
+        setTargetRadians(angleToTagRobot);
     }
 
-    public Command faceAprilTagCommand(Vision vision) { return this.run(() -> faceAprilTag(vision)); }
+    public Command facePointCommand(Translation2d point, Vision vision) { return this.run(() -> facePoint(point, vision)); }
 
     public Transform3d getDynamicCameraTransform() {
         Transform3d turretRotation = new Transform3d(
