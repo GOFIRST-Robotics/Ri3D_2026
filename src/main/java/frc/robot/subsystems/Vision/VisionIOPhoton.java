@@ -102,23 +102,23 @@ public class VisionIOPhoton implements VisionIO {
     }
   }
 
-  public static Pose3d CameraToRobotPose(Pose3d cameraPose, double turretYawRadians) {
-        // 1. Define where the turret is on the robot
-        Transform3d robotToTurretCenter = new Transform3d(
-            new Translation3d(TurretConstants.TURRET_LOCAL_POS_X, TurretConstants.TURRET_LOCAL_POS_Y, TurretConstants.TURRET_LOCAL_POS_Z), 
-            new Rotation3d(0, 0, 0)
-        );
+  // public static Pose3d CameraToRobotPose(Pose3d cameraPose, double turretYawRadians) {
+  //       // 1. Define where the turret is on the robot
+  //       Transform3d robotToTurretCenter = new Transform3d(
+  //           new Translation3d(TurretConstants.TURRET_LOCAL_POS_X, TurretConstants.TURRET_LOCAL_POS_Y, TurretConstants.TURRET_LOCAL_POS_Z), 
+  //           new Rotation3d(0, 0, 0)
+  //       );
             
-        // 2. Define where the camera is relative to the spinning turret center, pitch doesn't change
-        Transform3d turretToCamera = new Transform3d(
-            new Translation3d(TurretConstants.CAMERA_RADIUS, 0, TurretConstants.CAMERA_HEIGHT), 
-            new Rotation3d(0, 0, turretYawRadians)
-        );
+  //       // 2. Define where the camera is relative to the spinning turret center, pitch doesn't change
+  //       Transform3d turretToCamera = new Transform3d(
+  //           new Translation3d(TurretConstants.CAMERA_RADIUS, 0, TurretConstants.CAMERA_HEIGHT), 
+  //           new Rotation3d(0, 0, turretYawRadians)
+  //       );
 
-        // 3. Combine the two transforms to get robot to camera
-        Transform3d robotToCamera = robotToTurretCenter.plus(turretToCamera);
+  //       // 3. Combine the two transforms to get robot to camera
+  //       Transform3d robotToCamera = robotToTurretCenter.plus(turretToCamera);
         
-        // 4. Invert and apply to get robot pose from camera pose
-        return cameraPose.transformBy(robotToCamera.inverse());
-    }
+  //       // 4. Invert and apply to get robot pose from camera pose
+  //       return cameraPose.transformBy(robotToCamera.inverse());
+  //   }
 }

@@ -27,7 +27,7 @@ public class Turret extends SubsystemBase {
 
     }
 
-    public void autoAimTurret(Translation3d point, Vision vision)
+    public void autoAimTurret(Translation3d point, double z_offset, Vision vision)
     {
         Pose3d robotPose = vision.getEstimatedPose3d();
         System.out.println("robot angle" + robotPose.getRotation().getZ());
@@ -46,13 +46,13 @@ public class Turret extends SubsystemBase {
         // System.out.println("robot x: " + robotPose.getX() + "robot y: " + robotPose.getY() + "tag x: " + point.getX() + "tag y: " + point.getY() + "target rads" + angleToTagRobot);
         turntable.setTargetRadians(angleToTagRobot);
 
-        double velocity_initial_y = Math.sqrt(-2 * TurretConstants.GRAVITY_CONSTANT * (TurretConstants.TURRET_VERTICAL_DISTANCE_TO_GOAL + TurretConstants.TURRET_VERTICAL_DISTANCE_APEX_OFFSET));
+        double velocity_initial_y = Math.sqrt(-2 * TurretConstants.GRAVITY_CONSTANT * point.getZ());
         double time_until_apex = -velocity_initial_y / TurretConstants.GRAVITY_CONSTANT;
         double delta_x = Math.sqrt(dx * dx + dy * dy);
-        
-        delta_x -= (TurretConstants.TURRET_TIME_INTO_GOAL_AFTER_APEX / (time_until_apex + TurretConstants.TURRET_TIME_INTO_GOAL_AFTER_APEX)) * delta_x;
 
-        double velocity_inital_x = delta_x / time_until_apex;
+        double time_to_point_after_apex = Math.sqrt(-z_offset / TurretConstants.GRAVITY_CONSTANT);
+        
+        double velocity_inital_x = delta_x / (time_until_apex + time_to_point_after_apex);
 
         double launch_angle = Math.atan2(velocity_initial_y, velocity_inital_x);
         double launch_velocity = Math.sqrt(velocity_inital_x * velocity_inital_x + velocity_initial_y * velocity_initial_y);
@@ -122,15 +122,15 @@ public class Turret extends SubsystemBase {
 
     public BooleanSupplier SubsystemsWithinError = () -> TurretReadyToShoot();
 
-    public Command aimAndShoot(Translation3d targetPoint, Vision vision, Indexer indexer) {
-        return new RunCommand(() -> {
-            this.autoAimTurret(targetPoint, vision);
+    public Command aimAndShoot(Translation3d targetPoint, double goalZOffest, Vision vision, Indexer indexer) {
+        return this.run(() -> {
+            this.autoAimTurret(targetPoint, goalZOffest, vision);
 
             if (this.TurretReadyToShoot()) {
                 indexer.setIndexerKDutyCycle(0.25);
             } else {
                 indexer.setIndexerKDutyCycle(0);
             }
-        }, this, flywheel, hood, turntable, indexer);
+        });
     }
 }

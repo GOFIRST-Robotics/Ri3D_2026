@@ -170,20 +170,23 @@ public final class Constants {
 
     public static final double GRAVITY_CONSTANT = -9.81;
 
-    public static final double TURRET_VERTICAL_DISTANCE_TO_GOAL = 1.8288;
-    public static final double TURRET_VERTICAL_DISTANCE_APEX_OFFSET = 0.254;
+    public static final double SHOOT_APEX_OFFSET = 0.254;
     public static final double TURRET_TIME_INTO_GOAL_AFTER_APEX = Math.sqrt(-TURRET_VERTICAL_DISTANCE_APEX_OFFSET / GRAVITY_CONSTANT);
+    public static final double GOAL_FIELD_SPACE_Z_POSITION = 1.8288;
     public static final double RED_GOAL_FIELD_SPACE_X_POSITION = 11.915;
     public static final double RED_GOAL_FIELD_SPACE_Y_POSITION = 4.035;
     public static final double BLUE_GOAL_FIELD_SPACE_X_POSITION = 4.626; 
     public static final double BLUE_GOAL_FIELD_SPACE_Y_POSITION = 4.035; 
+    public static final Translation3d RED_GOAL_POSE = new Translation3d(RED_GOAL_FIELD_SPACE_X_POSITION, RED_GOAL_FIELD_SPACE_Y_POSITION,GOAL_FIELD_SPACE_Z_POSITION)
+    public static final Translation3d BLUE_GOAL_POSE = new Translation3d(BLUE_GOAL_FIELD_SPACE_X_POSITION, BLUE_GOAL_FIELD_SPACE_Y_POSITION,GOAL_FIELD_SPACE_Z_POSITION)
+
 
 
     //Isaac's maybe unnessary constants for turret positinoing
 //     public static final double TURRET_LOCAL_POS_Z = 0; //we arbitratilly define its height as 0 meters off the ground and measure direct camera height from ground
-    public static final double CAMERA_RADIUS = 0.148; //radius from center of turret to lens of camera
-    public static final double CAMERA_HEIGHT = 0.504; //meters from ground to camera lens
-    public static final double CAMERA_PITCH_ANGLE = Units.degreesToRadians(18); //NEEDS TO BE UPDATED: degrees up from horizontal the camera is mounted 
+//     public static final double CAMERA_RADIUS = 0.148; //radius from center of turret to lens of camera
+//     public static final double CAMERA_HEIGHT = 0.504; //meters from ground to camera lens
+//     public static final double CAMERA_PITCH_ANGLE = Units.degreesToRadians(18); //NEEDS TO BE UPDATED: degrees up from horizontal the camera is mounted 
 
     // Turntable PIDs
     public static final double TURNTABLE_kP = 0.08;
@@ -293,7 +296,7 @@ public final class Constants {
                 new Rotation3d(0, 0, Math.toRadians(270)))),
         
         new AprilTag(9, new Pose3d(
-                new Translation3d(4.022, 3.679, 1.124),
+                new Translation3d(12.519, 3.679, 1.124),
                 new Rotation3d(0, 0, Math.toRadians(0)))),
         
         new AprilTag(10, new Pose3d(

@@ -163,7 +163,7 @@ public class RobotContainer {
 
     controller.button(4).toggleOnTrue(turntable.facePointCommand(new Translation2d(Constants.TurretConstants.RED_GOAL_FIELD_SPACE_X_POSITION, Constants.TurretConstants.RED_GOAL_FIELD_SPACE_Y_POSITION, vision));
 
-    controller.button(9).toggleOnTrue(turret.aimAndShoot(speakerTarget, vision, indexer));
+    controller.button(9).toggleOnTrue(turret.aimAndShoot(Constants.TurretConstants.RED_GOAL_POSE, Constants.TurretConstants.SHOOT_APEX_OFFSET vision, indexer));
   }
 
   public Command getAutonomousCommand() {
