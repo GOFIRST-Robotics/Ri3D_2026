@@ -35,7 +35,7 @@ public class Indexer extends SubsystemBase {
   public Command runIndexerCommand() {
       return this.startEnd(
           () -> runIndexer(IndexerConstants.INDEXER_MOTOR_RPM), 
-          () -> runIndexer(0)                                   
+          () -> runIndexer(IndexerConstants.DUTY_CYCLE_INDEXER_PERCENT_OUTPUT)                                   
       ).withName("Run Indexer");
   }
 
@@ -43,7 +43,7 @@ public class Indexer extends SubsystemBase {
       return this.startEnd(
           () -> io.setIndexerKDutyCycle(0.25), 
           () -> io.setIndexerKDutyCycle(0.0)                                   
-      ).withName("Run Indexer");
+      ).withName("Run Indexer Duty Cycle");
   }
 
 }

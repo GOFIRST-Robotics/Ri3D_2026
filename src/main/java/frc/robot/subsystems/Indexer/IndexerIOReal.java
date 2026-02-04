@@ -9,7 +9,6 @@ import com.revrobotics.spark.SparkBase.ControlType;
 import com.revrobotics.spark.SparkLowLevel.MotorType;
 import com.revrobotics.spark.config.SparkMaxConfig;
 
-import edu.wpi.first.wpilibj.motorcontrol.VictorSP;
 import frc.robot.Constants.IndexerConstants;
 
 public class IndexerIOReal implements IndexerIO {

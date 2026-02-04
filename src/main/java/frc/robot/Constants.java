@@ -144,6 +144,7 @@ public final class Constants {
   public static final class IndexerConstants{
     public static final int INDEXER_MOTOR_CAN_ID = 30;
     public static final double INDEXER_MOTOR_RPM = 500;
+    public static final double DUTY_CYCLE_INDEXER_PERCENT_OUTPUT = 0.25;
 
     public static final double INDEXER_MOTOR_kP = 0.0001;
     public static final double INDEXER_MOTOR_kV = 0.000175; // 0.0024
