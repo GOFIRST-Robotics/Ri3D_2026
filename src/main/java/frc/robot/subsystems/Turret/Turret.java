@@ -6,6 +6,7 @@ import edu.wpi.first.math.MathUtil;
 import edu.wpi.first.math.geometry.Pose3d;
 import edu.wpi.first.math.geometry.Transform3d;
 import edu.wpi.first.math.geometry.Translation3d;
+import edu.wpi.first.wpilibj.smartdashboard.Field2d;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
@@ -23,16 +24,18 @@ public class Turret extends SubsystemBase {
     private final Flywheel flywheel;
     private final Hood hood;
     private final Turntable turntable;
+    private final Field2d field = new Field2d();
 
     public Turret(Flywheel flywheel, Hood hood, Turntable turntable) {
         this.flywheel = flywheel;
         this.hood = hood;
         this.turntable = turntable;
+        SmartDashboard.putData("Field", field);
     }
+
 
     @Override
     public void periodic() {
-
     }
 
     public void autoAimTurret(Translation3d point, double z_offset, Vision vision)
@@ -43,6 +46,7 @@ public class Turret extends SubsystemBase {
         Pose3d robotPose = vision.getEstimatedPose3d();
 
         SmartDashboard.putNumber("Vision Robot Angle", robotPose.getRotation().getZ());
+
 
         Transform3d robotToTurret = Constants.TurretConstants.ROBOT_TO_TURRET;
         Pose3d turretPose = robotPose.transformBy(robotToTurret);
@@ -80,6 +84,9 @@ public class Turret extends SubsystemBase {
 
         // hood.setDesiredLaunchAngle(launch_angle);
         // flywheel.setLaunchSpeed(launch_velocity);
+
+        field.setRobotPose(vision.getEstimatedPose());
+        field.getObject("Turret").setPose(turretPose.toPose2d());
     }
 
     // ...existing code...
