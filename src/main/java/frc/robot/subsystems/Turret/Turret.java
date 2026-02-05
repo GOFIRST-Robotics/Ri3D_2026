@@ -85,7 +85,7 @@ public class Turret extends SubsystemBase {
         // hood.setDesiredLaunchAngle(launch_angle);
         // flywheel.setLaunchSpeed(launch_velocity);
 
-        field.setRobotPose(vision.getEstimatedPose());
+        field.setRobotPose(vision.getRobotPose3dMerged()); 
         field.getObject("Turret").setPose(turretPose.toPose2d());
     }
 
