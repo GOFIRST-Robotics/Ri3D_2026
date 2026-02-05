@@ -36,17 +36,23 @@ public class Turret extends SubsystemBase {
 
     public void autoAimTurret(Translation3d point, double z_offset, Vision vision)
     {
+        if(!vision.hasTarget()){
+            return;
+        }
         Pose3d robotPose = vision.getEstimatedPose3d();
         System.out.println("robot angle" + robotPose.getRotation().getZ());
+        // System.out.println("robot: x" + robotPose.getTranslation().getX() + "robot y" + robotPose.getTranslation().getY());
 
         Transform3d robotToTurret = Constants.TurretConstants.ROBOT_TO_TURRET;
         Pose3d turretPose = robotPose.transformBy(robotToTurret);
 
         double dx = point.getX() - turretPose.getX();
         double dy = point.getY() - turretPose.getY();
+        System.out.println("target: x" + point.getX() + "target y" + point.getY());
+        System.out.println("turret: x" + turretPose.getX() + "turret y" + turretPose.getY());
 
         double angleToTag = Math.atan2(dy, dx);
-        System.out.println("angletotag: " + angleToTag);
+        // System.out.println("angletotag: " + angleToTag);
 
         double angleToTagRobot = MathUtil.angleModulus(angleToTag - (robotPose.getRotation().getZ()+Math.PI));
 
@@ -64,8 +70,8 @@ public class Turret extends SubsystemBase {
         double launch_angle = Math.atan2(velocity_initial_y, velocity_inital_x);
         double launch_velocity = Math.sqrt(velocity_inital_x * velocity_inital_x + velocity_initial_y * velocity_initial_y);
 
-        hood.setDesiredLaunchAngle(launch_angle);
-        flywheel.setLaunchSpeed(launch_velocity);
+        // hood.setDesiredLaunchAngle(launch_angle);
+        // flywheel.setLaunchSpeed(launch_velocity);
     }
 
     // ...existing code...
@@ -131,13 +137,14 @@ public class Turret extends SubsystemBase {
 
     public Command aimAndShoot(Translation3d targetPoint, double goalZOffest, Vision vision, Indexer indexer) {
         return this.run(() -> {
+            System.out.println("wotking");
             this.autoAimTurret(targetPoint, goalZOffest, vision);
 
-            if (this.TurretReadyToShoot()) {
-                indexer.runIndexerDuty(0.25);
-            } else {
-                indexer.runIndexerDuty(0);
-            }
+            // if (this.TurretReadyToShoot()) {
+            //     indexer.runIndexerDuty(0.25);
+            // } else {
+            //     indexer.runIndexerDuty(0);
+            // }
         });
     }
 }
