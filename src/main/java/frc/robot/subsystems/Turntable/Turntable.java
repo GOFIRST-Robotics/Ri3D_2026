@@ -7,6 +7,7 @@ import edu.wpi.first.math.geometry.Pose3d;
 import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.math.geometry.Rotation3d;
 import edu.wpi.first.math.geometry.Transform3d;
+import edu.wpi.first.math.geometry.Translation2d;
 import edu.wpi.first.math.geometry.Translation3d;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
@@ -84,7 +85,9 @@ public class Turntable extends SubsystemBase {
         setTargetRadians(angleToTagRobot);
     }
 
-    public Command facePointCommand(Translation2d point, Vision vision) { return this.run(() -> facePoint(point, vision)); }
+    public Command 
+    
+    facePointCommand(Translation2d point, Vision vision) { return this.run(() -> facePoint(point, vision)); }
 
     public Transform3d getDynamicCameraTransform() {
         Transform3d turretRotation = new Transform3d(

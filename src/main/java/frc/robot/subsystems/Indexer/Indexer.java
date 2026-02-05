@@ -24,6 +24,11 @@ public class Indexer extends SubsystemBase {
     io.setIndexerRPM(RPM);
   }
 
+  public void runIndexerDuty(double duty) {
+    io.setIndexerKDutyCycle(duty);
+  }
+
+
   @Override
   public void periodic() {
     io.updateInputs(inputs);
