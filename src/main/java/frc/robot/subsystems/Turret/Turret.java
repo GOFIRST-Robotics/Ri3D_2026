@@ -6,6 +6,7 @@ import edu.wpi.first.math.MathUtil;
 import edu.wpi.first.math.geometry.Pose3d;
 import edu.wpi.first.math.geometry.Transform3d;
 import edu.wpi.first.math.geometry.Translation3d;
+import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.Constants;
@@ -40,21 +41,28 @@ public class Turret extends SubsystemBase {
             return;
         }
         Pose3d robotPose = vision.getEstimatedPose3d();
-        System.out.println("robot angle" + robotPose.getRotation().getZ());
-        // System.out.println("robot: x" + robotPose.getTranslation().getX() + "robot y" + robotPose.getTranslation().getY());
+
+        SmartDashboard.putNumber("Vision Robot Angle", robotPose.getRotation().getZ());
 
         Transform3d robotToTurret = Constants.TurretConstants.ROBOT_TO_TURRET;
         Pose3d turretPose = robotPose.transformBy(robotToTurret);
 
         double dx = point.getX() - turretPose.getX();
         double dy = point.getY() - turretPose.getY();
-        System.out.println("target: x" + point.getX() + "target y" + point.getY());
-        System.out.println("turret: x" + turretPose.getX() + "turret y" + turretPose.getY());
+
+        SmartDashboard.putNumber("Target X", point.getX());
+        SmartDashboard.putNumber("Target Y", point.getY());
+
+        SmartDashboard.putNumber("Turret X", turretPose.getX());
+        SmartDashboard.putNumber("Turret Y", turretPose.getY());
 
         double angleToTag = Math.atan2(dy, dx);
-        // System.out.println("angletotag: " + angleToTag);
+
+        SmartDashboard.putNumber("Angle to Tag", angleToTag);
 
         double angleToTagRobot = MathUtil.angleModulus(angleToTag - (robotPose.getRotation().getZ()+Math.PI));
+
+        SmartDashboard.putNumber("Angle to Tag Robot", angleToTagRobot);
 
         // System.out.println("robot x: " + robotPose.getX() + "robot y: " + robotPose.getY() + "tag x: " + point.getX() + "tag y: " + point.getY() + "target rads" + angleToTagRobot);
         turntable.setTargetRadians(angleToTagRobot);

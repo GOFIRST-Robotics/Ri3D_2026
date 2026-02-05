@@ -1,28 +1,17 @@
 package frc.robot;
 
-import edu.wpi.first.math.geometry.Pose3d;
-import edu.wpi.first.math.geometry.Rotation2d;
-import edu.wpi.first.math.geometry.Rotation3d;
-import edu.wpi.first.math.geometry.Transform2d;
-import edu.wpi.first.math.geometry.Transform3d;
 import edu.wpi.first.math.geometry.Translation2d;
-import edu.wpi.first.math.util.Units;
 import edu.wpi.first.wpilibj2.command.Command;
-import edu.wpi.first.wpilibj2.command.CommandScheduler;
 import edu.wpi.first.wpilibj2.command.Commands;
 import edu.wpi.first.wpilibj2.command.InstantCommand;
 import edu.wpi.first.wpilibj2.command.RunCommand;
 import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
-import edu.wpi.first.wpilibj2.command.button.Trigger;
 import frc.robot.commands.MecanumDriveCommands;
 import frc.robot.subsystems.Flywheel.Flywheel;
-import frc.robot.subsystems.Flywheel.FlywheelIO;
 import frc.robot.subsystems.Flywheel.FlywheelIOReal;
 import frc.robot.subsystems.Gyro.GyroIO;
 import frc.robot.subsystems.Gyro.GyroIONavX;
 import frc.robot.subsystems.Intake.Intake;
-import frc.robot.subsystems.Intake.IntakeIO;
-import frc.robot.subsystems.Intake.IntakeIOSpark;
 import frc.robot.subsystems.Intake.IntakeIOSparkOnboardPID;
 import frc.robot.subsystems.Indexer.Indexer;
 import frc.robot.subsystems.Indexer.IndexerIOReal;
@@ -36,8 +25,6 @@ import frc.robot.subsystems.Vision.VisionIOPhoton;
 import frc.robot.subsystems.drive.MecanumDrive.MecanumDrive;
 import frc.robot.subsystems.drive.MecanumDrive.MecanumModuleIO;
 import frc.robot.subsystems.drive.MecanumDrive.MecanumModuleIOSpark;
-
-import java.util.function.Supplier;
 
 import org.littletonrobotics.junction.networktables.LoggedDashboardChooser;
 

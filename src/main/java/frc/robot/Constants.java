@@ -235,7 +235,6 @@ public final class Constants {
       public static final double INTAKE_DOOR_kI = 0;
       public static final double INTAKE_DOOR_kD = 0;
 
-
       public static final double INTAKE_DOOR_POSITION_STORED = Units.degreesToRadians(120); //degrees -0.33
       public static final double INTAKE_DOOR_POSITION_DEPLOYED = Units.degreesToRadians(-1.0); //0.054
       public static final boolean IS_INTAKE_DIRECTION_INVERTED = false;
