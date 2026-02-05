@@ -38,7 +38,7 @@ public class Hood extends SubsystemBase {
 
     public void setDesiredLaunchAngle(double radians)
     {
-        setTargetRadians(Constants.TurretConstants.TURRET_HOOD_MAX_RADIANS - radians);
+        setTargetRadians(radians);
     }
 
     public Command incrementHoodAngleCommand() { return this.run(() -> setTargetRadians(currentTargetRadians + Constants.TurretConstants.TURRET_HOOD_CHANGE_SPEED)); }

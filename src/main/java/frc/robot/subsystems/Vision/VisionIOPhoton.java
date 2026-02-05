@@ -1,24 +1,19 @@
 package frc.robot.subsystems.Vision;
 
-import java.util.List;
 import java.util.Optional;
 import java.util.function.Supplier;
 
 import org.photonvision.EstimatedRobotPose;
 import org.photonvision.PhotonCamera;
 import org.photonvision.PhotonPoseEstimator;
-import org.photonvision.PhotonPoseEstimator.ConstrainedSolvepnpParams;
 import org.photonvision.PhotonPoseEstimator.PoseStrategy;
-import org.photonvision.targeting.PhotonPipelineResult;
 
 import edu.wpi.first.apriltag.AprilTagFieldLayout;
-import edu.wpi.first.math.Matrix;
 import edu.wpi.first.math.geometry.Pose3d;
 import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.math.geometry.Rotation3d;
 import edu.wpi.first.math.geometry.Transform3d;
 import edu.wpi.first.math.geometry.Translation3d;
-import edu.wpi.first.math.numbers.N3;
 import edu.wpi.first.wpilibj.Timer;
 import frc.robot.Constants;
 import frc.robot.Constants.TurretConstants;
@@ -73,11 +68,8 @@ public class VisionIOPhoton implements VisionIO {
     Rotation3d heading3d = new Rotation3d(0, 0, heading2d.getRadians());
     poseEstimator.addHeadingData(Timer.getFPGATimestamp(), heading3d);
     
-    List<PhotonPipelineResult> resultList = camera.getAllUnreadResults();
-    if(resultList.isEmpty()){
-      return;
-    }
-    PhotonPipelineResult result = resultList.get(0);
+    var result = camera.getLatestResult();
+
     Optional<EstimatedRobotPose> estimatedPose = poseEstimator.update(result, camera.getCameraMatrix(), camera.getDistCoeffs());
 
     if (estimatedPose.isPresent()) {

@@ -142,13 +142,13 @@ public final class Constants {
     public static final double TURRET_HOOD_GEAR_RATIO = 475.0*10.0/85.0;
     public static final double TURRET_TURNTABLE_GEAR_RATIO = (130.0 / 50.0) * 9.0 * 7.0;
 
-    public static final double FLYWHEEL_DIAMETER = 1;
+    public static final double FLYWHEEL_DIAMETER = Units.inchesToMeters(3.93);
     public static final double FLYWHEEL_BALL_COMPRESSION = 0.25;
     
     public static final double TURRET_HOOD_MOTOR_MIN_ROTATIONS = 0;
     public static final double TURRET_HOOD_MOTOR_MAX_ROTATIONS = 6.7;
-    public static final double TURRET_HOOD_MIN_RADIANS = Units.degreesToRadians(30);
-    public static final double TURRET_HOOD_MAX_RADIANS = Units.degreesToRadians(65);
+    public static final double TURRET_HOOD_MIN_RADIANS = Units.degreesToRadians(0);
+    public static final double TURRET_HOOD_MAX_RADIANS = Units.degreesToRadians(35);
     public static final double TURRET_HOOD_RANGE_RADIANS = TURRET_HOOD_MAX_RADIANS - TURRET_HOOD_MIN_RADIANS;
 
     public static final double TURRET_TURNTABLE_MAX_RADIANS = Units.degreesToRadians(90);
@@ -170,10 +170,10 @@ public final class Constants {
 
     public static final double GRAVITY_CONSTANT = -9.81;
 
-    public static final double SHOOT_APEX_OFFSET = 0.254;
+    public static final double SHOOT_APEX_OFFSET = 0.43;
 //     public static final double TURRET_TIME_INTO_GOAL_AFTER_APEX = Math.sqrt(-TURRET_VERTICAL_DISTANCE_APEX_OFFSET / GRAVITY_CONSTANT);
     public static final double GOAL_FIELD_SPACE_Z_POSITION = 1.8288;
-    public static final double RED_GOAL_FIELD_SPACE_X_POSITION = 11.915;
+    public static final double RED_GOAL_FIELD_SPACE_X_POSITION = 11.919;
     public static final double RED_GOAL_FIELD_SPACE_Y_POSITION = 4.035;
     public static final double BLUE_GOAL_FIELD_SPACE_X_POSITION = 4.626; 
     public static final double BLUE_GOAL_FIELD_SPACE_Y_POSITION = 4.035; 
