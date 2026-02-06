@@ -24,6 +24,8 @@ import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj.DriverStation.Alliance;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.Commands;
+import frc.robot.subsystems.Vision.Vision;
+import frc.robot.subsystems.Vision.VisionIO;
 import frc.robot.subsystems.drive.MecanumDrive.MecanumDrive;
 import java.util.function.DoubleSupplier;
 import java.util.function.Supplier;
@@ -233,6 +235,11 @@ public class MecanumDriveCommands {
    */
   public static Command resetPose(MecanumDrive drive, Pose2d pose) {
     return Commands.runOnce(() -> drive.resetPose(pose), drive).ignoringDisable(true);
+  }
+
+  public static Command resetPoseBasedOnVision(MecanumDrive drive, Vision vision)
+  {
+    return Commands.runOnce(() -> drive.resetPose(vision.getEstimatedPose()), drive).ignoringDisable(true);
   }
 
   // /**

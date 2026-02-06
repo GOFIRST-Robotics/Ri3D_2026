@@ -10,6 +10,7 @@ public interface VisionIO {
     public boolean connected = false;
     public boolean hasTarget = false;
     public Pose3d estimatedPose = new Pose3d();
+    public Pose3d averagedEstimatedPose = new Pose3d();
     public double timestampSeconds = 0.0;
     public int tagCount = 0;
     public double avgTagDistance = 0.0;

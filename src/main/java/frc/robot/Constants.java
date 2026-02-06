@@ -250,6 +250,9 @@ public final class Constants {
   public static final double CAMERA_PITCH_RADIANS = Units.degreesToRadians(18);
   public static final String USB_CAMERA_NAME = "Arducam_OV9782_USB_Camera";
 
+  public static final double MAX_AVERAGE_TIMESTAMP_AGE = 1.25; // seconds, for filtering out old vision measurements
+  public static final double MAX_AVERAGE_DISTANCE_FROM_NEW_READING = 0.05;
+
   public static final Matrix<N3, N1> SINGLE_TAG_STD_DEVS = VecBuilder.fill(0.1, 0.1, 0.1);
   public static final Matrix<N3, N1> MULTI_TAG_STD_DEVS = VecBuilder.fill(0.05, 0.05, 0.05);
 

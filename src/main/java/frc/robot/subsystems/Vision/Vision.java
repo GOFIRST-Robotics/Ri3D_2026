@@ -1,11 +1,19 @@
 package frc.robot.subsystems.Vision;
 
+import static edu.wpi.first.units.Units.Rotation;
+
+import java.util.LinkedList;
+import java.util.List;
+
 import org.littletonrobotics.junction.Logger;
 
 import edu.wpi.first.math.Matrix;
+import edu.wpi.first.math.Pair;
 import edu.wpi.first.math.VecBuilder;
 import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.geometry.Pose3d;
+import edu.wpi.first.math.geometry.Rotation3d;
+import edu.wpi.first.math.geometry.Translation3d;
 import edu.wpi.first.math.numbers.N1;
 import edu.wpi.first.math.numbers.N3;
 import edu.wpi.first.wpilibj.Alert;
@@ -18,6 +26,8 @@ public class Vision extends SubsystemBase {
   private final VisionIO io;
   private final VisionIOInputsAutoLogged inputs = new VisionIOInputsAutoLogged();
   private final MecanumDrive drivetrain;
+
+  private List<Pair<Pose3d, Double>> posesToAverage = new LinkedList<>();
 
   private final Alert disconnectedAlert =
       new Alert("Vision camera disconnected!", AlertType.kWarning);
@@ -43,8 +53,13 @@ public class Vision extends SubsystemBase {
           stdDevs);
     }
 
+    Pair<Pose3d, Double> currentPose = new Pair<>(inputs.estimatedPose, inputs.timestampSeconds);
+    cleanAndAddToPosesToAverage(currentPose);
+    inputs.averagedEstimatedPose = getAveragedPose();
+
     // Log additional outputs
     Logger.recordOutput("Vision/EstimatedPose", inputs.estimatedPose.toPose2d());
+    Logger.recordOutput("Vision/AveragedEstimatedPose", inputs.averagedEstimatedPose.toPose2d());
   }
 
   /**
@@ -66,6 +81,45 @@ public class Vision extends SubsystemBase {
     }
     
     return estStdDevs;
+  }
+
+  private void cleanAndAddToPosesToAverage(Pair<Pose3d, Double> newPose)
+  {
+    posesToAverage.removeIf(pose -> (inputs.timestampSeconds - pose.getSecond()) > Constants.MAX_AVERAGE_TIMESTAMP_AGE);
+    posesToAverage.removeIf(pose -> pose.getFirst().getTranslation().getDistance(newPose.getFirst().getTranslation()) > Constants.MAX_AVERAGE_DISTANCE_FROM_NEW_READING);
+    posesToAverage.add(newPose);
+  }
+
+  private Pose3d getAveragedPose()
+  {
+    if(posesToAverage.size() == 0) {
+      return new Pose3d();
+    }
+
+    double xPos = 0;
+    double yPos = 0;
+    double zPos = 0;
+
+    double xRot = 0;
+    double yRot = 0;
+    double zRot = 0;
+
+    for(Pair<Pose3d, Double> pose : posesToAverage)
+    {
+      Translation3d translation = pose.getFirst().getTranslation();
+      Rotation3d rotation = pose.getFirst().getRotation();
+
+      xPos += translation.getX();
+      yPos += translation.getY();
+      zPos += translation.getZ();
+
+      xRot += rotation.getX();
+      yRot += rotation.getY();
+      zRot += rotation.getZ();
+    }
+
+    int size = posesToAverage.size();
+    return new Pose3d(xPos/size, yPos/size, zPos/size, new Rotation3d(xRot/size, yRot/size, zRot/size));
   }
 
   public boolean hasTarget() {

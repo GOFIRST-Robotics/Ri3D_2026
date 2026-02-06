@@ -124,7 +124,7 @@ public class MecanumDrive extends SubsystemBase {
   }
 
   public void resetPose(Pose2d pose) {
-        odometry.resetPosition(gyroInputs.yawPosition, getWheelPositions(), pose);
+    odometry.resetPosition(gyroInputs.yawPosition, getWheelPositions(), pose);
     odometryEstimator.resetPosition(gyroInputs.yawPosition, getWheelPositions(), pose);
   }
 
