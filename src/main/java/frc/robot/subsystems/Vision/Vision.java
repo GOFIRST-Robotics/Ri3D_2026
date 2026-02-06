@@ -1,7 +1,5 @@
 package frc.robot.subsystems.Vision;
 
-import static edu.wpi.first.units.Units.Rotation;
-
 import java.util.LinkedList;
 import java.util.List;
 
@@ -18,6 +16,7 @@ import edu.wpi.first.math.numbers.N1;
 import edu.wpi.first.math.numbers.N3;
 import edu.wpi.first.wpilibj.Alert;
 import edu.wpi.first.wpilibj.Alert.AlertType;
+import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.Constants;
 import frc.robot.subsystems.drive.MecanumDrive.MecanumDrive;
@@ -53,13 +52,19 @@ public class Vision extends SubsystemBase {
           stdDevs);
     }
 
-    Pair<Pose3d, Double> currentPose = new Pair<>(inputs.estimatedPose, inputs.timestampSeconds);
-    cleanAndAddToPosesToAverage(currentPose);
+    removeOldPoses(inputs.timestampSeconds);
+    if (inputs.hasTarget)
+    {
+      removeFarPoses(inputs.estimatedPose);
+      posesToAverage.add(new Pair<>(inputs.estimatedPose, inputs.timestampSeconds));
+    }
     inputs.averagedEstimatedPose = getAveragedPose();
 
     // Log additional outputs
     Logger.recordOutput("Vision/EstimatedPose", inputs.estimatedPose.toPose2d());
-    Logger.recordOutput("Vision/AveragedEstimatedPose", inputs.averagedEstimatedPose.toPose2d());
+    //Logger.recordOutput("Vision/AveragedEstimatedPose", inputs.averagedEstimatedPose.toPose2d());
+
+    SmartDashboard.putString("Averaged Vision", inputs.averagedEstimatedPose.toPose2d().toString());
   }
 
   /**
@@ -83,17 +88,20 @@ public class Vision extends SubsystemBase {
     return estStdDevs;
   }
 
-  private void cleanAndAddToPosesToAverage(Pair<Pose3d, Double> newPose)
+  private void removeOldPoses(Double currentTimeSeconds)
   {
-    posesToAverage.removeIf(pose -> (inputs.timestampSeconds - pose.getSecond()) > Constants.MAX_AVERAGE_TIMESTAMP_AGE);
-    posesToAverage.removeIf(pose -> pose.getFirst().getTranslation().getDistance(newPose.getFirst().getTranslation()) > Constants.MAX_AVERAGE_DISTANCE_FROM_NEW_READING);
-    posesToAverage.add(newPose);
+    posesToAverage.removeIf(pose -> (currentTimeSeconds - pose.getSecond()) > Constants.MAX_AVERAGE_TIMESTAMP_AGE);
+  }
+
+  private void removeFarPoses(Pose3d currentPose)
+  {
+    posesToAverage.removeIf(pose -> pose.getFirst().getTranslation().getDistance(currentPose.getTranslation()) > Constants.MAX_AVERAGE_DISTANCE_FROM_NEW_READING);
   }
 
   private Pose3d getAveragedPose()
   {
     if(posesToAverage.size() == 0) {
-      return new Pose3d();
+      return inputs.estimatedPose;
     }
 
     double xPos = 0;
