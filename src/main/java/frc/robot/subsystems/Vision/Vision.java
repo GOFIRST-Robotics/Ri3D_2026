@@ -142,9 +142,18 @@ public class Vision extends SubsystemBase {
     return inputs.estimatedPose.toPose2d();
   }
 
+  public Pose2d getAverageEstimatedPose() {
+    return inputs.averagedEstimatedPose.toPose2d();
+  }
+
   public Pose3d getEstimatedPose3d()
   {
     return inputs.estimatedPose;
+  }
+
+  public Pose3d getAverageEstimatedPose3d()
+  {
+    return inputs.averagedEstimatedPose;
   }
 
   public Pose2d getRobotPose3dMerged()

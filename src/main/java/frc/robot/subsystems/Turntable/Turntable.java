@@ -64,7 +64,7 @@ public class Turntable extends SubsystemBase {
 
     public void facePoint(Translation2d point, Vision vision)
     {
-        Pose3d robotPose = vision.getEstimatedPose3d();
+        Pose3d robotPose = vision.getAverageEstimatedPose3d();
         System.out.println("robot angle" + robotPose.getRotation().getZ());
 
         Transform3d robotToCamera = getDynamicCameraTransform();

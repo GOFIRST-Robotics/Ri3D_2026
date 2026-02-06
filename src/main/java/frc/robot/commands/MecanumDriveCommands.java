@@ -239,7 +239,7 @@ public class MecanumDriveCommands {
 
   public static Command resetPoseBasedOnVision(MecanumDrive drive, Vision vision)
   {
-    return Commands.runOnce(() -> drive.resetPose(vision.getEstimatedPose()), drive).ignoringDisable(true);
+    return Commands.runOnce(() -> drive.resetPose(vision.getAverageEstimatedPose()), drive).ignoringDisable(true);
   }
 
   // /**
