@@ -38,9 +38,10 @@ public class Flywheel extends SubsystemBase {
 
     public void setLaunchSpeed(double launchSpeed)
     {
-        double rpm = (60 / Math.PI) * (launchSpeed / Constants.WHEEL_DIAMETER);
+        double rpm = (launchSpeed * 60) / (Math.PI * Constants.TurretConstants.FLYWHEEL_DIAMETER);
 
-        runFlywheels(rpm, rpm);
+        rpm = rpm *1.6;
+
         runFlywheels(rpm, rpm);
     }
 
@@ -55,7 +56,7 @@ public class Flywheel extends SubsystemBase {
             setRPM = Constants.TurretConstants.TURRET_FLYWHEEL_MAX_RPM;
         }
 
-        runFlywheels((setRPM-1000.0), setRPM);
+        runFlywheels((setRPM), setRPM);
     }
 
     public Command StopFlywheelsCommand() { return this.runOnce(() -> runFlywheels(0, 0)); }

@@ -19,6 +19,7 @@ import frc.robot.Constants;
 import frc.robot.Constants.Mode;
 import frc.robot.subsystems.Gyro.GyroIO;
 import frc.robot.subsystems.Gyro.GyroIOInputsAutoLogged;
+import frc.robot.subsystems.Turret.Turret;
 
 import org.littletonrobotics.junction.Logger;
 
@@ -202,5 +203,13 @@ public class MecanumDrive extends SubsystemBase {
   public void addVisionMeasurement(Pose2d visionPose, double timestampSeconds, Matrix<N3, N1> stdDevs) {
     odometryEstimator.addVisionMeasurement(visionPose, timestampSeconds, stdDevs);
   }
+
+  public Pose2d getOdometryWithVisionPose2d() {
+    return odometryEstimator.getEstimatedPosition();
+  }
+
+  
+
+ 
 
 }

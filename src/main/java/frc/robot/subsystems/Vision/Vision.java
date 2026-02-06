@@ -138,4 +138,15 @@ public class Vision extends SubsystemBase {
   {
     return inputs.estimatedPose;
   }
+
+  public Pose2d getRobotPose3dMerged()
+  {
+    return drivetrain.getOdometryWithVisionPose2d();
+  }
+
+  public Pose2d getOdomotreyPose2d() {
+    return drivetrain.getPose();
+  }
+
+  
 }
