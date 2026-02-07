@@ -30,6 +30,8 @@ public class Turret extends SubsystemBase {
     private final Turntable turntable;
     private final Field2d field = new Field2d();
 
+    Translation3d targetPointOffset = new Translation3d(0, 0, 0);
+
     public Turret(Flywheel flywheel, Hood hood, Turntable turntable) {
         this.flywheel = flywheel;
         this.hood = hood;
@@ -124,13 +126,27 @@ public class Turret extends SubsystemBase {
     public Command aimAndShoot(Translation3d targetPoint, double goalZOffest, Vision vision, Indexer indexer, MecanumDrive drive) {
         return this.run(() -> {
             System.out.println("wotking");
-            this.autoAimTurret(targetPoint, goalZOffest, vision, drive);
+            this.autoAimTurret(targetPoint.plus(targetPointOffset), goalZOffest, vision, drive);
 
             // if (this.TurretReadyToShoot()) {
             //     indexer.runIndexerDuty(0.25);
             // } else {
             //     indexer.runIndexerDuty(0);
             // }
+        });
+    }
+
+    public Command offsetTargetPoint(double x, double y)
+    {
+        return this.run(() -> {
+            targetPointOffset = targetPointOffset.plus(new Translation3d(x, y, 0));
+        });
+    }
+
+    public Command resetTargetPointOffset()
+    {
+        return this.run(() -> {
+            targetPointOffset = new Translation3d(0, 0, 0);
         });
     }
 }
