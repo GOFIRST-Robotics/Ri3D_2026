@@ -31,6 +31,8 @@ import frc.robot.subsystems.drive.MecanumDrive.MecanumDrive;
 import frc.robot.subsystems.drive.MecanumDrive.MecanumModuleIO;
 import frc.robot.subsystems.drive.MecanumDrive.MecanumModuleIOSpark;
 
+import java.lang.invoke.ConstantCallSite;
+
 import org.littletonrobotics.junction.networktables.LoggedDashboardChooser;
 
 public class RobotContainer {
@@ -138,8 +140,10 @@ public class RobotContainer {
           () -> -controller.getLeftX(),  // Strafe
           () -> controller.getRightX())); // Rotation
 
-    controller.povRight().onTrue(intake.setIntake(Constants.IntakeConstants.INTAKE_DOOR_POSITION_DEPLOYED));
-    controller.povLeft().onTrue(intake.setIntake(Constants.IntakeConstants.INTAKE_DOOR_POSITION_STORED));
+    // INTAKE COMMANDS //
+    controller.button(8).onTrue(intake.setIntake(Constants.IntakeConstants.INTAKE_DOOR_POSITION_DEPLOYED));
+    controller.button(7).onTrue(intake.setIntake(Constants.IntakeConstants.INTAKE_DOOR_POSITION_STORED));
+    /////////////////////
 
     controller.leftBumper().whileTrue(new RunCommand(()-> intake.runIntake(1), intake)).
                                           onFalse(new InstantCommand(()-> intake.runIntake(0.0), intake));
@@ -152,18 +156,22 @@ public class RobotContainer {
     controller.rightTrigger().whileTrue(flywheel.incrementRpmSetPoint());
     controller.button(1).onTrue(flywheel.StopFlywheelsCommand());
 
-    controller.povUp().whileTrue(hood.incrementHoodAngleCommand());
-    controller.povDown().whileTrue(hood.decrementHoodAngleCommand());
+    // TARGET OFFSET COMMANDS //
+    controller.povUp().whileTrue(turret.offsetTargetPoint(0, Constants.TARGET_OFFSET_CHANGE_SPEED));
+    controller.povDown().whileTrue(turret.offsetTargetPoint(0, -Constants.TARGET_OFFSET_CHANGE_SPEED));
+    controller.povLeft().whileTrue(turret.offsetTargetPoint(-Constants.TARGET_OFFSET_CHANGE_SPEED, 0));
+    controller.povRight().whileTrue(turret.offsetTargetPoint(Constants.TARGET_OFFSET_CHANGE_SPEED, 0));
+    ////////////////////////////
 
     controller.button(2).whileTrue(turntable.incrementTurntableAngleCommand());
     controller.button(3).whileTrue(turntable.decrementTurntableAngleCommand());
 
     controller.button(4).toggleOnTrue(turntable.facePointCommand(new Translation2d(Constants.TurretConstants.RED_GOAL_FIELD_SPACE_X_POSITION, Constants.TurretConstants.RED_GOAL_FIELD_SPACE_Y_POSITION), vision));
 
-    controller.button(9).toggleOnTrue(turret.aimAndShoot(Constants.TurretConstants.RED_GOAL_POSE, Constants.TurretConstants.SHOOT_APEX_OFFSET, vision, indexer, drive));
+    controller.button(9).toggleOnTrue(turret.aimAndShoot(Constants.TurretConstants.RED_GOAL_POSE, Constants.TurretConstants.SHOOT_APEX_OFFSET, vision, indexer, drive)).onFalse(flywheel.StopFlywheelsCommand());
 
-    controller.button(8).onTrue(climber.climbElevatorCommand(ClimbPosition.RUNG_ONE, true));
-    controller.button(7).onTrue(climber.climbElevatorCommand(ClimbPosition.ZERO, true));
+    // controller.button(8).onTrue(climber.climbElevatorCommand(ClimbPosition.RUNG_ONE, true));
+    // controller.button(7).onTrue(climber.climbElevatorCommand(ClimbPosition.ZERO, true));
   }
 
   public Command getAutonomousCommand() {
