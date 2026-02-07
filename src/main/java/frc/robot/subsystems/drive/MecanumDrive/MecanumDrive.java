@@ -163,7 +163,8 @@ public class MecanumDrive extends SubsystemBase {
   }
 
   /** Drives field-relative (uses gyro). */
-  public void runFieldRelative(double vxMetersPerSec, double vyMetersPerSec, double omegaRadPerSec) {
+  public void 
+  (double vxMetersPerSec, double vyMetersPerSec, double omegaRadPerSec) {
     ChassisSpeeds speeds =
         ChassisSpeeds.fromFieldRelativeSpeeds(
             vxMetersPerSec, vyMetersPerSec, omegaRadPerSec, gyroInputs.yawPosition);

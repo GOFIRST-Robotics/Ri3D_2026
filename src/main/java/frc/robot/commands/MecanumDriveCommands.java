@@ -32,8 +32,8 @@ import java.util.function.Supplier;
 
 public class MecanumDriveCommands {
   private static final double DEADBAND = 0.1;
-  private static final double MAX_LINEAR_SPEED = 3.0; // m/s
-  private static final double MAX_ANGULAR_SPEED = 3.0; // rad/s
+  private static final double MAX_LINEAR_SPEED = 5.0; // m/s
+  private static final double MAX_ANGULAR_SPEED = 5.0; // rad/s
 
   // PID constants for angle control
   private static final double ANGLE_KP = 5.0;
