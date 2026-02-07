@@ -13,6 +13,7 @@ import frc.robot.subsystems.Gyro.GyroIO;
 import frc.robot.subsystems.Gyro.GyroIONavX;
 import frc.robot.subsystems.Intake.Intake;
 import frc.robot.subsystems.Intake.IntakeIOSparkOnboardPID;
+import frc.robot.subsystems.Intake.IntakeIOSparkRIOPID;
 import frc.robot.subsystems.Indexer.Indexer;
 import frc.robot.subsystems.Indexer.IndexerIOReal;
 import frc.robot.subsystems.Hood.Hood;
@@ -109,7 +110,7 @@ public class RobotContainer {
         break;
     }
 
-    intake = new Intake(new IntakeIOSparkOnboardPID());
+    intake = new Intake(new IntakeIOSparkRIOPID());
     indexer = new Indexer(new IndexerIOReal());
 
     // Set up auto routines

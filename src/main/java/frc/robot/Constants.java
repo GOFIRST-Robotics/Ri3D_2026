@@ -231,7 +231,10 @@ public final class Constants {
       public static final int INTAKE_WHEEL_MOTOR_ID = 22;
       // public static final int INTAKE_WHEEL_MOTOR_ID = 4;
 
-      public static final double INTAKE_DOOR_kP = .6;
+      public static final double VELOCITY_GAIN = 1;
+      public static final double MAX_INTAKE_PIVIOT_VELO = 1;
+      public static final double INTAKE_DOOR_kV = .001;
+      public static final double INTAKE_DOOR_kP = .001;
       public static final double INTAKE_DOOR_kI = 0;
       public static final double INTAKE_DOOR_kD = 0;
 
