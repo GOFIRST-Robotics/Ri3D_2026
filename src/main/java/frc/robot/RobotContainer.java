@@ -7,6 +7,10 @@ import edu.wpi.first.wpilibj2.command.InstantCommand;
 import edu.wpi.first.wpilibj2.command.RunCommand;
 import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
 import frc.robot.commands.MecanumDriveCommands;
+import frc.robot.subsystems.Climber.Climber;
+import frc.robot.subsystems.Climber.ClimberIO;
+import frc.robot.subsystems.Climber.ClimberIOReal;
+import frc.robot.subsystems.Climber.ClimberIO.ClimbPosition;
 import frc.robot.subsystems.Flywheel.Flywheel;
 import frc.robot.subsystems.Flywheel.FlywheelIOReal;
 import frc.robot.subsystems.Gyro.GyroIO;
@@ -38,6 +42,7 @@ public class RobotContainer {
   private final Flywheel flywheel;
   private final Hood hood;
   private final Turntable turntable;
+  private final Climber climber;
   private final Vision vision;
 
   // Controller
@@ -64,6 +69,7 @@ public class RobotContainer {
         hood = new Hood(new HoodIOReal());
         turntable = new Turntable(new TurntableIOReal(), drive);
         turret = new Turret(flywheel, hood, turntable);
+        climber = new Climber(new ClimberIOReal());
 
         vision = new Vision(new VisionIOPhoton("Arducam_OV9782_USB_Camera", turntable::getDynamicCameraTransform, drive::getGyroYaw),drive);
 
@@ -85,6 +91,7 @@ public class RobotContainer {
         hood = null;
         turntable = null;
         turret = null;
+        climber = null;
 
         vision = null;
         break;
@@ -105,6 +112,7 @@ public class RobotContainer {
         hood = null;
         turntable = null;
         turret = null;
+        climber = null;
 
         vision = null;
         break;
@@ -153,6 +161,9 @@ public class RobotContainer {
     controller.button(4).toggleOnTrue(turntable.facePointCommand(new Translation2d(Constants.TurretConstants.RED_GOAL_FIELD_SPACE_X_POSITION, Constants.TurretConstants.RED_GOAL_FIELD_SPACE_Y_POSITION), vision));
 
     controller.button(9).toggleOnTrue(turret.aimAndShoot(Constants.TurretConstants.RED_GOAL_POSE, Constants.TurretConstants.SHOOT_APEX_OFFSET, vision, indexer, drive));
+
+    controller.button(8).onTrue(climber.climbElevatorCommand(ClimbPosition.RUNG_ONE, true));
+    controller.button(7).onTrue(climber.climbElevatorCommand(ClimbPosition.ZERO, true));
   }
 
   public Command getAutonomousCommand() {

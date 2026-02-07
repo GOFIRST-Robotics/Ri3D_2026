@@ -13,6 +13,9 @@
 
 package frc.robot;
 
+import com.revrobotics.spark.config.ClosedLoopConfig;
+import com.revrobotics.spark.config.SparkMaxConfig;
+
 import java.util.List;
 
 import edu.wpi.first.apriltag.AprilTag;
@@ -246,12 +249,32 @@ public final class Constants {
 
   }
 
-  // ==================== VISION CONSTANTS ====================
-  
-  public static final double CAMERA_HEIGHT_METERS = Units.inchesToMeters(7);
-  public static final double TARGET_HEIGHT_METERS = Units.inchesToMeters(18.5);
-  public static final double CAMERA_PITCH_RADIANS = Units.degreesToRadians(18);
-  public static final String USB_CAMERA_NAME = "Arducam_OV9782_USB_Camera";
+  public static final class ClimberConstants{
+    public static final int CLIMBER_MOTOR_CAN_ID = 50;
+
+    public static final double CLIMBER_ZERO_POS = 0.0;
+    public static final double AUTO_CLIMB_POS = 1.0;
+    public static final double RUNG_ONE_CLIMBER_POS = 59.033;
+    public static final double RUNG_TWO_CLIMBER_POS = 3.0;
+    public static final double RUNG_THREE_CLIMBER_POS = 4.0;
+
+    public static final double CLIMB_MOTOR_KP_SLOT0 = 0.1;
+    public static final double CLIMB_MOTOR_KI_SLOT0 = 0.0;
+    public static final double CLIMB_MOTOR_KD_SLOT0 = 0.0;
+    public static final double CLIMB_MOTOR_KV_SLOT0 = 0.0;
+    public static final double CLIMB_MOTOR_KG_SLOT0 = 0.0;
+    public static final double CLIMB_MOTOR_KP_SLOT1 = 0.01;
+    public static final double CLIMB_MOTOR_KI_SLOT1 = 0.0;
+    public static final double CLIMB_MOTOR_KD_SLOT1 = 0.0;
+    public static final double CLIMB_MOTOR_KV_SLOT1 = 0.0;
+    public static final double CLIMB_MOTOR_KG_SLOT1 = 0.0;
+    public static final double CLIMB_MOTOR_CRUISE_VEL = 200;
+    public static final double CLIMB_MOTOR_MAX_ACCEL = 4000;
+    public static final double CLIMB_ALLOWED_ERROR = 0.5;
+
+    public static final double CLIMB_MIN_POSITION_ALLOWED = 0;
+    public static final double CLIMB_MAX_POSITION_ALLOWED = 60;
+  }
 
   public static final double MAX_AVERAGE_TIMESTAMP_AGE = 2; // seconds, for filtering out old vision measurements
   public static final double MAX_AVERAGE_DISTANCE_FROM_NEW_READING = 0.1; // meters, for filtering out far away vision measurements
@@ -261,6 +284,13 @@ public final class Constants {
 
   public static final Matrix<N3, N1> DRIVE_STANDARD_DEVIATIONS = VecBuilder.fill(0.05, 0.05, 0.1);
   public static final Matrix<N3, N1> DRIVE_VISION_MEASUREMENT_STD_DEVS = VecBuilder.fill(0.1, 0.1, 0.2);
+
+    // ==================== VISION CONSTANTS ====================
+  
+  public static final double CAMERA_HEIGHT_METERS = Units.inchesToMeters(7);
+  public static final double TARGET_HEIGHT_METERS = Units.inchesToMeters(18.5);
+  public static final double CAMERA_PITCH_RADIANS = Units.degreesToRadians(18);
+  public static final String USB_CAMERA_NAME = "Arducam_OV9782_USB_Camera";
   
   public class AprilTagFieldConstants {
 
