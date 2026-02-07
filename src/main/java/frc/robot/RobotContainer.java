@@ -1,6 +1,7 @@
 package frc.robot;
 
 import edu.wpi.first.math.geometry.Translation2d;
+import edu.wpi.first.math.geometry.Translation3d;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.Commands;
 import edu.wpi.first.wpilibj2.command.InstantCommand;
@@ -166,7 +167,7 @@ public class RobotContainer {
     controller.button(2).whileTrue(turntable.incrementTurntableAngleCommand());
     controller.button(3).whileTrue(turntable.decrementTurntableAngleCommand());
 
-    controller.button(4).toggleOnTrue(turntable.facePointCommand(new Translation2d(Constants.TurretConstants.RED_GOAL_FIELD_SPACE_X_POSITION, Constants.TurretConstants.RED_GOAL_FIELD_SPACE_Y_POSITION), vision));
+    controller.button(4).toggleOnTrue(turret.aimAndShoot(Constants.TurretConstants.RED_GOAL_POSE.plus(new Translation3d(3, 3.5, 0.0)), Constants.TurretConstants.SHOOT_APEX_OFFSET, vision, indexer, drive)).onFalse(flywheel.StopFlywheelsCommand());
 
     controller.button(9).toggleOnTrue(turret.aimAndShoot(Constants.TurretConstants.RED_GOAL_POSE, Constants.TurretConstants.SHOOT_APEX_OFFSET, vision, indexer, drive)).onFalse(flywheel.StopFlywheelsCommand());
 
