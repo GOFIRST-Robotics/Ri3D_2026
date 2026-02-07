@@ -90,8 +90,8 @@ public class ClimberIOReal implements ClimberIO {
         configSlot0.closedLoop.feedForward
                 .kS(0.0, ClosedLoopSlot.kSlot0)
                 .kV(climbMotorkVSlot0, ClosedLoopSlot.kSlot0)
-                .kA(0.0, ClosedLoopSlot.kSlot0)
-                .kG(climbMotorkGSlot0, ClosedLoopSlot.kSlot0);
+                .kA(0.0, ClosedLoopSlot.kSlot0);
+                // .kG(climbMotorkGSlot0, ClosedLoopSlot.kSlot0);
         configSlot0.inverted(true);
         configSlot0.closedLoop.maxMotion
             .cruiseVelocity(climbMotorCruiseVel, ClosedLoopSlot.kSlot0)
@@ -102,8 +102,8 @@ public class ClimberIOReal implements ClimberIO {
         configSlot0.closedLoop.feedForward
                 .kS(0.0, ClosedLoopSlot.kSlot1)
                 .kV(climbMotorkVSlot0, ClosedLoopSlot.kSlot1)
-                .kA(0.0, ClosedLoopSlot.kSlot1)
-                .kG(climbMotorkGSlot0, ClosedLoopSlot.kSlot1);
+                .kA(0.0, ClosedLoopSlot.kSlot1);
+                // .kG(climbMotorkGSlot0, ClosedLoopSlot.kSlot1);
         configSlot0.closedLoop.maxMotion
             .cruiseVelocity(climbMotorCruiseVel, ClosedLoopSlot.kSlot1)
             .maxAcceleration(climbMotorMaxAccel, ClosedLoopSlot.kSlot1)
