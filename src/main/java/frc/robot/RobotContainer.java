@@ -148,7 +148,7 @@ public class RobotContainer {
     controller.leftBumper().whileTrue(new RunCommand(()-> intake.runIntake(1), intake)).
                                           onFalse(new InstantCommand(()-> intake.runIntake(0.0), intake));
 
-    controller.button(10).onTrue(MecanumDriveCommands.resetHeading(drive));
+    controller.button(10).onTrue(MecanumDriveCommands.resetPoseBasedOnVision(drive, vision));
 
     controller.rightBumper().whileTrue(indexer.runIndexerCommandDutyCycle());
 
@@ -159,8 +159,8 @@ public class RobotContainer {
     // TARGET OFFSET COMMANDS //
     controller.povUp().whileTrue(turret.offsetTargetPoint(0, Constants.TARGET_OFFSET_CHANGE_SPEED));
     controller.povDown().whileTrue(turret.offsetTargetPoint(0, -Constants.TARGET_OFFSET_CHANGE_SPEED));
-    controller.povLeft().whileTrue(turret.offsetTargetPoint(-Constants.TARGET_OFFSET_CHANGE_SPEED, 0));
-    controller.povRight().whileTrue(turret.offsetTargetPoint(Constants.TARGET_OFFSET_CHANGE_SPEED, 0));
+    controller.povLeft().whileTrue(turret.offsetTargetPoint(Constants.TARGET_OFFSET_CHANGE_SPEED, 0));
+    controller.povRight().whileTrue(turret.offsetTargetPoint(-Constants.TARGET_OFFSET_CHANGE_SPEED, 0));
     ////////////////////////////
 
     controller.button(2).whileTrue(turntable.incrementTurntableAngleCommand());

@@ -128,11 +128,11 @@ public class Turret extends SubsystemBase {
             System.out.println("wotking");
             this.autoAimTurret(targetPoint.plus(targetPointOffset), goalZOffest, vision, drive);
 
-            if (this.TurretReadyToShoot()) {
-                indexer.runIndexerDuty(0.25);
-            } else {
-                indexer.runIndexerDuty(0);
-            }
+            // if (this.TurretReadyToShoot()) {
+            //     indexer.runIndexerDuty(0.25);
+            // } else {
+            //     indexer.runIndexerDuty(0);
+            // }
         });
     }
 
