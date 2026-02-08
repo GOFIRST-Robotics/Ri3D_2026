@@ -85,7 +85,7 @@ public class Turret extends SubsystemBase {
         double velocity_initial_y = Math.sqrt(-2 * TurretConstants.GRAVITY_CONSTANT * apex_height);
 
         double time_up = Math.sqrt(-2 * apex_height / TurretConstants.GRAVITY_CONSTANT);
-        double time_down = Math.sqrt(-2 * apex_height / TurretConstants.GRAVITY_CONSTANT);
+        double time_down = Math.sqrt(-2 * z_offset / TurretConstants.GRAVITY_CONSTANT);
         double total_time = time_up+time_down;
 
         double horizontal_distance = Math.sqrt(dx * dx + dy * dy);
