@@ -36,6 +36,7 @@ public class Hood extends SubsystemBase {
         io.setHoodRadians(currentTargetRadians); 
     }
 
+    // TODO this is genuinely just wrong cuh
     public void setDesiredLaunchAngle(double radians)
     {
         setTargetRadians(radians);

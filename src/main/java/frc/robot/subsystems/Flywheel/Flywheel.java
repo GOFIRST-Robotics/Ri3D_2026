@@ -39,9 +39,6 @@ public class Flywheel extends SubsystemBase {
     public void setLaunchSpeed(double launchSpeed)
     {
         double rpm = (launchSpeed * 60) / (Math.PI * Constants.TurretConstants.FLYWHEEL_DIAMETER);
-
-        rpm = rpm *1.6;
-
         runFlywheels(rpm, rpm);
     }
 

@@ -55,9 +55,6 @@ public class Turret extends SubsystemBase {
 
         Transform3d robotToTurret = Constants.TurretConstants.ROBOT_TO_TURRET;
         Pose3d turretPose = robotPose.transformBy(robotToTurret);
-        // Rotation3d invert = new Rotation3d(Math.PI,0,0);
-
-        // turretPose.rotateBy(invert);
 
         double dx = point.getX() - turretPose.getX();
         double dy = point.getY() - turretPose.getY();
@@ -125,7 +122,6 @@ public class Turret extends SubsystemBase {
 
     public Command aimAndShoot(Translation3d targetPoint, double goalZOffest, Vision vision, Indexer indexer, MecanumDrive drive) {
         return this.run(() -> {
-            System.out.println("wotking");
             this.autoAimTurret(targetPoint.plus(targetPointOffset), goalZOffest, vision, drive);
 
             // if (this.TurretReadyToShoot()) {
