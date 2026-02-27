@@ -169,7 +169,7 @@ public class RobotContainer {
 
     controller.button(4).toggleOnTrue(turret.aimAndShoot(Constants.TurretConstants.RED_GOAL_POSE.plus(new Translation3d(3, 3.5, 0.0)), Constants.TurretConstants.SHOOT_APEX_OFFSET, vision, indexer, drive)).onFalse(flywheel.StopFlywheelsCommand());
 
-    controller.button(9).toggleOnTrue(turret.aimAndShoot(Constants.TurretConstants.RED_GOAL_POSE, Constants.TurretConstants.SHOOT_APEX_OFFSET, vision, indexer, drive)).onFalse(flywheel.StopFlywheelsCommand());
+    controller.button(9).toggleOnTrue(turret.aimAndShoot(Constants.TurretConstants.RED_GOAL_POSE, Constants.TurretConstants.SHOOT_APEX_OFFSET, vision, indexer, drive)).onFalse(flywheel.StopFlywheelsCommand().andThen(hood.setHoodAngleCommand(0)));
 
     // controller.button(8).onTrue(climber.climbElevatorCommand(ClimbPosition.RUNG_ONE, true));
     // controller.button(7).onTrue(climber.climbElevatorCommand(ClimbPosition.ZERO, true));
