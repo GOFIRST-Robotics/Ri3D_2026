@@ -12,6 +12,7 @@ import com.revrobotics.spark.SparkBase.ControlType;
 import com.revrobotics.spark.SparkMax;
 import com.revrobotics.spark.config.FeedForwardConfig;
 import com.revrobotics.spark.config.SparkMaxConfig;
+import com.revrobotics.spark.config.SparkBaseConfig.IdleMode;
 
 import edu.wpi.first.math.MathUtil;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
@@ -58,6 +59,7 @@ public class IntakeIOSparkRIOPID implements IntakeIO {
         doorConfig.absoluteEncoder.positionConversionFactor(2 * Math.PI);
         doorConfig.inverted(IntakeConstants.IS_INTAKE_DIRECTION_INVERTED);
         doorConfig.absoluteEncoder.inverted(IntakeConstants.IS_INTAKE_ENCODER_INVERTED);
+        doorConfig.idleMode(IdleMode.kBrake);
         
         // Add current limit for safety
         doorConfig.smartCurrentLimit(50);
@@ -68,6 +70,7 @@ public class IntakeIOSparkRIOPID implements IntakeIO {
         var followerConfig = new SparkMaxConfig();
         followerConfig.follow(leftDoorMotor, true);
         followerConfig.smartCurrentLimit(50);
+        followerConfig.idleMode(IdleMode.kBrake);
         rightDoorMotor.configure(followerConfig, ResetMode.kResetSafeParameters, PersistMode.kPersistParameters);
 
         // Get reference to the absolute encoder on the leader

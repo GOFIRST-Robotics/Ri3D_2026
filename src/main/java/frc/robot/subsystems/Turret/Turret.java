@@ -1,5 +1,6 @@
 package frc.robot.subsystems.Turret;
 
+import java.util.Optional;
 import java.util.function.BooleanSupplier;
 
 import edu.wpi.first.math.MathUtil;
@@ -9,6 +10,8 @@ import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.math.geometry.Rotation3d;
 import edu.wpi.first.math.geometry.Transform3d;
 import edu.wpi.first.math.geometry.Translation3d;
+import edu.wpi.first.wpilibj.DriverStation;
+import edu.wpi.first.wpilibj.DriverStation.Alliance;
 import edu.wpi.first.wpilibj.smartdashboard.Field2d;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
@@ -21,7 +24,6 @@ import frc.robot.subsystems.Indexer.Indexer;
 import frc.robot.subsystems.Turntable.Turntable;
 import frc.robot.subsystems.Vision.Vision;
 import frc.robot.subsystems.drive.MecanumDrive.MecanumDrive;
-import frc.robot.util.GeometryHelper;
 
 public class Turret extends SubsystemBase {
 
@@ -113,9 +115,11 @@ public class Turret extends SubsystemBase {
 
     public boolean TurretReadyToShoot()
     {
-        return flywheel.FlywheelSpeedWithinError() 
+        boolean readyToShoot = flywheel.FlywheelSpeedWithinError() 
             && hood.HoodRotationWithinError()
             && turntable.TurntableHeadingWithinError();
+        SmartDashboard.putBoolean("TurretReady", readyToShoot);
+        return readyToShoot;
     }
 
     public BooleanSupplier SubsystemsWithinError = () -> TurretReadyToShoot();
@@ -123,12 +127,42 @@ public class Turret extends SubsystemBase {
     public Command aimAndShoot(Translation3d targetPoint, double goalZOffest, Vision vision, Indexer indexer, MecanumDrive drive) {
         return this.run(() -> {
             this.autoAimTurret(targetPoint.plus(targetPointOffset), goalZOffest, vision, drive);
+            this.TurretReadyToShoot();
+        });
+    }
 
-            // if (this.TurretReadyToShoot()) {
-            //     indexer.runIndexerDuty(0.25);
-            // } else {
-            //     indexer.runIndexerDuty(0);
-            // }
+    public Command autoAimHub(double goalZOffest, Vision vision, Indexer indexer, MecanumDrive drive)
+    {
+        return this.run(() -> {
+            Optional<Alliance> alliance = DriverStation.getAlliance();
+            Translation3d targetPoint = alliance.isPresent() && (alliance.get().equals(Alliance.Blue)) ? Constants.TurretConstants.BLUE_GOAL_POSE : Constants.TurretConstants.RED_GOAL_POSE;
+
+            this.autoAimTurret(targetPoint.plus(targetPointOffset), goalZOffest, vision, drive);
+            this.TurretReadyToShoot();
+
+            if (this.TurretReadyToShoot()) {
+                indexer.runIndexerDuty(0.25);
+            } else {
+                indexer.runIndexerDuty(0);
+            }
+        });
+    }
+
+    public Command autoAimShuttle(double goalZOffest, Vision vision, Indexer indexer, MecanumDrive drive)
+    {
+        Translation3d shuttleOffset = new Translation3d(3.0, 0.0, 0.0);
+
+        return this.run(() -> {
+            Optional<Alliance> alliance = DriverStation.getAlliance();
+            Translation3d targetPoint = alliance.isPresent() && alliance.get() == Alliance.Blue ? Constants.TurretConstants.BLUE_GOAL_POSE.minus(shuttleOffset) : Constants.TurretConstants.RED_GOAL_POSE.plus(shuttleOffset);
+
+            this.autoAimTurret(targetPoint.plus(targetPointOffset), goalZOffest, vision, drive);
+
+            if (this.TurretReadyToShoot()) {
+                indexer.runIndexerDuty(0.25);
+            } else {
+                indexer.runIndexerDuty(0);
+            }
         });
     }
 

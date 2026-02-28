@@ -1,5 +1,6 @@
 package frc.robot.subsystems.Hood;
 
+import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 
@@ -48,6 +49,8 @@ public class Hood extends SubsystemBase {
 
     public boolean HoodRotationWithinError()
     {
-        return Math.abs(inputs.hoodRadians - currentTargetRadians) <= Constants.TurretConstants.TURRET_HOOD_ACCEPTABLE_RADIAN_ERROR;
+        boolean hoodRotationWithinError = Math.abs(inputs.hoodRadians - currentTargetRadians) <= Constants.TurretConstants.TURRET_HOOD_ACCEPTABLE_RADIAN_ERROR;
+        SmartDashboard.putBoolean("HoodRotationWithinError", hoodRotationWithinError);
+        return hoodRotationWithinError;
     }
 }

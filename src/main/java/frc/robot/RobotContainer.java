@@ -6,6 +6,8 @@ import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.Commands;
 import edu.wpi.first.wpilibj2.command.InstantCommand;
 import edu.wpi.first.wpilibj2.command.RunCommand;
+import edu.wpi.first.wpilibj2.command.SequentialCommandGroup;
+import edu.wpi.first.wpilibj2.command.WaitCommand;
 import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
 import frc.robot.commands.MecanumDriveCommands;
 import frc.robot.subsystems.Climber.Climber;
@@ -149,7 +151,7 @@ public class RobotContainer {
     controller.leftBumper().whileTrue(new RunCommand(()-> intake.runIntake(1), intake)).
                                           onFalse(new InstantCommand(()-> intake.runIntake(0.0), intake));
 
-    controller.button(10).onTrue(MecanumDriveCommands.resetPoseBasedOnVision(drive, vision));
+    controller.button(10).onTrue(MecanumDriveCommands.resetHeading(drive));
 
     controller.rightBumper().whileTrue(indexer.runIndexerCommandDutyCycle());
 
@@ -158,24 +160,25 @@ public class RobotContainer {
     controller.button(1).onTrue(flywheel.StopFlywheelsCommand());
 
     // TARGET OFFSET COMMANDS //
-    controller.povUp().whileTrue(turret.offsetTargetPoint(0, Constants.TARGET_OFFSET_CHANGE_SPEED));
-    controller.povDown().whileTrue(turret.offsetTargetPoint(0, -Constants.TARGET_OFFSET_CHANGE_SPEED));
-    controller.povLeft().whileTrue(turret.offsetTargetPoint(Constants.TARGET_OFFSET_CHANGE_SPEED, 0));
-    controller.povRight().whileTrue(turret.offsetTargetPoint(-Constants.TARGET_OFFSET_CHANGE_SPEED, 0));
+    controller.povUp().whileTrue(turret.offsetTargetPoint(Constants.TARGET_OFFSET_CHANGE_SPEED, 0));
+    controller.povDown().whileTrue(turret.offsetTargetPoint(-Constants.TARGET_OFFSET_CHANGE_SPEED, 0));
+    controller.povLeft().whileTrue(turret.offsetTargetPoint(0, Constants.TARGET_OFFSET_CHANGE_SPEED));
+    controller.povRight().whileTrue(turret.offsetTargetPoint(0, -Constants.TARGET_OFFSET_CHANGE_SPEED));
     ////////////////////////////
 
     controller.button(2).whileTrue(turntable.incrementTurntableAngleCommand());
     controller.button(3).whileTrue(turntable.decrementTurntableAngleCommand());
 
-    controller.button(4).toggleOnTrue(turret.aimAndShoot(Constants.TurretConstants.RED_GOAL_POSE.plus(new Translation3d(3, 3.5, 0.0)), Constants.TurretConstants.SHOOT_APEX_OFFSET, vision, indexer, drive)).onFalse(flywheel.StopFlywheelsCommand());
+    Command stopTheThings = new SequentialCommandGroup(flywheel.StopFlywheelsCommand(), hood.setHoodAngleCommand(0), indexer.stopIndexer());
 
-    controller.button(9).toggleOnTrue(turret.aimAndShoot(Constants.TurretConstants.RED_GOAL_POSE, Constants.TurretConstants.SHOOT_APEX_OFFSET, vision, indexer, drive)).onFalse(flywheel.StopFlywheelsCommand().andThen(hood.setHoodAngleCommand(0)));
+    controller.button(4).toggleOnTrue(turret.autoAimShuttle(Constants.TurretConstants.SHOOT_APEX_OFFSET, vision, indexer, drive)).onFalse(flywheel.StopFlywheelsCommand().andThen(hood.setHoodAngleCommand(0).andThen(indexer.stopIndexer())));
+    controller.button(9).toggleOnTrue(turret.autoAimHub(Constants.TurretConstants.SHOOT_APEX_OFFSET, vision, indexer, drive)).onFalse(stopTheThings);
 
     // controller.button(8).onTrue(climber.climbElevatorCommand(ClimbPosition.RUNG_ONE, true));
     // controller.button(7).onTrue(climber.climbElevatorCommand(ClimbPosition.ZERO, true));
   }
 
   public Command getAutonomousCommand() {
-    return autoChooser.get();
+    return turret.autoAimHub(Constants.TurretConstants.SHOOT_APEX_OFFSET, vision, indexer, drive).withTimeout(8).andThen(flywheel.StopFlywheelsCommand().andThen(hood.setHoodAngleCommand(0).andThen(indexer.stopIndexer())));
   }
 }

@@ -51,4 +51,9 @@ public class Indexer extends SubsystemBase {
       ).withName("Run Indexer");
   }
 
+  public Command stopIndexer()
+  {
+    return this.runOnce(() -> io.setIndexerKDutyCycle(0));
+  }
+
 }

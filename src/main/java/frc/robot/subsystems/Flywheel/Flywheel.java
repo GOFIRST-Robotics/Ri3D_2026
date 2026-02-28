@@ -1,5 +1,6 @@
 package frc.robot.subsystems.Flywheel;
 
+import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.Constants;
@@ -39,6 +40,7 @@ public class Flywheel extends SubsystemBase {
     public void setLaunchSpeed(double launchSpeed)
     {
         double rpm = (launchSpeed * 60) / (Math.PI * Constants.TurretConstants.FLYWHEEL_DIAMETER);
+        rpm *= 1.315f;
         runFlywheels(rpm, rpm);
     }
 
@@ -62,6 +64,8 @@ public class Flywheel extends SubsystemBase {
 
     public boolean FlywheelSpeedWithinError()
     {
-        return Math.abs(inputs.bottomFlywheelRPM - bottomTargetRPM) <= Constants.TurretConstants.TURRET_FLYWHEEL_ACCEPTABLE_RPM_ERROR && Math.abs(inputs.topFlywheelRPM - topTargetRPM) <= Constants.TurretConstants.TURRET_FLYWHEEL_ACCEPTABLE_RPM_ERROR;
+        boolean FlywheelSpeedWithinError = Math.abs(inputs.bottomFlywheelRPM - bottomTargetRPM) <= Constants.TurretConstants.TURRET_FLYWHEEL_ACCEPTABLE_RPM_ERROR && Math.abs(inputs.topFlywheelRPM - topTargetRPM) <= Constants.TurretConstants.TURRET_FLYWHEEL_ACCEPTABLE_RPM_ERROR;
+        SmartDashboard.putBoolean("FlywheelSpeedWithinError", FlywheelSpeedWithinError);
+        return FlywheelSpeedWithinError;
     }
 }

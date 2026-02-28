@@ -9,6 +9,7 @@ import edu.wpi.first.math.geometry.Rotation3d;
 import edu.wpi.first.math.geometry.Transform3d;
 import edu.wpi.first.math.geometry.Translation2d;
 import edu.wpi.first.math.geometry.Translation3d;
+import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.Constants;
@@ -54,7 +55,9 @@ public class Turntable extends SubsystemBase {
 
     public boolean TurntableHeadingWithinError()
     {
-        return Math.abs(inputs.turntableRadians - currentTargetRadians) <= Constants.TurretConstants.TURRET_TURNTABLE_ACCEPTABLE_RADIAN_ERROR;
+        boolean turntableHeadingWithinError = Math.abs(inputs.turntableRadians + currentTargetRadians) <= Constants.TurretConstants.TURRET_TURNTABLE_ACCEPTABLE_RADIAN_ERROR;
+        SmartDashboard.putBoolean("TurntableHeadingWithinError", turntableHeadingWithinError);
+        return turntableHeadingWithinError;
     }
 
     public double getYawOffsetRadiants()

@@ -166,7 +166,7 @@ public class MecanumDrive extends SubsystemBase {
   public void runFieldRelative(double vxMetersPerSec, double vyMetersPerSec, double omegaRadPerSec) {
     ChassisSpeeds speeds =
         ChassisSpeeds.fromFieldRelativeSpeeds(
-            vxMetersPerSec, vyMetersPerSec, omegaRadPerSec, gyroInputs.yawPosition);
+            vxMetersPerSec, vyMetersPerSec, omegaRadPerSec, gyroInputs.yawPosition.plus(new Rotation2d(Math.PI)));
     runRobotRelative(speeds);
   }
 

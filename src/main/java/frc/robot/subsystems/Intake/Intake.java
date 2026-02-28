@@ -37,7 +37,6 @@ public class Intake extends SubsystemBase {
         io.updateInputs(inputs);
         if (io.isDown()) {
             io.setkDutyZero();
-            System.out.println("out");
         }
     }
 
